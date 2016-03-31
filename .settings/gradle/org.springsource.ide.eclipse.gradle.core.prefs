@@ -1,0 +1,5 @@
+#org.springsource.ide.eclipse.gradle.core.preferences.GradleProjectPreferences
+#Thu Mar 31 18:20:49 CST 2016
+build.family.org.gradle.tooling.model.eclipse.HierarchicalEclipseProject=;galive_server_common;galive_server_framework;galive_server_logic;
+org.springsource.ide.eclipse.gradle.linkedresources=
+org.springsource.ide.eclipse.gradle.rootprojectloc=
