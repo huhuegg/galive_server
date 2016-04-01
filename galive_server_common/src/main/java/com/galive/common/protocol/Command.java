@@ -1,60 +1,53 @@
 package com.galive.common.protocol;
 
-public enum Command {
+public class Command {
 
 	// 用户注册
-	USR_REGISTER("UserRegister"),
+	public static final String USR_REGISTER = "CMDUserRegister";
 	// 用户登录
-	USR_LOGIN("UserLogin"),
+	public static final String USR_LOGIN = "CMDUserLogin";
 	// 获取用户信息
-	USR_INFO("UserInfo"),
+	public static final String USR_INFO = "CMDUserInfo";
 	// 修改用户信息
-	USR_INFO_MODIFY("UserInfoModify"),
+	public static final String USR_INFO_MODIFY = "CMDUserInfoModify";
 	// 客户端上线
-	USER_ONLINE("UserOnline"),
+	public static final String USER_ONLINE = "CMDUserOnline";
 	// 客户端下线
-	USER_OFFLINE("UserOffline"),
+	public static final String USER_OFFLINE = "CMDUserOffline";
+	// 获取用户信息
+	public static final String USER_INFO = "CMDUserInfo";
+	// 用户列表
+	public static final String USER_LIST = "CMDUserList";
 	// 创建房间
-	ROOM_CREATE("RoomCreate"),
+	public static final String ROOM_CREATE = "CMDRoomCreate";
 	// 房间列表
-	ROOM_LIST("RoomList"),
+	public static final String ROOM_LIST = "CMDRoomList";
 	// 进入房间
-	ROOM_ENTER("RoomEnter"),
+	public static final String ROOM_ENTER = "CMDRoomEnter";
 	// 退出房间
-	ROOM_EXIT("RoomExit"),
+	public static final String ROOM_EXIT = "CMDRoomExit";
 	// 客户端发送sdp
-	ROOM_SDP("RoomSDP"),
+	public static final String ROOM_SDP = "CMDRoomSDP";
 	// 客户端转发
-	CLIENT_TRANSMIT("ClientTransmit"),
-	
-	//---------------推送---------------//
-	// 客户端上线推送
-	USER_ONLINE_PUSH("UserOnlinePush"),
-	// 客户端下线推送
-	USER_OFFLINE_PUSH("UserOfflinePush"),
-	// 进入房间推送
-	ROOM_ENTER_PUSH("RoomEnterPush"),
-	// 退出房间推送
-	ROOM_EXIT_PUSH("RoomExitPush"),
-	// sdp推送
-	ROOM_SDP_PUSH("RoomSDPPush"),
-	// 房间更新推送
-	ROOM_REFRESH_PUSH("RoomRefreshPush"),
-	// 客户端转发推送
-	CLIENT_TRANSMIT_PUSH("ClientTransmitPush"),
-	// 被踢
-	KICK_OFF_PUSH("KickOffPush");
-	
-	
-	
-	private String code;
-	
-	private Command(String code) {
-		this.code = code;
-	}
+	public static final String CLIENT_TRANSMIT = "CMDClientTransmit";
 
-	public String getCode() {
-		return "CMD" + code;
-	}
+	// 客户端上线推送
+	public static final String USER_ONLINE_PUSH = "CMDUserOnlinePush";
+
+	// 客户端下线推送
+	public static final String USER_OFFLINE_PUSH = "CMDUserOfflinePush";
+
+	// 进入房间推送
+	public static final String ROOM_ENTER_PUSH = "CMDRoomEnterPush";
+	// 退出房间推送
+	public static final String ROOM_EXIT_PUSH = "CMDRoomExitPush";
+	// sdp推送
+	public static final String ROOM_SDP_PUSH = "CMDRoomSDPPush";
+	// 客户端转发推送
+	public static final String CLIENT_TRANSMIT_PUSH = "CMDClientTransmitPush";
+	// 房间更新推送
+	public static final String ROOM_REFRESH_PUSH = "CMDRoomRefreshPush";
+	// 被踢
+	public static final String KICK_OFF_PUSH = "CMDKickOffPush";
 
 }

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ListCommandOut<T> extends CommandOut {
 
-	public ListCommandOut(Command command) {
+	public ListCommandOut(String command) {
 		super(command);
 	}
 

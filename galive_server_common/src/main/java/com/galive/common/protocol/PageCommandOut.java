@@ -11,7 +11,7 @@ public class PageCommandOut<T> extends ListCommandOut<T> {
 	
 	public int size = 20;
 	
-	public PageCommandOut(Command command, PageCommandIn in) {
+	public PageCommandOut(String command, PageCommandIn in) {
 		super(command);
 		this.index = in.index;
 		this.size = in.size;

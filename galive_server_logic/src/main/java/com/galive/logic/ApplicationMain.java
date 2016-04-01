@@ -6,10 +6,9 @@ import org.apache.commons.daemon.DaemonInitException;
 import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.galive.logic.config.ApplicationConfig;
+import com.galive.logic.helper.AnnotationManager;
 import com.galive.logic.helper.LoggerHelper;
-import com.galive.logic.helper.LogicHelper;
 
 public class ApplicationMain implements Daemon {
 
@@ -67,8 +66,12 @@ public class ApplicationMain implements Daemon {
 	public void start() throws Exception {
 		logger.info("加载配置文件");
 		ApplicationConfig.getInstance();
+		
 		logger.info("重载log配置");
 		LoggerHelper.resetLogConfigPath();
+		
+		logger.info("加载Handler标签");
+		AnnotationManager.initAnnotation();
 		
 		try {
 			logger.info("启动jetty...");

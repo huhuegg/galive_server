@@ -4,18 +4,18 @@ import com.alibaba.fastjson.JSON;
 
 public class CommandOut {
 
-	private Command command;
+	private String command;
 	
 	private String ret_msg = "";
 	
 	private int ret_code = RetCode.SUCCESS;
 	
-	public CommandOut(Command command) {
+	public CommandOut(String command) {
 		this.command = command;
 		this.ret_code = RetCode.SUCCESS;
 	}
 	
-	public static CommandOut failureOut(Command command, String message) {
+	public static CommandOut failureOut(String command, String message) {
 		CommandOut out = new CommandOut(command);
 		out.setRet_msg(message);
 		out.setRet_code(RetCode.FAILURE);
@@ -42,11 +42,11 @@ public class CommandOut {
 		this.ret_code = ret_code;
 	}
 
-	public Command getCommand() {
+	public String getCommand() {
 		return command;
 	}
 
-	public void setCommand(Command command) {
+	public void setCommand(String command) {
 		this.command = command;
 	}
 

@@ -3,6 +3,7 @@ package com.galive.logic.handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.galive.common.protocol.Command;
+import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
 import com.galive.common.protocol.RetCode;
 import com.galive.logic.model.User;
@@ -13,10 +14,13 @@ public abstract class BaseHandler {
 	
 	public abstract CommandOut commandProcess(String userSid, String reqData);
 	
-	public String process(Command command, String userSid, String token, String reqData) {
+	public String process(CommandIn in, String reqData) {
 		CommandOut out = null;
+		String command = in.getCommand();
+		String userSid = in.getUserSid();
+		String token = in.getToken();
 		try {
-			if ((command != Command.USR_LOGIN && command != Command.USR_REGISTER)  && !User.verifyToken(userSid, token)) {
+			if ((!command.equals(Command.USR_LOGIN) && !command.equals(Command.USR_REGISTER))  && !User.verifyToken(userSid, token)) {
 				// 验证token
 				out = CommandOut.failureOut(command, "登录已过期");
 				out.setRet_code(RetCode.TOKEN_EXPIRE);

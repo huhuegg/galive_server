@@ -44,9 +44,9 @@ public class AnnotationManager {
 	 * @param messageID
 	 * @return
 	 */
-	public static BaseHandler createLogicHandlerInstance(String messageID) {
+	public static BaseHandler createLogicHandlerInstance(String command) {
 		BaseHandler handler = null;
-		Class<?> clazz = logicHandlers.get(messageID);
+		Class<?> clazz = logicHandlers.get(command);
 		if (clazz != null) {
 			try {
 				handler = (BaseHandler) clazz.newInstance();
