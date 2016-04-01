@@ -1,4 +1,4 @@
-package com.galive.logic.handler.out;
+package com.galive.logic.handler.model;
 
 import com.galive.logic.model.Room;
 import com.galive.logic.model.User;

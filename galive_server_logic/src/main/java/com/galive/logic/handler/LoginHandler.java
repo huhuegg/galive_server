@@ -9,8 +9,8 @@ import com.galive.common.protocol.CommandOut;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.RTCConfig;
 import com.galive.logic.config.SocketConfig;
-import com.galive.logic.handler.out.RespRoom;
-import com.galive.logic.handler.out.RespUser;
+import com.galive.logic.handler.model.RespRoom;
+import com.galive.logic.handler.model.RespUser;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
 

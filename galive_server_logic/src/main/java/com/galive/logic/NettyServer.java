@@ -2,9 +2,18 @@ package com.galive.logic;
 
 import java.io.IOException;
 import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.galive.logic.config.ApplicationConfig;
+import com.galive.logic.config.NettyConfig;
+import com.galive.logic.config.SocketConfig;
 import com.galive.logic.helper.LogicHelper;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -12,28 +21,52 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 
 public class NettyServer {
 
+	private static Logger logger = LoggerFactory.getLogger(NettyServer.class);
+	
 	private ChannelFuture channelFuture;
 
 	public void start() throws InterruptedException, IOException {
-		EventLoopGroup bossGroup = new NioEventLoopGroup(); // (1)
+		// TODO 配置 心跳
+		EventLoopGroup bossGroup = new NioEventLoopGroup(); 
 		EventLoopGroup workerGroup = new NioEventLoopGroup();
+		final NettyConfig nettyConfig = NettyConfig.loadConfig();
+		final SocketConfig socketConfig = ApplicationConfig.getInstance().getSocketConfig();
 		try {
-			ServerBootstrap b = new ServerBootstrap(); // (2)
-			b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class) // (3)
-					.childHandler(new ChannelInitializer<SocketChannel>() { // (4)
+			ServerBootstrap b = new ServerBootstrap(); 
+			b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
+					.childHandler(new ChannelInitializer<SocketChannel>() { 
 						@Override
 						public void initChannel(SocketChannel ch) throws Exception {
-							ch.pipeline().addLast(new NettyServerHandler());
+							
+//							ch.pipeline().addLast(new LineBasedFrameDecoder(1024));
+							// 基于指定字符串【换行符，这样功能等同于LineBasedFrameDecoder】
+							ByteBuf[] delimiter = new ByteBuf[] {
+					                Unpooled.wrappedBuffer(socketConfig.getDelimiter().getBytes()),
+					        };
+							ch.pipeline().addLast(new DelimiterBasedFrameDecoder(nettyConfig.getBufferSize(), delimiter));
+							// 基于最大长度
+//							e.pipeline().addLast(new FixedLengthFrameDecoder(4));
+							ch.pipeline().addLast(new StringDecoder());
+							
+							// 编码器 String
+							ch.pipeline().addLast(new StringEncoder());
+							ch.pipeline().addLast(new LogicSocketHandler());
 						}
-					}).option(ChannelOption.SO_BACKLOG, 128) // (5)
-					.childOption(ChannelOption.SO_KEEPALIVE, true); // (6)
+					})
+					.option(ChannelOption.SO_BACKLOG, 1024)
+					.childOption(ChannelOption.SO_KEEPALIVE, true);
 
 			// Bind and start to accept incoming connections.
 			Properties prop = LogicHelper.loadProperties();
-			channelFuture = b.bind(Integer.parseInt(prop.getProperty("netty.bind.port", "52194"))).sync(); // (7)
+			int port = Integer.parseInt(prop.getProperty("netty.bind.port", "52194"));
+			logger.info("绑定端口:" + port);
+			channelFuture = b.bind(port).sync(); // (7)
 
 		} finally {
 			workerGroup.shutdownGracefully();

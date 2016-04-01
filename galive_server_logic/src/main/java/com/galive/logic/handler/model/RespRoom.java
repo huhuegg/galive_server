@@ -1,4 +1,4 @@
-package com.galive.logic.handler.out;
+package com.galive.logic.handler.model;
 
 import java.util.ArrayList;
 import java.util.List;

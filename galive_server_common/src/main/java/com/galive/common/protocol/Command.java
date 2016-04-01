@@ -2,6 +2,10 @@ package com.galive.common.protocol;
 
 public class Command {
 
+	public static String[] httpCommands() {
+		return new String[]{USR_REGISTER, USR_LOGIN, };
+	}
+	
 	// 用户注册
 	public static final String USR_REGISTER = "CMDUserRegister";
 	// 用户登录
@@ -11,13 +15,11 @@ public class Command {
 	// 修改用户信息
 	public static final String USR_INFO_MODIFY = "CMDUserInfoModify";
 	// 客户端上线
-	public static final String USER_ONLINE = "CMDUserOnline";
+	public static final String USR_ONLINE = "CMDUserOnline";
 	// 客户端下线
-	public static final String USER_OFFLINE = "CMDUserOffline";
-	// 获取用户信息
-	public static final String USER_INFO = "CMDUserInfo";
+	public static final String USR_OFFLINE = "CMDUserOffline";
 	// 用户列表
-	public static final String USER_LIST = "CMDUserList";
+	public static final String USR_LIST = "CMDUserList";
 	// 创建房间
 	public static final String ROOM_CREATE = "CMDRoomCreate";
 	// 房间列表
@@ -32,10 +34,10 @@ public class Command {
 	public static final String CLIENT_TRANSMIT = "CMDClientTransmit";
 
 	// 客户端上线推送
-	public static final String USER_ONLINE_PUSH = "CMDUserOnlinePush";
+	public static final String USR_ONLINE_PUSH = "CMDUserOnlinePush";
 
 	// 客户端下线推送
-	public static final String USER_OFFLINE_PUSH = "CMDUserOfflinePush";
+	public static final String USR_OFFLINE_PUSH = "CMDUserOfflinePush";
 
 	// 进入房间推送
 	public static final String ROOM_ENTER_PUSH = "CMDRoomEnterPush";

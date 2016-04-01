@@ -15,11 +15,11 @@ import com.galive.common.protocol.CommandIn;
 import com.galive.logic.handler.BaseHandler;
 import com.galive.logic.helper.AnnotationManager;
 
-public class LogicServlet extends HttpServlet {
+public class LogicHttpHandler extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	
-	private static Logger logger = LoggerFactory.getLogger(LogicServlet.class);
+	private static Logger logger = LoggerFactory.getLogger(LogicHttpHandler.class);
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -35,7 +35,7 @@ public class LogicServlet extends HttpServlet {
 			CommandIn in = JSON.parseObject(data, CommandIn.class);
 			// 传递给handler处理业务逻辑
 			BaseHandler handler = AnnotationManager.createLogicHandlerInstance(in.getCommand());
-			String respData = handler.process(in, data);
+			String respData = handler.processHttpRequest(in, data);
 			resp.getWriter().write(respData);
 		} catch (Exception e) {
 			e.printStackTrace();
