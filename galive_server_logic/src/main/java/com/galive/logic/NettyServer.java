@@ -2,6 +2,7 @@ package com.galive.logic;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,9 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 
 public class NettyServer {
 
@@ -43,6 +47,7 @@ public class NettyServer {
 					.childHandler(new ChannelInitializer<SocketChannel>() { 
 						@Override
 						public void initChannel(SocketChannel ch) throws Exception {
+							ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO));
 							
 //							ch.pipeline().addLast(new LineBasedFrameDecoder(1024));
 							// 基于指定字符串【换行符，这样功能等同于LineBasedFrameDecoder】
@@ -50,12 +55,17 @@ public class NettyServer {
 					                Unpooled.wrappedBuffer(socketConfig.getDelimiter().getBytes()),
 					        };
 							ch.pipeline().addLast(new DelimiterBasedFrameDecoder(nettyConfig.getBufferSize(), delimiter));
+							
 							// 基于最大长度
 //							e.pipeline().addLast(new FixedLengthFrameDecoder(4));
 							ch.pipeline().addLast(new StringDecoder());
 							
 							// 编码器 String
 							ch.pipeline().addLast(new StringEncoder());
+							
+							//心跳
+							ch.pipeline().addLast(new IdleStateHandler(0, 0, nettyConfig.getBothIdleTime(), TimeUnit.SECONDS));
+							
 							ch.pipeline().addLast(new LogicSocketHandler());
 						}
 					})

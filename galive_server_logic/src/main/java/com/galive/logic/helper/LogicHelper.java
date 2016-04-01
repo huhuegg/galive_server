@@ -3,7 +3,6 @@ package com.galive.logic.helper;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 import java.util.UUID;
 import org.apache.commons.codec.digest.DigestUtils;
