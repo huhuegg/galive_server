@@ -1,6 +1,5 @@
 package com.galive.logic.log;
 
-import java.io.File;
 import org.slf4j.LoggerFactory;
 
 import com.galive.logic.ApplicationMain;
@@ -18,7 +17,7 @@ public class LogManager {
 		JoranConfigurator configurator = new JoranConfigurator();
 		configurator.setContext(lc);
 		lc.reset();
-		String name = File.separator + ApplicationMain.getInstance().getMode().name + File.separator + "logback.xml";
+		String name = "/" + ApplicationMain.getInstance().getMode().name + "/" + "logback.xml";
 		String path = LogManager.class.getResource(name).getPath();
 		try {
 			configurator.doConfigure(path);

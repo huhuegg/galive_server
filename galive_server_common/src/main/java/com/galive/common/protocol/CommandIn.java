@@ -71,14 +71,16 @@ public class CommandIn {
 			if (StringUtils.isBlank(command)) {
 				return null;
 			}
-			String userSid = req.getParameter("userSid");
-			String token = req.getParameter("token");
-			String params = URLDecoder.decode(req.getParameter("params"), StandardCharsets.UTF_8.name());
+			String userSid = req.getHeader("userSid");
+			String token = req.getHeader("token");
+			String params = req.getParameter("params");
 			CommandIn in = new CommandIn();
 			in.setCommand(command);
 			in.setUserSid(userSid);
 			in.setToken(token);
-			in.setParams(params);
+			if (params != null) {
+				in.setParams(URLDecoder.decode(req.getParameter("params"), StandardCharsets.UTF_8.name()));
+			}
 			return in;
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();

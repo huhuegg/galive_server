@@ -9,7 +9,6 @@ import com.galive.common.protocol.CommandOut;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.RTCConfig;
 import com.galive.logic.config.SocketConfig;
-import com.galive.logic.handler.BaseHandler;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
 import com.galive.logic.network.http.HttpRequestHandler;
@@ -17,12 +16,12 @@ import com.galive.logic.network.model.RespRoom;
 import com.galive.logic.network.model.RespUser;
 
 @HttpRequestHandler(desc = "用户登录", command = Command.USR_LOGIN)
-public class LoginHandler extends BaseHandler {
+public class LoginHandler extends HttpBaseHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(LoginHandler.class);
 
 	@Override
-	public CommandOut commandProcess(String userSid, String reqData) {
+	public CommandOut handle(String userSid, String reqData) {
 		logger.debug("用户登录|" + reqData);
 		LoginIn in = JSON.parseObject(reqData, LoginIn.class);
 		User u = User.findByUsername(in.username);
@@ -44,7 +43,6 @@ public class LoginHandler extends BaseHandler {
 		out.token = User.updateToken(u.getSid());
 		out.expire = ApplicationConfig.getInstance().getTokenExpire();
 		out.user = ru;
-		out.websocketUrl = ApplicationConfig.getInstance().getWebSocketUrl() + "/" + u.getSid() + "/" + out.token;
 		out.socket_config = ApplicationConfig.getInstance().getSocketConfig();
 		return out;
 	}
@@ -70,4 +68,6 @@ public class LoginHandler extends BaseHandler {
 		public SocketConfig socket_config;
 
 	}
+
+
 }

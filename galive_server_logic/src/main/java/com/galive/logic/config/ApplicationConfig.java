@@ -29,7 +29,6 @@ public class ApplicationConfig {
 
 	private RTCConfig rtcConfig;
 	private int tokenExpire = 7200;
-	private String webSocketUrl = "";
 	private SocketConfig socketConfig;
 	private LogicConfig logicConfig;
 
@@ -68,11 +67,6 @@ public class ApplicationConfig {
 			String tokenExpire = tokenExpireNode.getStringValue();
 			sc.setTokenExpire(Integer.parseInt(tokenExpire));
 			logger.info("TokenExpire:" + tokenExpire);
-
-			Element webSocketUrlNode = node.element("WebSocketServer");
-			String webSocketUrl = webSocketUrlNode.getStringValue();
-			sc.setWebSocketUrl(webSocketUrl);
-			logger.info("webSocketUrl:" + webSocketUrl);
 
 			logger.info("--RtcConfig--");
 			RTCConfig rtcConfig = new RTCConfig();
@@ -155,14 +149,6 @@ public class ApplicationConfig {
 
 	public void setTokenExpire(int tokenExpire) {
 		this.tokenExpire = tokenExpire;
-	}
-
-	public String getWebSocketUrl() {
-		return webSocketUrl;
-	}
-
-	public void setWebSocketUrl(String webSocketUrl) {
-		this.webSocketUrl = webSocketUrl;
 	}
 
 	public LogicConfig getLogicConfig() {

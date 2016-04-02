@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE ServerConfig>
-<ServerConfig>
+<!DOCTYPE Config>
+<Config>
 
 	<WebRTC>
 		<IceServer>
@@ -12,10 +12,8 @@
 
 	<TokenExpire>7200</TokenExpire>
 	
-	<WebSocketServer>ws://192.168.215.234:8080/galive/logic</WebSocketServer>
-	
 	<Socket>
-		<Host>192.168.215.234</Host>
+		<Host>192.168.1.211</Host>
 		<Port>52194</Port>
 		<LiveReq>ga</LiveReq>
 		<LiveResp>live</LiveResp>
@@ -26,4 +24,4 @@
 	<Logic>
 		<RoomMaxUser>5</RoomMaxUser>
 	</Logic>
-</ServerConfig>
+</Config>

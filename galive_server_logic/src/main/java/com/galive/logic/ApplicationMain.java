@@ -65,16 +65,16 @@ public class ApplicationMain implements Daemon {
 	}
 
 	public void start() throws Exception {
-		logger.info("加载配置文件");
-		ApplicationConfig.getInstance();
-		
-		logger.info("重载log配置");
-		LogManager.resetLogConfigPath();
-		
-		logger.info("加载Handler标签");
-		AnnotationManager.initAnnotation();
-		
 		try {
+			logger.info("加载配置文件");
+			ApplicationConfig.getInstance();
+			
+			logger.info("重载log配置");
+			LogManager.resetLogConfigPath();
+			
+			logger.info("加载Handler标签");
+			AnnotationManager.initAnnotation();
+			
 			logger.info("启动jetty...");
 			jettyServer = new JettyServer();
 			jettyServer.start();

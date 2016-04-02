@@ -5,21 +5,20 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.config.ApplicationConfig;
-import com.galive.logic.handler.BaseHandler;
-import com.galive.logic.handler.LogicHandler;
 import com.galive.logic.model.User;
+import com.galive.logic.network.http.HttpRequestHandler;
 import com.galive.logic.network.http.handler.LoginHandler.LoginOut;
 import com.galive.logic.network.model.RespUser;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
 
-@LogicHandler(desc = "用户注册", command = Command.USR_REGISTER)
-public class RegisterHandler extends BaseHandler {
+@HttpRequestHandler(desc = "用户注册", command = Command.USR_REGISTER)
+public class RegisterHandler extends HttpBaseHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(RegisterHandler.class);
 
 	@Override
-	public CommandOut commandProcess(String userSid, String reqData) {
+	public CommandOut handle(String userSid, String reqData) {
 		logger.debug("用户注册|" + reqData);
 		RegisterIn in = JSON.parseObject(reqData, RegisterIn.class);
 		User u = User.findByUsername(in.username);
@@ -37,7 +36,6 @@ public class RegisterHandler extends BaseHandler {
 		out.token = User.updateToken(u.getSid());
 		out.expire = ApplicationConfig.getInstance().getTokenExpire();
 		out.user = RespUser.convertFromUser(u);
-		out.websocketUrl = ApplicationConfig.getInstance().getWebSocketUrl() + "/" + u.getSid() + "/" + out.token;
 		return out;
 	}
 

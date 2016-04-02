@@ -1,5 +1,6 @@
 package com.galive.logic.config;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import com.galive.logic.helper.LogicHelper;
@@ -21,20 +22,16 @@ public class NettyConfig {
 
 	private String liveResp = "";
 
-	public static NettyConfig loadConfig() {
+	public static NettyConfig loadConfig() throws IOException {
 		NettyConfig config = new NettyConfig();
-		try {
-			Properties prop = LogicHelper.loadProperties();
-			config.port = ApplicationConfig.getInstance().getSocketConfig().getPort();
-			config.bufferSize = Integer.parseInt(prop.getProperty("mina.bufferSize"));
-			config.bothIdleTime = Integer.parseInt(prop.getProperty("mina.bothIdleTime"));
-			config.heartBeat = Integer.parseInt(prop.getProperty("mina.heartBeat"));
-			config.writeTimeout = Integer.parseInt(prop.getProperty("mina.writeTimeout"));
-			config.liveReq = ApplicationConfig.getInstance().getSocketConfig().getLiveReq();
-			config.liveResp = ApplicationConfig.getInstance().getSocketConfig().getLiveResp();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Properties prop = LogicHelper.loadProperties();
+		config.port = ApplicationConfig.getInstance().getSocketConfig().getPort();
+		config.bufferSize = Integer.parseInt(prop.getProperty("netty.bufferSize"));
+		config.bothIdleTime = Integer.parseInt(prop.getProperty("netty.bothIdleTime"));
+		config.heartBeat = Integer.parseInt(prop.getProperty("netty.heartBeat"));
+		config.writeTimeout = Integer.parseInt(prop.getProperty("netty.writeTimeout"));
+		config.liveReq = ApplicationConfig.getInstance().getSocketConfig().getLiveReq();
+		config.liveResp = ApplicationConfig.getInstance().getSocketConfig().getLiveResp();
 		return config;
 	}
 

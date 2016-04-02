@@ -46,10 +46,10 @@ public class AnnotationManager {
 		logger.info("加载@HttpRequestHandler");
 		classes = PackageUtil.getClasssFromPackage(packageName);
 		for (Class<?> clazz : classes) {
-			HttpRequestHandler processor = clazz.getAnnotation(HttpRequestHandler.class);
-			if (processor != null) {
-				logger.info(clazz.getName() + ":" + processor.desc() + "(" + processor.command() + ")");
-				httpHandlers.put(processor.command(), clazz);
+			HttpRequestHandler handler = clazz.getAnnotation(HttpRequestHandler.class);
+			if (handler != null) {
+				logger.info(clazz.getName() + ":" + handler.desc() + "(" + handler.command() + ")");
+				httpHandlers.put(handler.command(), clazz);
 			}
 		}
 		logger.info("@HttpRequestHandler加载完成");
@@ -82,7 +82,7 @@ public class AnnotationManager {
 	 */
 	public static HttpBaseHandler createHttpHandlerInstance(String command) {
 		HttpBaseHandler handler = null;
-		Class<?> clazz = logicHandlers.get(command);
+		Class<?> clazz = httpHandlers.get(command);
 		if (clazz != null) {
 			try {
 				handler = (HttpBaseHandler) clazz.newInstance();
