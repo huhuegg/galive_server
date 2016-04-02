@@ -132,6 +132,11 @@ public class ApplicationConfig {
 			String messageDelimiter = messageDelimiterNode.getStringValue();
 			socketConfig.setMessageDelimiter(messageDelimiter);
 			logger.info("messageDelimiter:" + messageDelimiter);
+			
+			Element heartBeatIntervalNode = socketNode.element("HeartBeatInterval");
+			int heartBeatInterval = NumberUtils.toInt(heartBeatIntervalNode.getStringValue(), 20);
+			socketConfig.setHeartBeatInterval(heartBeatInterval);
+			logger.info("heartBeatInterval:" + heartBeatInterval);
 
 			sc.setSocketConfig(socketConfig);
 			logger.info("配置文件加载成功");

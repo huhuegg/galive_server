@@ -13,6 +13,8 @@ public class SocketConfig {
 	private String messageDelimiter = "";
 	
 	private int port = 52194;
+	
+	private int heartBeatInterval = 20;
 
 	public String getLiveReq() {
 		return liveReq;
@@ -60,6 +62,14 @@ public class SocketConfig {
 
 	public void setMessageDelimiter(String messageDelimiter) {
 		this.messageDelimiter = messageDelimiter;
+	}
+
+	public int getHeartBeatInterval() {
+		return heartBeatInterval;
+	}
+
+	public void setHeartBeatInterval(int heartBeatInterval) {
+		this.heartBeatInterval = heartBeatInterval;
 	}
 	
 }

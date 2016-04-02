@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.SocketConfig;
-import com.galive.logic.network.socket.LogicSocketHandler;
+import com.galive.logic.network.socket.LogicHandler;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
@@ -36,7 +36,6 @@ public class NettyServer {
 	private EventLoopGroup workerGroup;
 
 	public void start() throws InterruptedException, IOException {
-		// TODO 配置 心跳
 		bossGroup = new NioEventLoopGroup(); 
 		workerGroup = new NioEventLoopGroup();
 		final NettyConfig nettyConfig = NettyConfig.loadConfig();
@@ -53,7 +52,7 @@ public class NettyServer {
 						ByteBuf[] delimiter = new ByteBuf[] {
 				                Unpooled.wrappedBuffer(socketConfig.getMessageDelimiter().getBytes()),
 				        };
-						ch.pipeline().addLast(new DelimiterBasedFrameDecoder(nettyConfig.getBufferSize(), delimiter));
+						ch.pipeline().addLast(new DelimiterBasedFrameDecoder(nettyConfig.getBufferSize(), true, delimiter));
 						
 						// 基于最大长度
 //						e.pipeline().addLast(new FixedLengthFrameDecoder(4));
@@ -65,11 +64,9 @@ public class NettyServer {
 						//心跳
 						ch.pipeline().addLast(new IdleStateHandler(0, 0, nettyConfig.getBothIdleTime(), TimeUnit.SECONDS));
 						
-						ch.pipeline().addLast(new LogicSocketHandler());
+						ch.pipeline().addLast(new LogicHandler());
 					}
-				})
-				.option(ChannelOption.SO_BACKLOG, 1024)
-				.childOption(ChannelOption.SO_KEEPALIVE, true);
+				}).childOption(ChannelOption.SO_KEEPALIVE, true);
 
 		// Bind and start to accept incoming connections.
 		int port = socketConfig.getPort();

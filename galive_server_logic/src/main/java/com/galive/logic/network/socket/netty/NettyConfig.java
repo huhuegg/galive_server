@@ -13,13 +13,9 @@ public class NettyConfig {
 
 	private int port = 52194;
 
-	private int bufferSize = 2048;
+	private int bufferSize;
 
-	private int bothIdleTime = 10;
-
-	private int heartBeat = 30;
-
-	private int writeTimeout = 30;
+	private int bothIdleTime;
 
 	private String liveReq = "";
 
@@ -32,13 +28,9 @@ public class NettyConfig {
 		
 		int bufferSize = NumberUtils.toInt(prop.getProperty("netty.bufferSize"), 8192);
 		int idleTime = NumberUtils.toInt(prop.getProperty("netty.bothIdleTime"), 60);
-		int heartBeaiInterval = NumberUtils.toInt(prop.getProperty("netty.heartBeat.interval"), 30);
-		int writeTimeout = NumberUtils.toInt(prop.getProperty("netty.writeTimeout"), 30);
 		
 		config.bufferSize = bufferSize;
 		config.bothIdleTime = idleTime;
-		config.heartBeat = heartBeaiInterval;
-		config.writeTimeout = writeTimeout;
 		config.liveReq = ApplicationConfig.getInstance().getSocketConfig().getLiveReq();
 		config.liveResp = ApplicationConfig.getInstance().getSocketConfig().getLiveResp();
 		return config;
@@ -82,21 +74,5 @@ public class NettyConfig {
 
 	public void setLiveResp(String liveResp) {
 		this.liveResp = liveResp;
-	}
-
-	public int getHeartBeat() {
-		return heartBeat;
-	}
-
-	public void setHeartBeat(int heartBeat) {
-		this.heartBeat = heartBeat;
-	}
-
-	public int getWriteTimeout() {
-		return writeTimeout;
-	}
-
-	public void setWriteTimeout(int writeTimeout) {
-		this.writeTimeout = writeTimeout;
 	}
 }

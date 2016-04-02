@@ -17,6 +17,7 @@
 		<Port>52195</Port>
 		<LiveReq>ga</LiveReq>
 		<LiveResp>live</LiveResp>
+		<HeartBeatInterval>20</HeartBeatInterval>
 		<ParamsDelimiter>&amp;</ParamsDelimiter><!--  # -->
 		<MessageDelimiter>-@-xmn-@-</MessageDelimiter><!-- 消息定界符 -->
 	</Socket>

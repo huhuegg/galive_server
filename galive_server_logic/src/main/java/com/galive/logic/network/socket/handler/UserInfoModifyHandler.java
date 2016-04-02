@@ -1,4 +1,4 @@
-package com.galive.logic.handler;
+package com.galive.logic.network.socket.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,9 +7,10 @@ import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.model.User;
+import com.galive.logic.network.socket.SocketRequestHandler;
 
-@LogicHandler(desc = "修改用户信息", command = Command.USR_INFO_MODIFY)
-public class UserInfoModifyHandler extends BaseHandler {
+@SocketRequestHandler(desc = "修改用户信息", command = Command.USR_INFO_MODIFY)
+public class UserInfoModifyHandler extends SocketBaseHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(UserInfoModifyHandler.class);
 

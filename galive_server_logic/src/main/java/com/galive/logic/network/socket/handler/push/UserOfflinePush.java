@@ -1,15 +1,15 @@
-package com.galive.logic.handler.push;
+package com.galive.logic.network.socket.handler.push;
 
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.network.model.RespUser;
 
-public class UserOnlinePush extends CommandOut {
+public class UserOfflinePush extends CommandOut {
 
 	public RespUser user;
 	
-	public UserOnlinePush() {
-		super(Command.USR_ONLINE_PUSH);
+	public UserOfflinePush() {
+		super(Command.USR_OFFLINE_PUSH);
 	}
 
 	

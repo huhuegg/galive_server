@@ -1,4 +1,4 @@
-package com.galive.logic.handler;
+package com.galive.logic.network.socket.handler;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -7,12 +7,13 @@ import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
-import com.galive.logic.handler.push.RoomRefreshPush;
 import com.galive.logic.model.Room;
 import com.galive.logic.network.model.RespRoom;
+import com.galive.logic.network.socket.SocketRequestHandler;
+import com.galive.logic.network.socket.handler.push.RoomRefreshPush;
 
-@LogicHandler(desc = "创建房间", command = Command.ROOM_CREATE)
-public class RoomCreateHandler extends BaseHandler  {
+@SocketRequestHandler(desc = "创建房间", command = Command.ROOM_CREATE)
+public class RoomCreateHandler extends SocketBaseHandler  {
 
 	private static Logger logger = LoggerFactory.getLogger(RoomCreateHandler.class);
 

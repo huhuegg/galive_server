@@ -1,4 +1,4 @@
-package com.galive.logic.handler;
+package com.galive.logic.network.socket.handler;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -7,14 +7,14 @@ import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
 import com.galive.common.protocol.RetCode;
-import com.galive.logic.ChannelManager;
 import com.galive.logic.model.User;
+import com.galive.logic.network.socket.ChannelManager;
 
 import io.netty.channel.ChannelHandlerContext;
 
-public abstract class BaseHandler {
+public abstract class SocketBaseHandler {
 
-	private static Logger logger = LoggerFactory.getLogger(BaseHandler.class);
+	private static Logger logger = LoggerFactory.getLogger(SocketBaseHandler.class);
 	
 	public abstract CommandOut commandProcess(String userSid, String reqData);
 	
@@ -50,13 +50,13 @@ public abstract class BaseHandler {
 			if (command.equals(Command.USR_ONLINE)) {
 				if (!StringUtils.isBlank(userSid)) {
 					if (!User.verifyToken(userSid, token)) {
-						ChannelManager.getInstance().removeChannel(userSid);
+						ChannelManager.getInstance().closeAndRemoveChannel(userSid);
 						return;
 					}
 					ChannelManager.getInstance().addChannel(userSid, channel);
 				}
 			} else if (command.equals(Command.USR_OFFLINE)) {
-				ChannelManager.getInstance().removeChannel(userSid);
+				ChannelManager.getInstance().closeAndRemoveChannel(userSid);
 			} else {
 				if (!command.equals(Command.TRANSMIT) && !User.verifyToken(userSid, token)) {
 					// token失效

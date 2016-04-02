@@ -1,4 +1,4 @@
-package com.galive.logic.handler;
+package com.galive.logic.network.socket.handler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,9 +11,10 @@ import com.galive.common.protocol.PageCommandIn;
 import com.galive.common.protocol.PageCommandOut;
 import com.galive.logic.model.Room;
 import com.galive.logic.network.model.RespRoom;
+import com.galive.logic.network.socket.SocketRequestHandler;
 
-@LogicHandler(desc = "房间列表", command = Command.ROOM_LIST)
-public class RoomListHandler extends BaseHandler  {
+@SocketRequestHandler(desc = "房间列表", command = Command.ROOM_LIST)
+public class RoomListHandler extends SocketBaseHandler  {
 
 	private static Logger logger = LoggerFactory.getLogger(RoomListHandler.class);
 

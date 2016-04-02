@@ -12,7 +12,8 @@
 	</appender>
 	
 	<logger name="org.mongodb" level="WARN" />
-	<logger name="org.eclipse.jetty" level="INFO" />
+	<logger name="org.eclipse.jetty" level="WARN" />
+	<logger name="io.netty" level="WARN" />
 	
 	<!-- 日志输出级别 -->
 	<root level="DEBUG">

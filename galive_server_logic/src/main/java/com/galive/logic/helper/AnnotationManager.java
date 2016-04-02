@@ -7,10 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.galive.common.utils.PackageUtil;
-import com.galive.logic.handler.BaseHandler;
-import com.galive.logic.handler.LogicHandler;
 import com.galive.logic.network.http.HttpRequestHandler;
 import com.galive.logic.network.http.handler.HttpBaseHandler;
+import com.galive.logic.network.socket.SocketRequestHandler;
+import com.galive.logic.network.socket.handler.SocketBaseHandler;
 
 /**
  * 自定义标签工具类 
@@ -21,22 +21,22 @@ public class AnnotationManager {
 
 	private static Logger logger = LoggerFactory.getLogger(AnnotationManager.class);
 
-	private static Map<String, Class<?>> logicHandlers = new HashMap<>();
+	private static Map<String, Class<?>> socketHandlers = new HashMap<>();
 	private static Map<String, Class<?>> httpHandlers = new HashMap<>();
 	
 	/**
 	 * 扫描AppLogicHandler所在包 加载所有@LogicHandler标签类
 	 */
 	public static void initAnnotation() {
-		String packageName = BaseHandler.class.getPackage().getName();
+		String packageName = SocketBaseHandler.class.getPackage().getName();
 		logger.info("扫描包：" + packageName);
 		logger.info("加载@LogicHandler");
 		List<Class<?>> classes = PackageUtil.getClasssFromPackage(packageName);
 		for (Class<?> clazz : classes) {
-			LogicHandler handler = clazz.getAnnotation(LogicHandler.class);
+			SocketRequestHandler handler = clazz.getAnnotation(SocketRequestHandler.class);
 			if (handler != null) {
 				logger.info(clazz.getName() + ":" + handler.desc() + "(" + handler.command() + ")");
-				logicHandlers.put(handler.command(), clazz);
+				socketHandlers.put(handler.command(), clazz);
 			}
 		}
 		logger.info("@LogicHandler加载完成");
@@ -60,12 +60,12 @@ public class AnnotationManager {
 	 * @param messageID
 	 * @return
 	 */
-	public static BaseHandler createLogicHandlerInstance(String command) {
-		BaseHandler handler = null;
-		Class<?> clazz = logicHandlers.get(command);
+	public static SocketBaseHandler createSocketHandlerInstance(String command) {
+		SocketBaseHandler handler = null;
+		Class<?> clazz = socketHandlers.get(command);
 		if (clazz != null) {
 			try {
-				handler = (BaseHandler) clazz.newInstance();
+				handler = (SocketBaseHandler) clazz.newInstance();
 			} catch (InstantiationException e) {
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {

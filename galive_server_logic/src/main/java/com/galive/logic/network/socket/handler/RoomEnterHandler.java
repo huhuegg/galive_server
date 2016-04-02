@@ -1,4 +1,4 @@
-package com.galive.logic.handler;
+package com.galive.logic.network.socket.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,15 +7,16 @@ import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
-import com.galive.logic.handler.push.RoomEnterPush;
-import com.galive.logic.handler.push.RoomRefreshPush;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
 import com.galive.logic.network.model.RespRoom;
 import com.galive.logic.network.model.RespUser;
+import com.galive.logic.network.socket.SocketRequestHandler;
+import com.galive.logic.network.socket.handler.push.RoomEnterPush;
+import com.galive.logic.network.socket.handler.push.RoomRefreshPush;
 
-@LogicHandler(desc = "进入房间", command = Command.ROOM_ENTER)
-public class RoomEnterHandler extends BaseHandler {
+@SocketRequestHandler(desc = "进入房间", command = Command.ROOM_ENTER)
+public class RoomEnterHandler extends SocketBaseHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(RoomEnterHandler.class);
 	

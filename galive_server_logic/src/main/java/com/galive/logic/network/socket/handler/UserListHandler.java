@@ -1,4 +1,4 @@
-package com.galive.logic.handler;
+package com.galive.logic.network.socket.handler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,9 +11,10 @@ import com.galive.common.protocol.PageCommandIn;
 import com.galive.common.protocol.PageCommandOut;
 import com.galive.logic.model.User;
 import com.galive.logic.network.model.RespUser;
+import com.galive.logic.network.socket.SocketRequestHandler;
 
-@LogicHandler(desc = "用户列表", command = Command.USR_LIST)
-public class UserListHandler extends BaseHandler  {
+@SocketRequestHandler(desc = "用户列表", command = Command.USR_LIST)
+public class UserListHandler extends SocketBaseHandler  {
 
 	private static Logger logger = LoggerFactory.getLogger(UserListHandler.class);
 

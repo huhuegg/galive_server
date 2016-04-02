@@ -1,4 +1,4 @@
-package com.galive.logic;
+package com.galive.logic.network.socket;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,12 +25,9 @@ public class ChannelManager {
 		clientChannels.put(userSid, channel);
 	}
 	
-	public void removeChannel(String userSid) {
+	public void closeAndRemoveChannel(String userSid) {
 		ChannelHandlerContext channel = clientChannels.get(userSid);
-		if (channel != null) {
-			channel.flush();
-			channel.close();
-		}
+		closeChannel(channel);
 		clientChannels.remove(userSid);
 	}
 	
@@ -42,6 +39,13 @@ public class ChannelManager {
 		ChannelHandlerContext channel = clientChannels.get(userSid);
 		if (channel != null && channel.channel().isActive()) {
 			channel.writeAndFlush(message);
+		}
+	}
+	
+	public static void closeChannel(ChannelHandlerContext ctx) {
+		if (ctx != null) {
+			ctx.flush();
+			ctx.close();
 		}
 	}
 }

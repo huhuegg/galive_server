@@ -1,4 +1,4 @@
-package com.galive.logic.handler;
+package com.galive.logic.network.socket.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,10 +6,11 @@ import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
-import com.galive.logic.handler.push.ClientTransmitPush;
+import com.galive.logic.network.socket.SocketRequestHandler;
+import com.galive.logic.network.socket.handler.push.ClientTransmitPush;
 
-@LogicHandler(desc = "客户端转发", command = Command.TRANSMIT)
-public class ClientTransmitHandler extends BaseHandler {
+@SocketRequestHandler(desc = "客户端转发", command = Command.TRANSMIT)
+public class ClientTransmitHandler extends SocketBaseHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(ClientTransmitHandler.class);
 	

@@ -1,16 +1,17 @@
-package com.galive.logic.handler;
+package com.galive.logic.network.socket.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
-import com.galive.logic.handler.push.RoomExitPush;
-import com.galive.logic.handler.push.RoomRefreshPush;
 import com.galive.logic.model.Room;
+import com.galive.logic.network.socket.SocketRequestHandler;
+import com.galive.logic.network.socket.handler.push.RoomExitPush;
+import com.galive.logic.network.socket.handler.push.RoomRefreshPush;
 
-@LogicHandler(desc = "退出房间", command = Command.ROOM_EXIT)
-public class RoomExitHandler extends BaseHandler  {
+@SocketRequestHandler(desc = "退出房间", command = Command.ROOM_EXIT)
+public class RoomExitHandler extends SocketBaseHandler  {
 
 	private static Logger logger = LoggerFactory.getLogger(RoomExitHandler.class);
 
