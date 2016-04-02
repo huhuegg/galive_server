@@ -8,7 +8,9 @@ public class SocketConfig {
 	
 	private String host = "";
 	
-	private String delimiter = "";
+	private String paramsDelimiter = "";
+	
+	private String messageDelimiter = "";
 	
 	private int port = 52194;
 
@@ -36,20 +38,28 @@ public class SocketConfig {
 		this.port = port;
 	}
 
-	public String getDelimiter() {
-		return delimiter;
-	}
-
-	public void setDelimiter(String delimiter) {
-		this.delimiter = delimiter;
-	}
-
 	public String getHost() {
 		return host;
 	}
 
 	public void setHost(String host) {
 		this.host = host;
+	}
+
+	public String getParamsDelimiter() {
+		return paramsDelimiter;
+	}
+
+	public void setParamsDelimiter(String paramsDelimiter) {
+		this.paramsDelimiter = paramsDelimiter;
+	}
+
+	public String getMessageDelimiter() {
+		return messageDelimiter;
+	}
+
+	public void setMessageDelimiter(String messageDelimiter) {
+		this.messageDelimiter = messageDelimiter;
 	}
 	
 }

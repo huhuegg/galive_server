@@ -1,6 +1,10 @@
 package com.galive.logic.dao.db;
 
 import java.util.Properties;
+
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.math.NumberUtils;
+
 import com.galive.logic.helper.LogicHelper;
 
 
@@ -14,16 +18,25 @@ public class RedisConfig {
 		RedisConfig config = new RedisConfig();
 		try {
 			Properties prop = LogicHelper.loadProperties();
+			int port = NumberUtils.toInt(prop.getProperty("redis.port"), 6379);
+			int connectTimeout = NumberUtils.toInt(prop.getProperty("redis.connectTimeout"), 10000);
+			int maxIdle = NumberUtils.toInt(prop.getProperty("redis.maxIdle"), 1000);
+			int maxTotal = NumberUtils.toInt(prop.getProperty("redis.maxTotal"), 5000);
+			int maxWaitMillis = NumberUtils.toInt(prop.getProperty("redis.maxWaitMillis"), 60000);
+			boolean testOnBorrow = BooleanUtils.toBoolean(prop.getProperty("redis.testOnBorrow"));
+			boolean testOnReturn = BooleanUtils.toBoolean(prop.getProperty("redis.testOnReturn"));
+			boolean testWhileIdle = BooleanUtils.toBoolean(prop.getProperty("redis.testWhileIdle"));
+			
 			config.host = prop.getProperty("redis.host");
-			config.port = Integer.parseInt(prop.getProperty("redis.port"));
+			config.port = port;
 			config.auth = prop.getProperty("redis.auth");
-			config.connectTimeout = Integer.parseInt(prop.getProperty("redis.connectTimeout"));
-			config.maxIdle = Integer.parseInt(prop.getProperty("redis.maxIdle"));
-			config.maxTotal = Integer.parseInt(prop.getProperty("redis.maxTotal"));
-			config.maxWaitMillis = Integer.parseInt(prop.getProperty("redis.maxWaitMillis"));
-			config.testOnBorrow = Boolean.parseBoolean(prop.getProperty("redis.testOnBorrow"));
-			config.testOnReturn = Boolean.parseBoolean(prop.getProperty("redis.testOnReturn"));
-			config.testWhileIdle = Boolean.parseBoolean(prop.getProperty("redis.testWhileIdle"));
+			config.connectTimeout = connectTimeout;
+			config.maxIdle = maxIdle;
+			config.maxTotal = maxTotal;
+			config.maxWaitMillis = maxWaitMillis;
+			config.testOnBorrow = testOnBorrow;
+			config.testOnReturn = testOnReturn;
+			config.testWhileIdle = testWhileIdle;
 			config.keyPrefix = prop.getProperty("redis.keyPrefix");
 		} catch (Exception e) {
 			e.printStackTrace();

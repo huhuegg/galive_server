@@ -14,10 +14,11 @@
 	
 	<Socket>
 		<Host>192.168.1.211</Host>
-		<Port>52194</Port>
+		<Port>52195</Port>
 		<LiveReq>ga</LiveReq>
 		<LiveResp>live</LiveResp>
-		<Delimiter>-@-xmn-@-</Delimiter><!-- 消息定界符 -->
+		<ParamsDelimiter>&amp;</ParamsDelimiter><!--  # -->
+		<MessageDelimiter>-@-xmn-@-</MessageDelimiter><!-- 消息定界符 -->
 	</Socket>
 
 

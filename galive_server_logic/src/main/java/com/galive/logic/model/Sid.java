@@ -26,14 +26,7 @@ public class Sid {
 
 	public enum EntitySeq {
 		Test("Test", 0),
-		User("User", 10000),
-		Post("Post", 0),
-		MediaImage("MediaImage", 0),
-		Paster("Paster", 0),
-		Comment("Comment", 0),
-		Topic("Topic", 0),
-		Notice("Notice",0),
-		Device("DeviceInfo",0);
+		User("User", 10000);
 		
 		public String seqName;
 		public long seqStart;

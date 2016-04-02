@@ -2,6 +2,9 @@ package com.galive.logic.dao.db;
 
 import java.util.Properties;
 
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.math.NumberUtils;
+
 import com.galive.logic.helper.LogicHelper;
 
 public class MongoConfig {
@@ -14,17 +17,26 @@ public class MongoConfig {
 		MongoConfig config = new MongoConfig();
 		try {
 			Properties prop = LogicHelper.loadProperties();
+			
+			int poolSize = NumberUtils.toInt(prop.getProperty("mongo.poolSize"), 10);
+			int maxWaitTime = NumberUtils.toInt(prop.getProperty("mongo.maxWaitTime"), 120000);
+			int connectTimeout = NumberUtils.toInt(prop.getProperty("mongo.connectTimeout"), 10000);
+			int socketTimeout = NumberUtils.toInt(prop.getProperty("mongo.socketTimeout"), 0);
+			int threadsAllowedToBlockForConnectionMultiplier = NumberUtils.toInt(prop.getProperty("mongo.threadsAllowedToBlockForConnectionMultiplier"), 5);
+			int port = NumberUtils.toInt(prop.getProperty("mongo.port"), 27017);
+			boolean keepAlive = BooleanUtils.toBoolean(prop.getProperty("mongo.socketKeepAlive"));
+			
 			config.host = prop.getProperty("mongo.host");
-			config.port = Integer.parseInt(prop.getProperty("mongo.port"));
+			config.port = port;
 			config.username = prop.getProperty("mongo.username");
 			config.password = prop.getProperty("mongo.password");
 			config.dbName = prop.getProperty("mongo.dbName");
-			config.poolSize = Integer.parseInt(prop.getProperty("mongo.poolSize"));
-			config.threadsAllowedToBlockForConnectionMultiplier = Integer.parseInt(prop.getProperty("mongo.threadsAllowedToBlockForConnectionMultiplier"));
-			config.maxWaitTime = Integer.parseInt(prop.getProperty("mongo.maxWaitTime"));
-			config.connectTimeout = Integer.parseInt(prop.getProperty("mongo.connectTimeout"));
-			config.socketTimeout = Integer.parseInt(prop.getProperty("mongo.socketTimeout"));
-			config.socketKeepAlive = Boolean.parseBoolean(prop.getProperty("mongo.socketKeepAlive"));
+			config.poolSize = poolSize;
+			config.threadsAllowedToBlockForConnectionMultiplier = threadsAllowedToBlockForConnectionMultiplier;
+			config.maxWaitTime = maxWaitTime;
+			config.connectTimeout = connectTimeout;
+			config.socketTimeout = socketTimeout;
+			config.socketKeepAlive = keepAlive;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

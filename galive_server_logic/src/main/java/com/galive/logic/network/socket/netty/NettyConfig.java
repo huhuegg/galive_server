@@ -1,8 +1,11 @@
-package com.galive.logic.config;
+package com.galive.logic.network.socket.netty;
 
 import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.commons.lang.math.NumberUtils;
+
+import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.helper.LogicHelper;
 
 
@@ -26,10 +29,16 @@ public class NettyConfig {
 		NettyConfig config = new NettyConfig();
 		Properties prop = LogicHelper.loadProperties();
 		config.port = ApplicationConfig.getInstance().getSocketConfig().getPort();
-		config.bufferSize = Integer.parseInt(prop.getProperty("netty.bufferSize"));
-		config.bothIdleTime = Integer.parseInt(prop.getProperty("netty.bothIdleTime"));
-		config.heartBeat = Integer.parseInt(prop.getProperty("netty.heartBeat"));
-		config.writeTimeout = Integer.parseInt(prop.getProperty("netty.writeTimeout"));
+		
+		int bufferSize = NumberUtils.toInt(prop.getProperty("netty.bufferSize"), 8192);
+		int idleTime = NumberUtils.toInt(prop.getProperty("netty.bothIdleTime"), 60);
+		int heartBeaiInterval = NumberUtils.toInt(prop.getProperty("netty.heartBeat.interval"), 30);
+		int writeTimeout = NumberUtils.toInt(prop.getProperty("netty.writeTimeout"), 30);
+		
+		config.bufferSize = bufferSize;
+		config.bothIdleTime = idleTime;
+		config.heartBeat = heartBeaiInterval;
+		config.writeTimeout = writeTimeout;
 		config.liveReq = ApplicationConfig.getInstance().getSocketConfig().getLiveReq();
 		config.liveResp = ApplicationConfig.getInstance().getSocketConfig().getLiveResp();
 		return config;

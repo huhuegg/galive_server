@@ -1,10 +1,12 @@
-package com.galive.logic;
+package com.galive.logic.network.socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
+import com.galive.logic.ApplicationMain;
+import com.galive.logic.ChannelManager;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.SocketConfig;
 import com.galive.logic.handler.BaseHandler;

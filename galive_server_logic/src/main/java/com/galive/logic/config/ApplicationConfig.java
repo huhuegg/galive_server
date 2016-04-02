@@ -3,6 +3,8 @@ package com.galive.logic.config;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang.math.NumberUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
@@ -65,7 +67,7 @@ public class ApplicationConfig {
 
 			Element tokenExpireNode = node.element("TokenExpire");
 			String tokenExpire = tokenExpireNode.getStringValue();
-			sc.setTokenExpire(Integer.parseInt(tokenExpire));
+			sc.setTokenExpire(NumberUtils.toInt(tokenExpire, 7200));
 			logger.info("TokenExpire:" + tokenExpire);
 
 			logger.info("--RtcConfig--");
@@ -93,7 +95,7 @@ public class ApplicationConfig {
 			LogicConfig logicConfig = new LogicConfig();
 			Element logicNode = node.element("Logic");
 			Element roomMaxUserNode = logicNode.element("RoomMaxUser");
-			short roomMaxUser = Short.parseShort(roomMaxUserNode.getStringValue());
+			short roomMaxUser = NumberUtils.toShort(roomMaxUserNode.getStringValue(), (short) 5);
 			logicConfig.setRoomMaxUser(roomMaxUser);
 			logger.info("roomMaxUser:" + roomMaxUser);
 			sc.setLogicConfig(logicConfig);
@@ -107,7 +109,7 @@ public class ApplicationConfig {
 			logger.info("socketUrl:" + socketUrl);
 
 			Element socketPortNode = socketNode.element("Port");
-			int socketPort = Integer.parseInt(socketPortNode.getStringValue());
+			int socketPort = NumberUtils.toInt(socketPortNode.getStringValue(), 52194);
 			socketConfig.setPort(socketPort);
 			logger.info("socketPort:" + socketPort);
 
@@ -121,10 +123,15 @@ public class ApplicationConfig {
 			socketConfig.setLiveResp(liveResp);
 			logger.info("setLiveResp:" + liveResp);
 
-			Element delimiterNode = socketNode.element("Delimiter");
-			String delimiter = delimiterNode.getStringValue();
-			socketConfig.setDelimiter(delimiter);
-			logger.info("delimiter:" + delimiter);
+			Element paramsDelimiterNode = socketNode.element("ParamsDelimiter");
+			String paramsDelimiter = paramsDelimiterNode.getStringValue();
+			socketConfig.setParamsDelimiter(paramsDelimiter);
+			logger.info("paramsDelimiter:" + paramsDelimiter);
+			
+			Element messageDelimiterNode = socketNode.element("MessageDelimiter");
+			String messageDelimiter = messageDelimiterNode.getStringValue();
+			socketConfig.setMessageDelimiter(messageDelimiter);
+			logger.info("messageDelimiter:" + messageDelimiter);
 
 			sc.setSocketConfig(socketConfig);
 			logger.info("配置文件加载成功");

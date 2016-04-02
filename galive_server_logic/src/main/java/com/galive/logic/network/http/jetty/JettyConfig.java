@@ -2,6 +2,8 @@ package com.galive.logic.network.http.jetty;
 
 import java.util.Properties;
 
+import org.apache.commons.lang.math.NumberUtils;
+
 import com.galive.logic.helper.LogicHelper;
 
 public class JettyConfig {
@@ -14,7 +16,7 @@ public class JettyConfig {
 		JettyConfig config = new JettyConfig();
 		try {
 			Properties prop = LogicHelper.loadProperties();
-			config.port = Integer.parseInt(prop.getProperty("http.port", "8080"));
+			config.port = NumberUtils.toInt(prop.getProperty("http.port"), 8080);
 			config.action = prop.getProperty("http.action.logic", "/logic");
 		} catch (Exception e) {
 			e.printStackTrace();
