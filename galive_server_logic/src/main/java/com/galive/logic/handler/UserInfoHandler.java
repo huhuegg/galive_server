@@ -6,8 +6,8 @@ import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
-import com.galive.logic.handler.model.RespUser;
 import com.galive.logic.model.User;
+import com.galive.logic.network.model.RespUser;
 
 @LogicHandler(desc = "获取用户信息", command = Command.USR_INFO)
 public class UserInfoHandler extends BaseHandler {

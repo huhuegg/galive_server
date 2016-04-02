@@ -1,4 +1,4 @@
-package com.galive.logic.helper;
+package com.galive.logic.log;
 
 import java.io.File;
 import org.slf4j.LoggerFactory;
@@ -10,7 +10,7 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
 
-public class LoggerHelper {
+public class LogManager {
 
 	
 	public static void resetLogConfigPath() {
@@ -19,7 +19,7 @@ public class LoggerHelper {
 		configurator.setContext(lc);
 		lc.reset();
 		String name = File.separator + ApplicationMain.getInstance().getMode().name + File.separator + "logback.xml";
-		String path = LoggerHelper.class.getResource(name).getPath();
+		String path = LogManager.class.getResource(name).getPath();
 		try {
 			configurator.doConfigure(path);
 		} catch (JoranException e) {

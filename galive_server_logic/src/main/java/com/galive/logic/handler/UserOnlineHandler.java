@@ -4,10 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
-import com.galive.logic.handler.model.RespUser;
 import com.galive.logic.handler.push.UserOnlinePush;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
+import com.galive.logic.network.model.RespUser;
 
 @LogicHandler(desc = "客户端上线", command = Command.USR_ONLINE)
 public class UserOnlineHandler extends BaseHandler {

@@ -1,4 +1,4 @@
-package com.galive.logic.handler.model;
+package com.galive.logic.network.model;
 
 import com.galive.logic.model.Room;
 import com.galive.logic.model.User;

@@ -7,12 +7,12 @@ import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
-import com.galive.logic.handler.model.RespRoom;
-import com.galive.logic.handler.model.RespUser;
 import com.galive.logic.handler.push.RoomEnterPush;
 import com.galive.logic.handler.push.RoomRefreshPush;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
+import com.galive.logic.network.model.RespRoom;
+import com.galive.logic.network.model.RespUser;
 
 @LogicHandler(desc = "进入房间", command = Command.ROOM_ENTER)
 public class RoomEnterHandler extends BaseHandler {

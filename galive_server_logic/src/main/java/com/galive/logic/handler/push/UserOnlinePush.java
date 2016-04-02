@@ -2,7 +2,7 @@ package com.galive.logic.handler.push;
 
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
-import com.galive.logic.handler.model.RespUser;
+import com.galive.logic.network.model.RespUser;
 
 public class UserOnlinePush extends CommandOut {
 

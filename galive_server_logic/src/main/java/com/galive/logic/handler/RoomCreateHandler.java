@@ -7,9 +7,9 @@ import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
-import com.galive.logic.handler.model.RespRoom;
 import com.galive.logic.handler.push.RoomRefreshPush;
 import com.galive.logic.model.Room;
+import com.galive.logic.network.model.RespRoom;
 
 @LogicHandler(desc = "创建房间", command = Command.ROOM_CREATE)
 public class RoomCreateHandler extends BaseHandler  {

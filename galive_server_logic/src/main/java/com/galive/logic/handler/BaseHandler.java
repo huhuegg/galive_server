@@ -58,7 +58,7 @@ public abstract class BaseHandler {
 			} else if (command.equals(Command.USR_OFFLINE)) {
 				ChannelManager.getInstance().removeChannel(userSid);
 			} else {
-				if (!command.equals(Command.CLIENT_TRANSMIT) && !User.verifyToken(userSid, token)) {
+				if (!command.equals(Command.TRANSMIT) && !User.verifyToken(userSid, token)) {
 					// token失效
 					CommandOut out = CommandOut.failureOut(Command.KICK_OFF_PUSH, "您已被踢下线");
 					ChannelManager.getInstance().sendMessage(userSid, out.toJson());

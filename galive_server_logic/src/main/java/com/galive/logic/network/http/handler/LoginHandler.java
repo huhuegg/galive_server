@@ -1,4 +1,4 @@
-package com.galive.logic.handler;
+package com.galive.logic.network.http.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,12 +9,14 @@ import com.galive.common.protocol.CommandOut;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.RTCConfig;
 import com.galive.logic.config.SocketConfig;
-import com.galive.logic.handler.model.RespRoom;
-import com.galive.logic.handler.model.RespUser;
+import com.galive.logic.handler.BaseHandler;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
+import com.galive.logic.network.http.HttpRequestHandler;
+import com.galive.logic.network.model.RespRoom;
+import com.galive.logic.network.model.RespUser;
 
-@LogicHandler(desc = "用户登录", command = Command.USR_LOGIN)
+@HttpRequestHandler(desc = "用户登录", command = Command.USR_LOGIN)
 public class LoginHandler extends BaseHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(LoginHandler.class);

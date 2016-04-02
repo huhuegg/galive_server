@@ -9,8 +9,8 @@ import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.common.protocol.PageCommandIn;
 import com.galive.common.protocol.PageCommandOut;
-import com.galive.logic.handler.model.RespRoom;
 import com.galive.logic.model.Room;
+import com.galive.logic.network.model.RespRoom;
 
 @LogicHandler(desc = "房间列表", command = Command.ROOM_LIST)
 public class RoomListHandler extends BaseHandler  {

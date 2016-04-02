@@ -9,8 +9,8 @@ import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.common.protocol.PageCommandIn;
 import com.galive.common.protocol.PageCommandOut;
-import com.galive.logic.handler.model.RespUser;
 import com.galive.logic.model.User;
+import com.galive.logic.network.model.RespUser;
 
 @LogicHandler(desc = "用户列表", command = Command.USR_LIST)
 public class UserListHandler extends BaseHandler  {

@@ -8,7 +8,7 @@ import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.handler.push.ClientTransmitPush;
 
-@LogicHandler(desc = "客户端转发", command = Command.CLIENT_TRANSMIT)
+@LogicHandler(desc = "客户端转发", command = Command.TRANSMIT)
 public class ClientTransmitHandler extends BaseHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(ClientTransmitHandler.class);
@@ -24,7 +24,7 @@ public class ClientTransmitHandler extends BaseHandler {
 		push.senderSid = userSid;
 		pushMessage(in.to, push);
 		
-		CommandOut out = new CommandOut(Command.CLIENT_TRANSMIT);
+		CommandOut out = new CommandOut(Command.TRANSMIT);
 		return out;
 	}
 	

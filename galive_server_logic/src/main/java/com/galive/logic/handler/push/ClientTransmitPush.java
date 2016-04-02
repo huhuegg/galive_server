@@ -9,6 +9,6 @@ public class ClientTransmitPush extends CommandOut {
 	public String content;
 	
 	public ClientTransmitPush() {
-		super(Command.CLIENT_TRANSMIT_PUSH);
+		super(Command.TRANSMIT_PUSH);
 	}
 }
