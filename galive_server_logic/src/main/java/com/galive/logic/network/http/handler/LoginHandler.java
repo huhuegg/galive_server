@@ -1,5 +1,7 @@
 package com.galive.logic.network.http.handler;
 
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
@@ -31,13 +33,24 @@ public class LoginHandler extends HttpBaseHandler {
 
 			LoginOut out = new LoginOut();
 			Room room = roomService.findRoomByUser(u.getSid());
+			RespUser respUser = RespUser.convert(u);
+			
 			if (room != null) {
-				out.room = RespRoom.convertFromUserRoom(room);
-			}
-			RespUser ru = RespUser.convertFromUser(u);
-			out.token = User.updateToken(u.getSid());
+				RespRoom respRoom = RespRoom.convert(room);
+				Set<String> users = room.getUsers();
+				for (String uid : users) {
+					User roomUser = userService.findUserBySid(uid);
+					if (roomUser != null) {
+						RespUser roomRespUser = RespUser.convert(roomUser);
+						roomRespUser.roomSid = respRoom.sid;
+						respRoom.users.add(roomRespUser);
+					}
+				}
+				out.room = respRoom;
+			} 
+			out.token =  userService.createToken(u.getSid());
 			out.expire = ApplicationConfig.getInstance().getTokenExpire();
-			out.user = ru;
+			out.user = respUser;
 			out.socket_config = ApplicationConfig.getInstance().getSocketConfig();
 			String resp = out.httpResp();
 			logger.info("用户登录|" + resp);

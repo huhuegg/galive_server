@@ -1,4 +1,4 @@
-package com.galive.logic.log;
+package com.galive.logic.manager;
 
 import org.slf4j.LoggerFactory;
 

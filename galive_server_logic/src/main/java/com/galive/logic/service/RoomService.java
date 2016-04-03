@@ -9,7 +9,7 @@ public interface RoomService {
 
 	public Room findRoomByUser(String userSid);
 	
-	public List<Room> list(int index, int size);
+	public List<Room> listByCreateTime(int index, int size);
 	
 	public Room create(String roomname, String UserSid, List<String> invitedUsers, int maxUser) throws LogicException;
 	

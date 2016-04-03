@@ -1,12 +1,11 @@
 package com.galive.logic.service;
 
 import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
-
 import com.galive.logic.dao.UserCacheImpl;
 import com.galive.logic.dao.UserDaoImpl;
 import com.galive.logic.exception.LogicException;
+import com.galive.logic.helper.LogicHelper;
 import com.galive.logic.model.User;
 
 public class UserServiceImpl implements UserService {
@@ -66,25 +65,45 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User findUserBySid(String userSid) throws LogicException {
-		// if (u == null) {
-		// return CommandOut.failureOut(Command.USR_INFO, "用户不存在").socketResp();
-		// }
-		return null;
+		User u = userDao.findUser(userSid);
+		if (u == null) {
+			throw new LogicException("用户不存在");
+		}
+		return u;
 	}
 
 	@Override
 	public List<User> listByLatestLogin(int index, int size) {
-		// TODO Auto-generated method stub
-		return null;
+		List<User> users = userCache.listByLatestLogin(index, index + size - 1);
+		return users;
 	}
 
 	@Override
 	public void updateUserDeviceToken(String userSid, String deviceToken) throws LogicException {
-		// TODO Auto-generated method stub
-		// User u = User.findByUsername(userSid);
-		// if (u == null) {
-		// return CommandOut.failureOut(Command.USR_INFO_MODIFY, "用户不存在");
-		// }
+		User u = userDao.findUser(userSid);
+		if (u == null) {
+			throw new LogicException("用户不存在。");
+		}
+		if (StringUtils.isBlank(deviceToken)) {
+			throw new LogicException("无效的deviceToken。");
+		}
+		userCache.saveDeviceToken(userSid, deviceToken);
+	}
+
+	@Override
+	public boolean verifyToken(String userSid, String token) {
+		String existToken = userCache.findUserToken(userSid);
+		if (StringUtils.isBlank(existToken) || !existToken.equals(token)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String createToken(String userSid) throws LogicException {
+		String token = LogicHelper.generateRandomMd5();
+		userCache.saveUserToken(userSid, token);
+		return token;
 	}
 
 }

@@ -31,7 +31,7 @@ public class RoomEnterHandler extends SocketBaseHandler {
 			User u = userService.findUserBySid(userSid);
 			
 			RoomEnterPush push = new RoomEnterPush();
-			push.user = RespUser.convertFromUser(u);
+			push.user = RespUser.convert(u);
 			String pushMessage = push.socketResp();
 			logger.debug("进入房间|推送其他用户：" + pushMessage);
 			Set<String> users = room.getUsers();

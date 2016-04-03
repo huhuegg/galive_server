@@ -1,0 +1,37 @@
+package com.galive.logic.dao;
+
+import java.util.List;
+
+import com.galive.logic.model.Room;
+
+public interface RoomCache {
+
+	public Room saveRoom(Room room);
+
+	public Room findRoom(String roomSid);
+
+	public Room findRoomByUser(String userSid);
+
+	public void deleteRoom(Room room);
+	
+	public void bindRoomToUser(String roomSid, String userSid);
+
+	public void unbindRoomToUser(String userSid);
+
+	
+	
+	public List<Room> listByCreateTime(int start, int end);
+
+	public void insertToRoomListByCreateTime(String roomSid);
+
+	public void removeFromListByCreateTime(String roomSid);
+
+	
+	
+	public void updateRoomExpire(String roomSid);
+
+	public void updateUserInRoomExpire(String userSid);
+
+	
+
+}

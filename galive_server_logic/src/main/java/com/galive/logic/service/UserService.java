@@ -17,4 +17,7 @@ public interface UserService {
 	
 	public void updateUserDeviceToken(String userSid, String deviceToken) throws LogicException;
 	
+	public boolean verifyToken(String userSid, String token);
+	
+	public String createToken(String userSid) throws LogicException;
 }

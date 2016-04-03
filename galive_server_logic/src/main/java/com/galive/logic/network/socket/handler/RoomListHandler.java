@@ -24,10 +24,10 @@ public class RoomListHandler extends SocketBaseHandler  {
 			logger.debug("获取房间列表|" + userSid + "|" + reqData);
 			PageParams in = JSON.parseObject(reqData, PageParams.class);
 			
-			List<Room> rooms = roomService.list(in.index, in.index + in.size - 1);
+			List<Room> rooms = roomService.listByCreateTime(in.index, in.size);
 			List<RespRoom> respRooms = new ArrayList<>();
 			for (Room r : rooms) {
-				RespRoom rr = RespRoom.convertFromUserRoom(r);
+				RespRoom rr = RespRoom.convert(r);
 				respRooms.add(rr);
 			}
 			PageCommandOut<RespRoom> out = new PageCommandOut<>(Command.ROOM_LIST, in);

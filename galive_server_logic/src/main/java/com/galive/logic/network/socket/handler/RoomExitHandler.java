@@ -22,17 +22,20 @@ public class RoomExitHandler extends SocketBaseHandler  {
 		try {
 			logger.debug("退出房间|" + userSid + "|" + reqData);
 			Room room = roomService.exit(userSid);
-			// 推送
-			RoomExitPush push = new RoomExitPush();
-			push.userSid = userSid;
-			String pushMessage = push.socketResp();
-			logger.debug("退出房间|推送其他用户：" + pushMessage);
-			Set<String> users = room.getUsers();
-			for (String roomerSid : users) {
-				if (!roomerSid.equals(userSid)) {
-					pushMessage(roomerSid, pushMessage);
+			if (room != null) {
+				// 推送
+				RoomExitPush push = new RoomExitPush();
+				push.userSid = userSid;
+				String pushMessage = push.socketResp();
+				logger.debug("退出房间|推送其他用户：" + pushMessage);
+				Set<String> users = room.getUsers();
+				for (String roomerSid : users) {
+					if (!roomerSid.equals(userSid)) {
+						pushMessage(roomerSid, pushMessage);
+					}
 				}
 			}
+			
 			CommandOut out = new CommandOut(Command.ROOM_EXIT);
 			String resp = out.socketResp();
 			logger.debug("退出房间|" + resp);

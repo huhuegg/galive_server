@@ -26,9 +26,9 @@ public class RegisterHandler extends HttpBaseHandler {
 			User u = userService.register(in.username, in.password, in.nickname);
 			
 			RegisterOut out = new RegisterOut();
-			out.token = User.updateToken(u.getSid());
+			out.token = userService.createToken(u.getSid());
 			out.expire = ApplicationConfig.getInstance().getTokenExpire();
-			out.user = RespUser.convertFromUser(u);
+			out.user = RespUser.convert(u);
 			String resp = out.httpResp();
 			logger.info("用户注册|" + resp);
 			return resp;

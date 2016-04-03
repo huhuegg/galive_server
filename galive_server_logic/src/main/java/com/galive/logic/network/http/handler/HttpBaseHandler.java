@@ -6,7 +6,6 @@ import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
 import com.galive.common.protocol.RetCode;
-import com.galive.logic.model.User;
 import com.galive.logic.service.RoomServiceImpl;
 import com.galive.logic.service.UserServiceImpl;
 
@@ -26,7 +25,7 @@ public abstract class HttpBaseHandler {
 		String token = in.getToken();
 		String params = in.getParams();
 		try {
-			if ((!command.equals(Command.USR_LOGIN) && !command.equals(Command.USR_REGISTER))  && !User.verifyToken(userSid, token)) {
+			if ((!command.equals(Command.USR_LOGIN) && !command.equals(Command.USR_REGISTER))  && !userService.verifyToken(userSid, token)) {
 				// 验证token
 				CommandOut out = CommandOut.failureOut(command, "登录已过期");
 				out.setRet_code(RetCode.TOKEN_EXPIRE);

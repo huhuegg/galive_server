@@ -7,6 +7,7 @@ import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.exception.LogicException;
+import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.SocketRequestHandler;
@@ -23,7 +24,11 @@ public class UserInfoHandler extends SocketBaseHandler {
 			UserInfoRequest req = JSON.parseObject(reqData, UserInfoRequest.class);
 			User u = userService.findUserBySid(req.userSid);
 			UserInfoOut out = new UserInfoOut();
-			RespUser ru = RespUser.convertFromUser(u);
+			RespUser ru = RespUser.convert(u);
+			Room room = roomService.findRoomByUser(u.getSid());
+			if (room != null) {
+				ru.roomSid = room.getRoomId();
+			}
 			out.user = ru;
 			String resp = out.socketResp();
 			logger.debug("获取用户信息|" + resp);

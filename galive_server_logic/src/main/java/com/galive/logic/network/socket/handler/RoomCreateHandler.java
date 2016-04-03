@@ -27,7 +27,7 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 			// TODO 推送邀请人
 			
 			RoomCreateOut out = new RoomCreateOut();
-			out.room = RespRoom.convertFromUserRoom(room);
+			out.room = RespRoom.convert(room);
 			String resp = out.socketResp();
 			logger.debug("创建房间|" + resp);
 			return resp;

@@ -9,6 +9,7 @@ import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.common.protocol.PageParams;
 import com.galive.common.protocol.PageCommandOut;
+import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.SocketRequestHandler;
@@ -35,7 +36,11 @@ public class UserListHandler extends SocketBaseHandler  {
 
 			List<RespUser> respUsers = new ArrayList<>();
 			for (User u : users) {
-				RespUser ru = RespUser.convertFromUser(u);
+				RespUser ru = RespUser.convert(u);
+				Room room = roomService.findRoomByUser(u.getSid());
+				if (room != null) {
+					ru.roomSid = room.getRoomId();
+				}
 				respUsers.add(ru);
 			}
 			PageCommandOut<RespUser> out = new PageCommandOut<>(Command.USR_LIST, in);

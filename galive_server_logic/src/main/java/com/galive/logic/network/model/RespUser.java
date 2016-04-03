@@ -1,7 +1,7 @@
 package com.galive.logic.network.model;
 
-import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
+import com.galive.logic.network.socket.ChannelManager;
 
 public class RespUser {
 
@@ -15,16 +15,12 @@ public class RespUser {
 	
 	public int onlineState;
 	
-	public static RespUser convertFromUser(User u) {
+	public static RespUser convert(User u) {
 		RespUser user = new RespUser();
 		user.sid = u.getSid();
 		user.nickname = u.getNickname();
 		user.avatar = u.getAvatar();
-		Room room = Room.findRoomByUser(u.getSid());
-		if (room != null) {
-			user.roomSid = room.getRoomId();
-		}
-		user.onlineState = User.onlineState(u.getSid()).ordinal();
+		user.onlineState = ChannelManager.getInstance().onlineState(user.sid).ordinal();
 		return user;
 	}
 

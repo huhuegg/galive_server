@@ -8,7 +8,7 @@ import com.galive.common.protocol.CommandIn;
 import com.galive.logic.ApplicationMain;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.SocketConfig;
-import com.galive.logic.helper.AnnotationManager;
+import com.galive.logic.manager.AnnotationManager;
 import com.galive.logic.network.socket.handler.SocketBaseHandler;
 
 import io.netty.channel.ChannelHandlerContext;

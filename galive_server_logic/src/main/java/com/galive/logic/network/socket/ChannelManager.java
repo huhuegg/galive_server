@@ -2,6 +2,9 @@ package com.galive.logic.network.socket;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.galive.logic.model.UserOnlineState;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
 
@@ -57,5 +60,13 @@ public class ChannelManager {
 			ctx.flush();
 			ctx.close();
 		}
+	}
+	
+	public UserOnlineState onlineState(String userSid) {
+		ChannelHandlerContext channel = findChannel(userSid);
+		if (channel != null && channel.channel().isActive()) {
+			return UserOnlineState.Online;
+		}
+		return UserOnlineState.Offline;
 	}
 }
