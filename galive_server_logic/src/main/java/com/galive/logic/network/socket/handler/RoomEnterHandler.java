@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
-import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.exception.LogicException;
 import com.galive.logic.model.Room;
@@ -59,7 +58,7 @@ public class RoomEnterHandler extends SocketBaseHandler {
 		
 	}
 	
-	public static class RoomEnterIn extends CommandIn {
+	public static class RoomEnterIn {
 		public String roomSid = "";
 	}
 	

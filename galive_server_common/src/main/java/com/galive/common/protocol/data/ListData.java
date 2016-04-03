@@ -1,13 +1,10 @@
-package com.galive.common.protocol;
+package com.galive.common.protocol.data;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListCommandOut<T> extends CommandOut {
+public class ListData<T> extends BaseData {
 
-	public ListCommandOut(String command) {
-		super(command);
-	}
 
 	protected List<T> objs = new ArrayList<T>();
 

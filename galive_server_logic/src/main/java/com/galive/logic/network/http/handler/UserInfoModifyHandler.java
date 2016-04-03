@@ -50,8 +50,6 @@ public class UserInfoModifyHandler extends HttpBaseHandler {
 		public String deviceToken;
 	}
 
-	
-	
 	private String respFail(String message) {
 		String resp = CommandOut.failureOut(Command.USR_LOGIN, message).httpResp();
 		logger.error("修改用户信息失败|" + resp);

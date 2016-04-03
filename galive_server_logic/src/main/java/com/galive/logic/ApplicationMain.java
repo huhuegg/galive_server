@@ -7,7 +7,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.galive.logic.config.ApplicationConfig;
-import com.galive.logic.dao.db.RedisManager;
+import com.galive.logic.dao.cache.RedisManager;
 import com.galive.logic.helper.AnnotationManager;
 import com.galive.logic.log.LogManager;
 import com.galive.logic.model.Sid;

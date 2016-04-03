@@ -12,6 +12,8 @@ public class CommandOut {
 	
 	private int ret_code = RetCode.SUCCESS;
 	
+	private String data = "";
+	
 	public CommandOut(String command) {
 		this.command = command;
 		this.ret_code = RetCode.SUCCESS;
@@ -60,5 +62,12 @@ public class CommandOut {
 		this.command = command;
 	}
 
+	public String getData() {
+		return data;
+	}
+
+	public void setData(String data) {
+		this.data = data;
+	}
 }
 	

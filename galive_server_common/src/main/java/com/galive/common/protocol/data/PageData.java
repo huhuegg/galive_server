@@ -1,17 +1,20 @@
-package com.galive.common.protocol;
+package com.galive.common.protocol.data;
 
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 
+import com.galive.common.protocol.RetCode;
+import com.galive.common.protocol.params.PageParams;
 
-public class PageCommandOut<T> extends ListCommandOut<T> {
+
+public class PageData<T> extends BaseData {
 
 	public int index = 0;
 	
 	public int size = 20;
 	
-	public PageCommandOut(String command, PageCommandIn in) {
+	public PageData(String command, PageParams in) {
 		super(command);
 		this.index = in.index;
 		this.size = in.size;

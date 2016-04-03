@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
-import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.exception.LogicException;
 import com.galive.logic.model.Room;
@@ -44,7 +43,7 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 		
 	}
 	
-	public static class EnterRoomRequest extends CommandIn {
+	public static class EnterRoomRequest {
 		public String name = "";
 		public int maxUser = 0;
 		public List<String> invitedUsers = new ArrayList<>();

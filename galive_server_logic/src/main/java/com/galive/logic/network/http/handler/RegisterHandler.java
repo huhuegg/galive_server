@@ -3,7 +3,6 @@ package com.galive.logic.network.http.handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
-import com.galive.common.protocol.CommandOut;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.exception.LogicException;
 import com.galive.logic.model.User;
@@ -12,6 +11,7 @@ import com.galive.logic.network.http.handler.LoginHandler.LoginOut;
 import com.galive.logic.network.model.RespUser;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
+import com.galive.common.protocol.CommandOut;
 
 @HttpRequestHandler(desc = "用户注册", command = Command.USR_REGISTER)
 public class RegisterHandler extends HttpBaseHandler {

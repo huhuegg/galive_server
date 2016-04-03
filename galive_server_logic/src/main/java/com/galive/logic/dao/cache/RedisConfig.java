@@ -1,4 +1,4 @@
-package com.galive.logic.dao.db;
+package com.galive.logic.dao.cache;
 
 import java.util.Properties;
 

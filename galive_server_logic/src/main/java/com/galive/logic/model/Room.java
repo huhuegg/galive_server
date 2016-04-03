@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.alibaba.fastjson.JSON;
 import com.galive.logic.config.ApplicationConfig;
-import com.galive.logic.dao.db.RedisManager;
+import com.galive.logic.dao.cache.RedisManager;
 
 import redis.clients.jedis.Jedis;
 

@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
-import com.galive.common.protocol.PageCommandIn;
-import com.galive.common.protocol.PageCommandOut;
+import com.galive.common.protocol.data.PageData;
+import com.galive.common.protocol.params.PageParams;
 import com.galive.logic.model.Room;
 import com.galive.logic.network.model.RespRoom;
 import com.galive.logic.network.socket.SocketRequestHandler;
@@ -22,7 +22,7 @@ public class RoomListHandler extends SocketBaseHandler  {
 	public String handle(String userSid, String reqData) {
 		try {
 			logger.debug("获取房间列表|" + userSid + "|" + reqData);
-			PageCommandIn in = JSON.parseObject(reqData, PageCommandIn.class);
+			PageParams in = JSON.parseObject(reqData, PageParams.class);
 			
 			List<Room> rooms = roomService.list(in.index, in.index + in.size - 1);
 			List<RespRoom> respRooms = new ArrayList<>();
@@ -30,7 +30,7 @@ public class RoomListHandler extends SocketBaseHandler  {
 				RespRoom rr = RespRoom.convertFromUserRoom(r);
 				respRooms.add(rr);
 			}
-			PageCommandOut<RespRoom> out = new PageCommandOut<>(Command.ROOM_LIST, in);
+			PageData<RespRoom> out = new PageData<>(Command.ROOM_LIST, in);
 			out.setData(respRooms);
 			return out.socketResp();
 		} catch (Exception e) {
