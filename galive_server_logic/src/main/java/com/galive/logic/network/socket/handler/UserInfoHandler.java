@@ -16,18 +16,18 @@ public class UserInfoHandler extends SocketBaseHandler {
 	private static Logger logger = LoggerFactory.getLogger(UserInfoHandler.class);
 
 	@Override
-	public CommandOut commandProcess(String userSid, String reqData) {
+	public String handle(String userSid, String reqData) {
 		logger.debug("获取用户信息|" + reqData);
 		UserInfoRequest req = JSON.parseObject(reqData, UserInfoRequest.class);
 		User u = User.findBySid(req.userSid);
 		if (u == null) {
-			return CommandOut.failureOut(Command.USR_INFO, "用户不存在");
+			return CommandOut.failureOut(Command.USR_INFO, "用户不存在").socketResp();
 		} 
 		
 		UserInfoOut out = new UserInfoOut();
 		RespUser ru = RespUser.convertFromUser(u);
 		out.user = ru;
-		return out;
+		return out.socketResp();
 	}
 
 	public static class UserInfoRequest extends CommandIn {

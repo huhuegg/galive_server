@@ -7,26 +7,26 @@ import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.network.socket.SocketRequestHandler;
-import com.galive.logic.network.socket.handler.push.ClientTransmitPush;
+import com.galive.logic.network.socket.handler.push.TransmitPush;
 
 @SocketRequestHandler(desc = "客户端转发", command = Command.TRANSMIT)
-public class ClientTransmitHandler extends SocketBaseHandler {
+public class TransmitHandler extends SocketBaseHandler {
 
-	private static Logger logger = LoggerFactory.getLogger(ClientTransmitHandler.class);
+	private static Logger logger = LoggerFactory.getLogger(TransmitHandler.class);
 	
 	@Override
-	public CommandOut commandProcess(String userSid, String reqData) {
+	public String handle(String userSid, String reqData) {
 		logger.debug("客户端转发|" + userSid + "|" + reqData);
 		ClientTransmitIn in = JSON.parseObject(reqData, ClientTransmitIn.class);
 	
 		// 推送至对方
-		ClientTransmitPush push = new ClientTransmitPush();
+		TransmitPush push = new TransmitPush();
 		push.content = in.content;
 		push.senderSid = userSid;
-		pushMessage(in.to, push);
+		pushMessage(in.to, push.socketResp());
 		
 		CommandOut out = new CommandOut(Command.TRANSMIT);
-		return out;
+		return out.socketResp();
 	}
 	
 	public static class ClientTransmitIn extends CommandIn {

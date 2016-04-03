@@ -7,15 +7,20 @@ import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
 import com.galive.common.protocol.RetCode;
 import com.galive.logic.model.User;
+import com.galive.logic.service.RoomServiceImpl;
+import com.galive.logic.service.UserServiceImpl;
 
 public abstract class HttpBaseHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(HttpBaseHandler.class);
 	
-	public abstract CommandOut handle(String userSid, String params);
+	protected UserServiceImpl userService = new UserServiceImpl();
+	protected RoomServiceImpl roomService = new RoomServiceImpl();
+	
+	public abstract String handle(String userSid, String params);
 	
 	public String handle(CommandIn in) {
-		CommandOut out = null;
+		String resp = null;
 		String command = in.getCommand();
 		String userSid = in.getUserSid();
 		String token = in.getToken();
@@ -23,18 +28,19 @@ public abstract class HttpBaseHandler {
 		try {
 			if ((!command.equals(Command.USR_LOGIN) && !command.equals(Command.USR_REGISTER))  && !User.verifyToken(userSid, token)) {
 				// 验证token
-				out = CommandOut.failureOut(command, "登录已过期");
+				CommandOut out = CommandOut.failureOut(command, "登录已过期");
 				out.setRet_code(RetCode.TOKEN_EXPIRE);
+				resp = out.httpResp();
 			} else {
-				out = handle(userSid, params);
+				resp = handle(userSid, params);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("用户" + userSid + " 请求失败:" + e.getMessage());
-			out = CommandOut.failureOut(command, e.getMessage());
+			CommandOut out = CommandOut.failureOut(command, e.getMessage());
+			resp = out.httpResp();
 		} 
-		String respBody = out.toJson();
-		logger.debug("响应数据|" + respBody);
-		return respBody;
+		return resp;
 	}
+
 }

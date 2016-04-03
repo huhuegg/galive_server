@@ -8,7 +8,6 @@ import com.galive.common.protocol.CommandOut;
 import com.galive.logic.model.Room;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.RoomExitPush;
-import com.galive.logic.network.socket.handler.push.RoomRefreshPush;
 
 @SocketRequestHandler(desc = "退出房间", command = Command.ROOM_EXIT)
 public class RoomExitHandler extends SocketBaseHandler  {
@@ -16,7 +15,7 @@ public class RoomExitHandler extends SocketBaseHandler  {
 	private static Logger logger = LoggerFactory.getLogger(RoomExitHandler.class);
 
 	@Override
-	public CommandOut commandProcess(String userSid, String reqData) {
+	public String handle(String userSid, String reqData) {
 		logger.debug("退出房间|" + userSid + "|" + reqData);
 		Room room = Room.findRoomByUser(userSid);
 		if (room != null) {
@@ -26,16 +25,12 @@ public class RoomExitHandler extends SocketBaseHandler  {
 			RoomExitPush push = new RoomExitPush();
 			push.userSid = userSid;
 			for (String roomerSid : room.getUsers()) {
-				pushMessage(roomerSid, push);
+				pushMessage(roomerSid, push.socketResp());
 			}
 		} 
-
-		// TODO推送客户端更新界面
-		RoomRefreshPush push = new RoomRefreshPush();
-		pushMessage(null, push);
 		
 		CommandOut out = new CommandOut(Command.ROOM_EXIT);
-		return out;
+		return out.socketResp();
 	}
 	
 }

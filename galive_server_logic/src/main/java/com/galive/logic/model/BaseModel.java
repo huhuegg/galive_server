@@ -13,7 +13,7 @@ import org.mongodb.morphia.annotations.Indexes;
  */
 @Entity
 @Indexes({@Index("sid")})
-public class BaseEntity {
+public class BaseModel {
 
 	@Id
 	protected ObjectId id;

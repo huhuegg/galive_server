@@ -2,7 +2,7 @@ package com.galive.logic.network.socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.alibaba.fastjson.JSON;
+
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
 import com.galive.logic.ApplicationMain;
@@ -16,7 +16,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 
-public class LogicHandler extends ChannelInboundHandlerAdapter {
+public class ChannelHandler extends ChannelInboundHandlerAdapter {
 
 	private static Logger logger = LoggerFactory.getLogger(ApplicationMain.class);
 	
@@ -37,24 +37,19 @@ public class LogicHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {    
     	printLog("channelUnregistered", ctx);
-//    	String userSid = ctx.attr(ChannelManager.USER_SID_KEY).get();   
-//		if (userSid != null) {
-//			//传递给handler处理业务逻辑
-//			String cmd = Command.USR_OFFLINE;
-//			SocketBaseHandler handler = AnnotationManager.createLogicHandlerInstance(cmd);
-//			CommandIn in = new CommandIn();
-//			in.setCommand(Command.USR_OFFLINE);
-//			handler.processSocketRequest(in, null, ctx);
-//			logger.debug("===> channelUnregistered:" + userSid);
-//		}
+    	String userSid = ctx.attr(ChannelManager.USER_SID_KEY).get();   
+		if (userSid != null) {
+			CommandIn in = new CommandIn();
+			in.setUserSid(userSid);
+			in.setCommand(Command.USR_OFFLINE);
+			SocketBaseHandler handler = AnnotationManager.createSocketHandlerInstance(in.getCommand());
+			handler.handle(in, ctx);
+		}
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
     	printLog("channelActive", ctx);
-//    	logger.debug("channelActive");
-//    	String ip = ctx.channel().remoteAddress().toString();  
-//    	logger.debug("client:" + ip + " channelUnregistered");
     }
 
     @Override
@@ -71,17 +66,19 @@ public class LogicHandler extends ChannelInboundHandlerAdapter {
     		return;
     	}
     	logger.debug(reqData);
-//		CommandIn in = JSON.parseObject(reqData, CommandIn.class);
-//		String command = in.getCommand();
-//		//传递给handler处理业务逻辑
-//		SocketBaseHandler handler = AnnotationManager.createLogicHandlerInstance(command);
-//		if (handler != null) {
-//			handler.processSocketRequest(in, reqData, ctx);
-//		} else {
-//			// 无效请求
-//			logger.error("请求失败:参数错误|" + reqData);
-//			closeChannel(ctx);
-//		}
+		CommandIn in = CommandIn.fromSocketReq(reqData);
+		if (in != null) {
+			SocketBaseHandler handler = AnnotationManager.createSocketHandlerInstance(in.getCommand());
+			if (handler != null) {
+				handler.handle(in, ctx);
+			} else {
+				printLog("channelRead 消息错误:" + reqData, ctx);
+				closeAndRemoveChannel(ctx);
+			}
+		} else {
+			printLog("channelRead 消息错误:" + reqData, ctx);
+			closeAndRemoveChannel(ctx);
+		}
     }
 
     @Override
@@ -98,12 +95,7 @@ public class LogicHandler extends ChannelInboundHandlerAdapter {
             IdleState state = event.state();
             logger.debug(state.toString());
             if (state == IdleState.ALL_IDLE) {
-            	String userSid = ctx.attr(ChannelManager.USER_SID_KEY).get();   
-        		if (userSid != null) {
-        			ChannelManager.getInstance().closeAndRemoveChannel(userSid);
-        		} else {
-					ChannelManager.closeChannel(ctx);
-        		}
+            	closeAndRemoveChannel(ctx);
             }
         }
     }
@@ -129,8 +121,17 @@ public class LogicHandler extends ChannelInboundHandlerAdapter {
     	return false;
     }
     
-    private void printLog(String method, ChannelHandlerContext ctx) {
+    private void closeAndRemoveChannel(ChannelHandlerContext ctx) {
+    	String userSid = ctx.attr(ChannelManager.USER_SID_KEY).get();   
+		if (userSid != null) {
+			ChannelManager.getInstance().closeAndRemoveChannel(userSid);
+		} else {
+			ChannelManager.closeChannel(ctx);
+		}
+    }
+    
+    private void printLog(String message, ChannelHandlerContext ctx) {
     	String ip = ctx.channel().remoteAddress().toString();  
-    	logger.debug("client:" + ip + " " + method);
+    	logger.debug("client:" + ip + " " + message);
     }
 }

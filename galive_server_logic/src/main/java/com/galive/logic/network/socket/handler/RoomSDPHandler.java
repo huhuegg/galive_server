@@ -17,13 +17,13 @@ public class RoomSDPHandler extends SocketBaseHandler {
 	private static Logger logger = LoggerFactory.getLogger(RoomSDPHandler.class);
 	
 	@Override
-	public CommandOut commandProcess(String userSid, String reqData) {
+	public String handle(String userSid, String reqData) {
 		logger.debug("发送sdp|" + userSid + "|" + reqData);
 		RoomSDPCommandIn in = JSON.parseObject(reqData, RoomSDPCommandIn.class);
 		Room room = Room.findRoomByUser(userSid);
 		if (room == null) {
 			CommandOut out = CommandOut.failureOut(Command.ROOM_SDP, "您不在房间中");
-			return out;
+			return out.socketResp();
 		}
 		
 		// 推送至对方
@@ -33,10 +33,10 @@ public class RoomSDPHandler extends SocketBaseHandler {
 		logger.debug("======" + in.sdp + "======");
 		logger.debug("===============");
 		push.senderSid = userSid;
-		pushMessage(in.receiverSid, push);
+		pushMessage(in.receiverSid, push.socketResp());
 		
 		CommandOut out = new CommandOut(Command.ROOM_SDP);
-		return out;
+		return out.socketResp();
 	}
 	
 	public static class RoomSDPCommandIn extends CommandIn {

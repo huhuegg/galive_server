@@ -13,7 +13,6 @@ import com.galive.logic.network.model.RespRoom;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.RoomEnterPush;
-import com.galive.logic.network.socket.handler.push.RoomRefreshPush;
 
 @SocketRequestHandler(desc = "进入房间", command = Command.ROOM_ENTER)
 public class RoomEnterHandler extends SocketBaseHandler {
@@ -21,26 +20,26 @@ public class RoomEnterHandler extends SocketBaseHandler {
 	private static Logger logger = LoggerFactory.getLogger(RoomEnterHandler.class);
 	
 	@Override
-	public CommandOut commandProcess(String userSid, String reqData) {
+	public String handle(String userSid, String reqData) {
 		logger.debug("进入房间|" + userSid + "|" + reqData);
 		RoomEnterIn in = JSON.parseObject(reqData, RoomEnterIn.class);
 		String roomSid = in.roomSid;
 		Room room = Room.findRoom(roomSid);
 		// 房间已销毁
 		if (room == null) {
-			return CommandOut.failureOut(Command.ROOM_ENTER, "房间不存在");
+			return CommandOut.failureOut(Command.ROOM_ENTER, "房间不存在").socketResp();
 		}
 		// 查询用户是否在房间中
 		Room existRoom = Room.findRoomByUser(userSid);
 		if (existRoom == null) {
 			// 房间已满员
 			if (room.getUsers().size() >= room.getMaxMemberCount()) {
-				return CommandOut.failureOut(Command.ROOM_ENTER, "该房间已满员");
+				return CommandOut.failureOut(Command.ROOM_ENTER, "该房间已满员").socketResp();
 			}
 		} else {
 			// 如果已进入房间，只能进入自己已加入的房间
 			if (!existRoom.getRoomId().equals(room.getRoomId())) {
-				return CommandOut.failureOut(Command.ROOM_ENTER, String.format("您已在其他房间%s中，请先退出该房间。", existRoom.getRoomId()));
+				return CommandOut.failureOut(Command.ROOM_ENTER, String.format("您已在其他房间%s中，请先退出该房间。", existRoom.getRoomId())).socketResp();
 			}
 		}
 
@@ -55,17 +54,13 @@ public class RoomEnterHandler extends SocketBaseHandler {
 		for (String roomerSid : room.getUsers()) {
 			// 推送通知房间其他用户
 			if (!roomerSid.equals(userSid)) {
-				pushMessage(roomerSid, push);
+				pushMessage(roomerSid, push.socketResp());
 			}
 		}
 		
-		// TODO 推送客户端更新界面
-		RoomRefreshPush refreshPush = new RoomRefreshPush();
-		pushMessage(null, refreshPush);
-		
 		RoomEnterOut out = new RoomEnterOut();
 		out.room = RespRoom.convertFromUserRoom(room);
-		return out;
+		return out.socketResp();
 	}
 	
 	public static class RoomEnterIn extends CommandIn {

@@ -34,8 +34,12 @@ public class LogicServlet extends HttpServlet {
 			}
 			// 传递给handler处理业务逻辑
 			HttpBaseHandler handler = AnnotationManager.createHttpHandlerInstance(in.getCommand());
-			String respData = handler.handle(in);
-			resp.getWriter().write(respData);
+			if (handler != null) {
+				String respData = handler.handle(in);
+				resp.getWriter().write(respData);
+			} else {
+				badRequest(resp);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage());

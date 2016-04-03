@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.SocketConfig;
-import com.galive.logic.network.socket.LogicHandler;
+import com.galive.logic.network.socket.ChannelHandler;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
@@ -64,7 +64,7 @@ public class NettyServer {
 						//心跳
 						ch.pipeline().addLast(new IdleStateHandler(0, 0, nettyConfig.getBothIdleTime(), TimeUnit.SECONDS));
 						
-						ch.pipeline().addLast(new LogicHandler());
+						ch.pipeline().addLast(new ChannelHandler());
 					}
 				}).childOption(ChannelOption.SO_KEEPALIVE, true);
 

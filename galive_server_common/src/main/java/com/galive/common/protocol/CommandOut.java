@@ -1,5 +1,7 @@
 package com.galive.common.protocol;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.alibaba.fastjson.JSON;
 
 public class CommandOut {
@@ -17,12 +19,20 @@ public class CommandOut {
 	
 	public static CommandOut failureOut(String command, String message) {
 		CommandOut out = new CommandOut(command);
-		out.setRet_msg(message);
+		if (StringUtils.isBlank(message)) {
+			out.setRet_msg("内部错误");
+		} else {
+			out.setRet_msg(message);
+		}
 		out.setRet_code(RetCode.FAILURE);
 		return out;
 	}
 	
-	public String toJson() {
+	public String socketResp() {
+		return JSON.toJSONString(this);
+	}
+	
+	public String httpResp() {
 		return JSON.toJSONString(this);
 	}
 	

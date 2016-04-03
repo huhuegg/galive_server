@@ -38,8 +38,6 @@ public class Command {
 	public static final String ROOM_EXIT_PUSH = "ROOM_EXIT_PUSH";
 	// sdp推送
 	public static final String ROOM_SDP_PUSH = "ROOM_SDP_PUSH";
-	// 房间更新推送
-	public static final String ROOM_REFRESH_PUSH = "ROOM_REFRESH_PUSH";
 	// 被踢
 	public static final String KICK_OFF_PUSH = "KICK_OFF_PUSH";
 	// 客户端转发推送

@@ -9,6 +9,7 @@ import com.galive.common.protocol.CommandOut;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.RTCConfig;
 import com.galive.logic.config.SocketConfig;
+import com.galive.logic.exception.LogicException;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
 import com.galive.logic.network.http.HttpRequestHandler;
@@ -19,32 +20,37 @@ import com.galive.logic.network.model.RespUser;
 public class LoginHandler extends HttpBaseHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(LoginHandler.class);
-
+	
 	@Override
-	public CommandOut handle(String userSid, String reqData) {
-		logger.debug("用户登录|" + reqData);
-		LoginIn in = JSON.parseObject(reqData, LoginIn.class);
-		User u = User.findByUsername(in.username);
-		if (u == null) {
-			return CommandOut.failureOut(Command.USR_LOGIN, "用户不存在");
-		} else {
-			if (!u.getPassword().equals(in.password)) {
-				return CommandOut.failureOut(Command.USR_LOGIN, "密码错误");
+	public String handle(String userSid, String reqData) {
+		try {
+			logger.debug("用户登录|" + reqData);
+			LoginIn in = JSON.parseObject(reqData, LoginIn.class);
+
+			User u = userService.login(in.username, in.password);
+
+			LoginOut out = new LoginOut();
+			Room room = roomService.findRoomByUser(u.getSid());
+			if (room != null) {
+				out.room = RespRoom.convertFromUserRoom(room);
 			}
+			RespUser ru = RespUser.convertFromUser(u);
+			out.token = User.updateToken(u.getSid());
+			out.expire = ApplicationConfig.getInstance().getTokenExpire();
+			out.user = ru;
+			out.socket_config = ApplicationConfig.getInstance().getSocketConfig();
+			String resp = out.httpResp();
+			logger.info("用户登录|" + resp);
+			return resp;
+		} catch (LogicException e) {
+			logger.error(e.getMessage());
+			String resp = respFail(e.getMessage());
+			return resp;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			String resp = respFail(null);
+			return resp;
 		}
-		u.updateLatestLogin();
-		
-		LoginOut out = new LoginOut();
-		Room room = Room.findRoomByUser(u.getSid());
-		if (room != null) {
-			out.room = RespRoom.convertFromUserRoom(room);
-		}
-		RespUser ru = RespUser.convertFromUser(u);
-		out.token = User.updateToken(u.getSid());
-		out.expire = ApplicationConfig.getInstance().getTokenExpire();
-		out.user = ru;
-		out.socket_config = ApplicationConfig.getInstance().getSocketConfig();
-		return out;
 	}
 
 	public static class LoginIn extends CommandIn {
@@ -67,6 +73,12 @@ public class LoginHandler extends HttpBaseHandler {
 		public RespRoom room;
 		public SocketConfig socket_config;
 
+	}
+	
+	private String respFail(String message) {
+		String resp = CommandOut.failureOut(Command.USR_LOGIN, message).httpResp();
+		logger.error("用户登录失败|" + resp);
+		return resp;
 	}
 
 

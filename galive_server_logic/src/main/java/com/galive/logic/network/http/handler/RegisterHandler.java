@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.config.ApplicationConfig;
+import com.galive.logic.exception.LogicException;
 import com.galive.logic.model.User;
 import com.galive.logic.network.http.HttpRequestHandler;
 import com.galive.logic.network.http.handler.LoginHandler.LoginOut;
@@ -18,25 +19,29 @@ public class RegisterHandler extends HttpBaseHandler {
 	private static Logger logger = LoggerFactory.getLogger(RegisterHandler.class);
 
 	@Override
-	public CommandOut handle(String userSid, String reqData) {
-		logger.debug("用户注册|" + reqData);
-		RegisterIn in = JSON.parseObject(reqData, RegisterIn.class);
-		User u = User.findByUsername(in.username);
-		if (u != null) {
-			return CommandOut.failureOut(Command.USR_REGISTER, "用户已注册");
+	public String handle(String userSid, String reqData) {
+		try {
+			logger.debug("用户注册|" + reqData);
+			RegisterIn in = JSON.parseObject(reqData, RegisterIn.class);
+			User u = userService.register(in.username, in.password, in.nickname);
+			
+			RegisterOut out = new RegisterOut();
+			out.token = User.updateToken(u.getSid());
+			out.expire = ApplicationConfig.getInstance().getTokenExpire();
+			out.user = RespUser.convertFromUser(u);
+			String resp = out.httpResp();
+			logger.info("用户注册|" + resp);
+			return resp;
+		} catch (LogicException e) {
+			logger.error(e.getMessage());
+			String resp = respFail(e.getMessage());
+			return resp;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			String resp = respFail(null);
+			return resp;
 		}
-		u = new User();
-		u.setUsername(in.username);
-		u.setPassword(in.password);
-		u.setNickname(in.nickname);
-		u.save();
-		u.updateLatestLogin();
 		
-		RegisterOut out = new RegisterOut();
-		out.token = User.updateToken(u.getSid());
-		out.expire = ApplicationConfig.getInstance().getTokenExpire();
-		out.user = RespUser.convertFromUser(u);
-		return out;
 	}
 
 	public static class RegisterIn extends CommandIn {
@@ -51,5 +56,11 @@ public class RegisterHandler extends HttpBaseHandler {
 			super();
 			setCommand(Command.USR_REGISTER);
 		}
+	}
+	
+	private String respFail(String message) {
+		String resp = CommandOut.failureOut(Command.USR_REGISTER, message).httpResp();
+		logger.error("用户注册失败|" + resp);
+		return resp;
 	}
 }

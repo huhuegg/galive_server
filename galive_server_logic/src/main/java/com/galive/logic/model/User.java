@@ -19,7 +19,7 @@ import redis.clients.jedis.Jedis;
 
 @Entity(value="user", noClassnameStored = true)
 @Indexes({@Index("username")})
-public class User extends BaseEntity {
+public class User extends BaseModel {
 
 	private String username = "";
 

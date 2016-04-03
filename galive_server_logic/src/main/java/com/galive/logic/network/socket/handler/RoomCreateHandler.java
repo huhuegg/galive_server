@@ -10,7 +10,6 @@ import com.galive.common.protocol.CommandOut;
 import com.galive.logic.model.Room;
 import com.galive.logic.network.model.RespRoom;
 import com.galive.logic.network.socket.SocketRequestHandler;
-import com.galive.logic.network.socket.handler.push.RoomRefreshPush;
 
 @SocketRequestHandler(desc = "创建房间", command = Command.ROOM_CREATE)
 public class RoomCreateHandler extends SocketBaseHandler  {
@@ -18,23 +17,19 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 	private static Logger logger = LoggerFactory.getLogger(RoomCreateHandler.class);
 
 	@Override
-	public CommandOut commandProcess(String userSid, String reqData) {
+	public String handle(String userSid, String reqData) {
 		logger.debug("创建房间|" + userSid + "|" + reqData);
 		EnterRoomRequest in = JSON.parseObject(reqData, EnterRoomRequest.class);
 		String name = in.name;
 		if (StringUtils.isBlank(name)) {
-			return CommandOut.failureOut(Command.ROOM_CREATE, "请输入房间名");
+			return CommandOut.failureOut(Command.ROOM_CREATE, "请输入房间名").socketResp();
 		}
 		Room room = Room.createRoom(userSid, name, in.maxUser);
 		room.refreshRoomExpireTime();
 
-		// 推送客户端更新界面
-		RoomRefreshPush push = new RoomRefreshPush();
-		pushMessage(null, push);
-		
 		RoomCreateOut out = new RoomCreateOut();
 		out.room = RespRoom.convertFromUserRoom(room);
-		return out;
+		return out.socketResp();
 	}
 	
 	public static class EnterRoomRequest extends CommandIn {

@@ -20,9 +20,17 @@ public class ChannelManager {
 		return instance;
 	}
 	
+	public ChannelHandlerContext findChannel(String userSid) {
+		return clientChannels.get(userSid);
+	}
+	
 	public void addChannel(String userSid, ChannelHandlerContext channel) {
 		channel.attr(USER_SID_KEY).set(userSid);
 		clientChannels.put(userSid, channel);
+	}
+	
+	public void removeChannel(String userSid) {
+		clientChannels.remove(userSid);
 	}
 	
 	public void closeAndRemoveChannel(String userSid) {
@@ -36,9 +44,11 @@ public class ChannelManager {
 	}
 	
 	public void sendMessage(String userSid, String message) {
-		ChannelHandlerContext channel = clientChannels.get(userSid);
-		if (channel != null && channel.channel().isActive()) {
-			channel.writeAndFlush(message);
+		if (message != null) {
+			ChannelHandlerContext channel = clientChannels.get(userSid);
+			if (channel != null && channel.channel().isActive()) {
+				channel.writeAndFlush(message);
+			}
 		}
 	}
 	

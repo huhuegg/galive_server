@@ -19,7 +19,7 @@ public class RoomListHandler extends SocketBaseHandler  {
 	private static Logger logger = LoggerFactory.getLogger(RoomListHandler.class);
 
 	@Override
-	public CommandOut commandProcess(String userSid, String reqData) {
+	public String handle(String userSid, String reqData) {
 		logger.debug("房间列表|" + userSid + "|" + reqData);
 		PageCommandIn in = JSON.parseObject(reqData, PageCommandIn.class);
 		
@@ -31,6 +31,6 @@ public class RoomListHandler extends SocketBaseHandler  {
 		}
 		PageCommandOut<RespRoom> out = new PageCommandOut<>(Command.ROOM_LIST, in);
 		out.setData(respRooms);
-		return out;
+		return out.socketResp();
 	}
 }
