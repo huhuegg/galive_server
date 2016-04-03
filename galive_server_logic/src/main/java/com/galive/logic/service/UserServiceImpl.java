@@ -40,6 +40,13 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 	
+	@Override
+	public User findUserBySid(String userSid) throws LogicException {
+//		if (u == null) {
+//			return CommandOut.failureOut(Command.USR_INFO, "用户不存在").socketResp();
+//		}
+		return null;
+	}
 	
 	@Override
 	public List<User> listByLatestLogin(int index, int size) {
@@ -55,6 +62,8 @@ public class UserServiceImpl implements UserService {
 //			return CommandOut.failureOut(Command.USR_INFO_MODIFY, "用户不存在");
 //		}
 	}
+
+	
 
 
 	

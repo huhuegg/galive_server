@@ -16,22 +16,37 @@ public class TransmitHandler extends SocketBaseHandler {
 	
 	@Override
 	public String handle(String userSid, String reqData) {
-		logger.debug("客户端转发|" + userSid + "|" + reqData);
-		ClientTransmitIn in = JSON.parseObject(reqData, ClientTransmitIn.class);
-	
-		// 推送至对方
-		TransmitPush push = new TransmitPush();
-		push.content = in.content;
-		push.senderSid = userSid;
-		pushMessage(in.to, push.socketResp());
+		try {
+			logger.debug("客户端转发|" + userSid + "|" + reqData);
+			ClientTransmitIn in = JSON.parseObject(reqData, ClientTransmitIn.class);
 		
-		CommandOut out = new CommandOut(Command.TRANSMIT);
-		return out.socketResp();
+			// 推送至对方
+			TransmitPush push = new TransmitPush();
+			push.content = in.content;
+			push.senderSid = userSid;
+			pushMessage(in.to, push.socketResp());
+			
+			CommandOut out = new CommandOut(Command.TRANSMIT);
+			String resp = out.socketResp();
+			logger.debug("客户端转发|" + resp);
+			return resp;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			String resp = respFail(null);
+			return resp;
+		}
+		
 	}
 	
 	public static class ClientTransmitIn extends CommandIn {
 		public String to; 
 		public String content = "";
+	}
+	
+	private String respFail(String message) {
+		String resp = CommandOut.failureOut(Command.TRANSMIT, message).httpResp();
+		logger.error("客户端转发失败|" + resp);
+		return resp;
 	}
 	
 }

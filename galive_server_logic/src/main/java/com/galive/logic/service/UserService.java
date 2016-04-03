@@ -10,6 +10,8 @@ public interface UserService {
 	public User register(String username, String password, String nickname) throws LogicException;
 	
 	public User login(String username, String password) throws LogicException;
+	
+	public User findUserBySid(String userSid) throws LogicException;
 
 	public List<User> listByLatestLogin(int index, int size);
 	

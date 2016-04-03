@@ -9,7 +9,6 @@ import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.ChannelManager;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.UserOfflinePush;
-import com.galive.logic.service.RoomServiceImpl;
 
 @SocketRequestHandler(desc = "客户端下线", command = Command.USR_OFFLINE)
 public class UserOfflineHandler extends SocketBaseHandler {

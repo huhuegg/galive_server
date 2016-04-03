@@ -9,7 +9,6 @@ import com.galive.logic.model.User;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.UserOnlinePush;
-import com.galive.logic.service.RoomServiceImpl;
 
 @SocketRequestHandler(desc = "客户端上线", command = Command.USR_ONLINE)
 public class UserOnlineHandler extends SocketBaseHandler {

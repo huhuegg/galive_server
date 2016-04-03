@@ -20,17 +20,29 @@ public class RoomListHandler extends SocketBaseHandler  {
 
 	@Override
 	public String handle(String userSid, String reqData) {
-		logger.debug("房间列表|" + userSid + "|" + reqData);
-		PageCommandIn in = JSON.parseObject(reqData, PageCommandIn.class);
-		
-		List<Room> rooms = Room.listRooms(in.index, in.index + in.size - 1);
-		List<RespRoom> respRooms = new ArrayList<>();
-		for (Room r : rooms) {
-			RespRoom rr = RespRoom.convertFromUserRoom(r);
-			respRooms.add(rr);
-		}
-		PageCommandOut<RespRoom> out = new PageCommandOut<>(Command.ROOM_LIST, in);
-		out.setData(respRooms);
-		return out.socketResp();
+		try {
+			logger.debug("获取房间列表|" + userSid + "|" + reqData);
+			PageCommandIn in = JSON.parseObject(reqData, PageCommandIn.class);
+			
+			List<Room> rooms = roomService.list(in.index, in.index + in.size - 1);
+			List<RespRoom> respRooms = new ArrayList<>();
+			for (Room r : rooms) {
+				RespRoom rr = RespRoom.convertFromUserRoom(r);
+				respRooms.add(rr);
+			}
+			PageCommandOut<RespRoom> out = new PageCommandOut<>(Command.ROOM_LIST, in);
+			out.setData(respRooms);
+			return out.socketResp();
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			String resp = respFail(null);
+			return resp;
+		}	
+	}
+	
+	private String respFail(String message) {
+		String resp = CommandOut.failureOut(Command.ROOM_LIST, message).httpResp();
+		logger.error("获取房间列表失败|" + resp);
+		return resp;
 	}
 }
