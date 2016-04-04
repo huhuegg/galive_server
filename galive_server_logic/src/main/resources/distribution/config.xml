@@ -4,24 +4,33 @@
 
 	<WebRTC>
 		<IceServer>
-				<Url>stun:222.73.196.99:3478</Url>
-				<Url>turn:222.73.196.99:3478</Url>
-			</IceServer>
+			<Url>stun:222.73.196.99:3478</Url>
+			<Url>turn:222.73.196.99:3478</Url>
+		</IceServer>
 		<TurnUrl>http://222.73.196.99:3478/turn?username=73970005&amp;key=4080218913</TurnUrl>
 	</WebRTC>
 
 	<TokenExpire>7200</TokenExpire>
-	
+
 	<Socket>
 		<Host>192.168.1.211</Host>
 		<Port>52194</Port>
 		<LiveReq>ga</LiveReq>
 		<LiveResp>live</LiveResp>
 		<HeartBeatInterval>20</HeartBeatInterval>
-		<ParamsDelimiter>&amp;</ParamsDelimiter><!--  # -->
+		<ParamsDelimiter>&amp;</ParamsDelimiter><!-- # -->
 		<MessageDelimiter>-@-xmn-@-</MessageDelimiter><!-- 消息定界符 -->
 	</Socket>
 
+	<Apns>
+		<!-- 推送 -->
+		<DevelopmentCertName>cert_development.p12</DevelopmentCertName>
+		<DevelopmentCertPassword>123456</DevelopmentCertPassword>
+		<DistructionCertName>cert_production.p12</DistructionCertName>
+		<DistructionCertPassword>123456</DistructionCertPassword>
+		<PushSound>push.wav</PushSound>
+		<PushBadge>1</PushBadge>
+	</Apns>
 
 	<Logic>
 		<RoomMaxUser>5</RoomMaxUser>

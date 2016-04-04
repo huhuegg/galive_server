@@ -8,6 +8,17 @@ import org.mongodb.morphia.annotations.Indexes;
 @Indexes({@Index("username")})
 public class User extends BaseModel {
 
+	public static enum UserOnlineState {
+		Online,
+		Offline;
+	}
+	
+	public static enum UserGender {
+		Male, 
+		Female, 
+		Unknown;
+	}
+	
 	private String username = "";
 
 	private String password = "";

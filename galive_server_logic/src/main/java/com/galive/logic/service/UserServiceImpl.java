@@ -7,6 +7,8 @@ import com.galive.logic.dao.UserDaoImpl;
 import com.galive.logic.exception.LogicException;
 import com.galive.logic.helper.LogicHelper;
 import com.galive.logic.model.User;
+import com.galive.logic.model.User.UserOnlineState;
+import com.galive.logic.network.socket.ChannelManager;
 
 public class UserServiceImpl implements UserService {
 
@@ -89,6 +91,16 @@ public class UserServiceImpl implements UserService {
 		}
 		userCache.saveDeviceToken(userSid, deviceToken);
 	}
+	
+	@Override
+	public void deleteUserDeviceToken(String userSid) {
+		userCache.deleteDeviceToken(userSid);
+	}
+	
+	@Override
+	public String findDeviceToken(String userSid) {
+		return userCache.findDeviceToken(userSid);
+	}
 
 	@Override
 	public boolean verifyToken(String userSid, String token) {
@@ -105,5 +117,15 @@ public class UserServiceImpl implements UserService {
 		userCache.saveUserToken(userSid, token);
 		return token;
 	}
+
+	@Override
+	public boolean isOnline(String userSid) {
+		boolean online = ChannelManager.getInstance().getOnlineState(userSid) == UserOnlineState.Online;
+		return online;
+	}
+
+	
+
+	
 
 }

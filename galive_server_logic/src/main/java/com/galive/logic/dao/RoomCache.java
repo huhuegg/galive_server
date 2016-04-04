@@ -11,14 +11,18 @@ public interface RoomCache {
 	public Room findRoom(String roomSid);
 
 	public Room findRoomByUser(String userSid);
+	
+	public Room findRoomByInvitee(String inviteeUserSid);
 
 	public void deleteRoom(Room room);
 	
-	public void bindRoomToUser(String roomSid, String userSid);
-
-	public void unbindRoomToUser(String userSid);
-
+	public void addRoomToUser(String roomSid, String userSid);
 	
+	public void addRoomToInvitee(String roomSid, String inviteeUserSid);
+
+	public void removeRoomToUser(String userSid);
+
+	public void removeRoomToInvitee(String inviteeUserSid);
 	
 	public List<Room> listByCreateTime(int start, int end);
 

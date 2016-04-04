@@ -3,7 +3,7 @@ package com.galive.logic.network.socket;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.galive.logic.model.UserOnlineState;
+import com.galive.logic.model.User.UserOnlineState;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
@@ -62,7 +62,7 @@ public class ChannelManager {
 		}
 	}
 	
-	public UserOnlineState onlineState(String userSid) {
+	public UserOnlineState getOnlineState(String userSid) {
 		ChannelHandlerContext channel = findChannel(userSid);
 		if (channel != null && channel.channel().isActive()) {
 			return UserOnlineState.Online;

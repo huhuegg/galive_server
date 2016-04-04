@@ -39,7 +39,12 @@ public class UserListHandler extends SocketBaseHandler  {
 				RespUser ru = RespUser.convert(u);
 				Room room = roomService.findRoomByUser(u.getSid());
 				if (room != null) {
-					ru.roomSid = room.getRoomId();
+					ru.roomSid = room.getSid();
+					ru.invite = false;
+				}
+				Room inviteeRoom = roomService.findRoomByInvitee(u.getSid());
+				if (inviteeRoom != null) {
+					ru.invite = false;
 				}
 				respUsers.add(ru);
 			}

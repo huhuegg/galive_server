@@ -34,6 +34,8 @@ public class Command {
 	public static final String USR_OFFLINE_PUSH = "USR_OFFLINE_PUSH";
 	// 进入房间推送
 	public static final String ROOM_ENTER_PUSH = "ROOM_ENTER_PUSH";
+	// 被邀请进入房间推送
+	public static final String ROOM_INVITEE_PUSH = "ROOM_INVITEE_PUSH";
 	// 退出房间推送
 	public static final String ROOM_EXIT_PUSH = "ROOM_EXIT_PUSH";
 	// sdp推送

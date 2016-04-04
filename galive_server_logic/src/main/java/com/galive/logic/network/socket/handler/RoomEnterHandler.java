@@ -27,6 +27,7 @@ public class RoomEnterHandler extends SocketBaseHandler {
 			logger.debug("进入房间|" + userSid + "|" + reqData);
 			RoomEnterIn in = JSON.parseObject(reqData, RoomEnterIn.class);
 			String roomSid = in.roomSid;
+
 			Room room = roomService.enter(roomSid, userSid);
 			User u = userService.findUserBySid(userSid);
 			

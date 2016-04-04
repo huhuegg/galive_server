@@ -5,6 +5,7 @@ dependencies {
  	compile 'org.mongodb:mongo-java-driver:3.2.2'
     compile 'org.mongodb.morphia:morphia:1.1.1'
     compile 'redis.clients:jedis:2.8.1'
+    compile 'com.notnoop.apns:apns:1.0.0.Beta6'
 }
 
 

@@ -15,6 +15,7 @@ public class RoomCacheImpl implements RoomCache {
 
 	public static final int ROOM_EXPIRE_INTERVAL = 60 * 60 * 24;
 	public static final int ROOM_REFRESH_INTERVAL = 60 * 60;
+	public static final int ROOM_INVITEE_TIMEOUT = 60 * 60;
 	
 	private Jedis jedis = RedisManager.getResource();
 
@@ -27,6 +28,11 @@ public class RoomCacheImpl implements RoomCache {
 	// 记录用户所在的房间，用于重连 set k:[room:user_room:用户id] v:[房间id]
 	private String userInRoomKey(String userSid) {
 		return RedisManager.keyPrefix() + "room:user_room:" + userSid;
+	}
+	
+	// 记录用户被邀请进入的房间，用于自动进入 set k:[room:user_room_invitee:用户id] v:[房间id]
+	private String inviteeInRoomKey(String inviteeUserSid) {
+		return RedisManager.keyPrefix() + "room:user_room_invitee:" + inviteeUserSid;
 	}
 
 	// 房间信息 set k:[room:房间id] v:[房间json]
@@ -74,11 +80,11 @@ public class RoomCacheImpl implements RoomCache {
 
 	@Override
 	public Room saveRoom(Room room) {
-		String roomSid = room.getRoomId();
+		String roomSid = room.getSid();
 		if (StringUtils.isBlank(roomSid)) {
 			roomSid = generateRoomSid();
 		}
-		room.setRoomId(roomSid);
+		room.setSid(roomSid);
 		String json = JSON.toJSONString(room);
 		String roomKey = roomKey(roomSid);
 		jedis.set(roomKey, json);
@@ -103,23 +109,43 @@ public class RoomCacheImpl implements RoomCache {
 	}
 	
 	@Override
+	public Room findRoomByInvitee(String inviteeUserSid) {
+		String roomSid = jedis.get(inviteeInRoomKey(inviteeUserSid));
+		if (roomSid != null) {
+			Room room = findRoom(roomSid);
+			return room;
+		}
+		return null;
+	}
+	
+	@Override
 	public void deleteRoom(Room room) {
-		String roomSid = room.getRoomId();
+		String roomSid = room.getSid();
 		jedis.del(roomKey(roomSid));
 	}
 	
 	@Override
-	public void bindRoomToUser(String roomSid, String userSid) {
+	public void addRoomToUser(String roomSid, String userSid) {
 		String userInRoomKey = userInRoomKey(userSid);
 		jedis.set(userInRoomKey, roomSid);
 	}
 	
 	@Override
-	public void unbindRoomToUser(String userSid) {
+	public void addRoomToInvitee(String roomSid, String inviteeUserSid) {
+		String inviteeRoomKey = inviteeInRoomKey(inviteeUserSid);
+		jedis.set(inviteeRoomKey, roomSid);
+		jedis.expire(inviteeRoomKey, ROOM_INVITEE_TIMEOUT);
+	}
+	
+	@Override
+	public void removeRoomToUser(String userSid) {
 		jedis.del(userInRoomKey(userSid));
 	}
 
-	
+	@Override
+	public void removeRoomToInvitee(String inviteeUserSid) {
+		jedis.del(inviteeInRoomKey(inviteeUserSid));
+	}
 	
 	@Override
 	public void insertToRoomListByCreateTime(String roomSid) {
@@ -158,6 +184,10 @@ public class RoomCacheImpl implements RoomCache {
 		jedis.expire(userInRoomKey(userSid), ROOM_REFRESH_INTERVAL);
 		
 	}
+
+	
+
+	
 
 	
 

@@ -48,6 +48,12 @@ public class LoginHandler extends HttpBaseHandler {
 				}
 				out.room = respRoom;
 			} 
+			Room inviteeRoom = roomService.findRoomByInvitee(u.getSid());
+			if (inviteeRoom != null) {
+				RespRoom respRoom = RespRoom.convert(inviteeRoom);
+				out.inviteeRoom = respRoom;
+			} 
+			
 			out.token =  userService.createToken(u.getSid());
 			out.expire = ApplicationConfig.getInstance().getTokenExpire();
 			out.user = respUser;
@@ -84,8 +90,8 @@ public class LoginHandler extends HttpBaseHandler {
 		public int expire;
 		public RTCConfig rtc_config;
 		public RespRoom room;
+		public RespRoom inviteeRoom;
 		public SocketConfig socket_config;
-
 	}
 	
 	private String respFail(String message) {

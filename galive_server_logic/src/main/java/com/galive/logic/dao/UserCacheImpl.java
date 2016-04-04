@@ -41,6 +41,8 @@ public class UserCacheImpl implements UserCache {
 		String key = userListByLatestLoginKey();
 		jedis.zadd(key, System.currentTimeMillis(), userSid);
 	}
+	
+	
 
 	@Override
 	public List<User> listByLatestLogin(int start, int end) {
@@ -60,7 +62,19 @@ public class UserCacheImpl implements UserCache {
 	public void saveDeviceToken(String userSid, String deviceToken) {
 		String key = userDeviceTokenKey(userSid);
 		jedis.hset(key, userSid, deviceToken);
-
+	}
+	
+	@Override
+	public void deleteDeviceToken(String userSid) {
+		String key = userDeviceTokenKey(userSid);
+		jedis.hdel(key, userSid);
+	}
+	
+	@Override
+	public String findDeviceToken(String userSid) {
+		String key = userDeviceTokenKey(userSid);
+		String token = jedis.hget(key, userSid);
+		return token;
 	}
 
 	@Override
@@ -76,5 +90,9 @@ public class UserCacheImpl implements UserCache {
 		jedis.set(key, token);
 		jedis.expire(key, ApplicationConfig.getInstance().getTokenExpire());
 	}
+
+	
+
+	
 
 }

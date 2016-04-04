@@ -25,6 +25,12 @@ public class LogicHelper {
 		return in;
 	}
 	
+	public static String loadApnsCertPath(String certName) {
+		String name = SEPARATOR + ApplicationMain.getInstance().getMode().name + SEPARATOR + certName;
+		String path = LogicHelper.class.getResource(name).getPath();
+		return path;
+	}
+	
 	public static String generateRandomMd5() {
 		String uuid = UUID.randomUUID().toString();
 		String md5 = DigestUtils.md5Hex(uuid);

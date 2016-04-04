@@ -33,6 +33,7 @@ public class ApplicationConfig {
 	private int tokenExpire = 7200;
 	private SocketConfig socketConfig;
 	private LogicConfig logicConfig;
+	private APNSConfig apnsConfig;
 
 	public static ApplicationConfig getInstance() {
 		if (instance == null) {
@@ -139,6 +140,43 @@ public class ApplicationConfig {
 			logger.info("heartBeatInterval:" + heartBeatInterval);
 
 			sc.setSocketConfig(socketConfig);
+			
+			
+			logger.info("--ApnsConfig--");
+			APNSConfig apnsConfig = new APNSConfig();
+			Element apnsNode = node.element("Apns");
+			Element certNameDevelopmentNode = apnsNode.element("DevelopmentCertName");
+			String certNameDevelopment = certNameDevelopmentNode.getStringValue();
+			apnsConfig.setCertNameDevelopment(certNameDevelopment);
+			logger.info("certNameDevelopment:" + certNameDevelopment);
+			
+			Element certPasswordDevelopmentNode = apnsNode.element("DevelopmentCertPassword");
+			String certPasswordDevelopment = certPasswordDevelopmentNode.getStringValue();
+			apnsConfig.setCertPasswordDevelopment(certPasswordDevelopment);
+			logger.info("certPasswordDevelopment:" + certPasswordDevelopment);
+			
+			Element certNameDistructionNode = apnsNode.element("DistructionCertName");
+			String certNameDistruction = certNameDistructionNode.getStringValue();
+			apnsConfig.setCertNameDistruction(certNameDistruction);
+			logger.info("certNameDistruction:" + certNameDistruction);
+			
+			Element certPasswordDistructionNode = apnsNode.element("DistructionCertPassword");
+			String certPasswordDistruction = certPasswordDistructionNode.getStringValue();
+			apnsConfig.setCertPasswordDistruction(certPasswordDistruction);
+			logger.info("certPasswordDistruction:" + certPasswordDistruction);
+			
+			Element pushSoundNode = apnsNode.element("PushSound");
+			String pushSound = pushSoundNode.getStringValue();
+			apnsConfig.setPushSound(pushSound);
+			logger.info("pushSound:" + pushSound);
+			
+			Element pushBadgeNode = apnsNode.element("PushBadgeNode");
+			int pushBadge = NumberUtils.toInt(pushBadgeNode.getStringValue(), 1);
+			apnsConfig.setPushBadge(pushBadge);
+			logger.info("pushBadge:" + pushBadge);
+			sc.setApnsConfig(apnsConfig);
+			
+			
 			logger.info("配置文件加载成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -177,5 +215,13 @@ public class ApplicationConfig {
 
 	public void setSocketConfig(SocketConfig socketConfig) {
 		this.socketConfig = socketConfig;
+	}
+
+	public APNSConfig getApnsConfig() {
+		return apnsConfig;
+	}
+
+	public void setApnsConfig(APNSConfig apnsConfig) {
+		this.apnsConfig = apnsConfig;
 	}
 }

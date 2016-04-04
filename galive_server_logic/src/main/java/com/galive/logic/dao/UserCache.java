@@ -12,6 +12,10 @@ public interface UserCache {
 	
 	public void saveDeviceToken(String userSid, String deviceToken);
 	
+	public void deleteDeviceToken(String userSid);
+	
+	public String findDeviceToken(String userSid);
+	
 	public String findUserToken(String userSid);
 	
 	public void saveUserToken(String userSid, String token);

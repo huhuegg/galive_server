@@ -17,7 +17,13 @@ public interface UserService {
 	
 	public void updateUserDeviceToken(String userSid, String deviceToken) throws LogicException;
 	
+	public void deleteUserDeviceToken(String userSid) throws LogicException;
+	
+	public String findDeviceToken(String userSid);
+	
 	public boolean verifyToken(String userSid, String token);
 	
 	public String createToken(String userSid) throws LogicException;
+	
+	public boolean isOnline(String userSid);
 }
