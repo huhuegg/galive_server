@@ -19,5 +19,5 @@ public interface RoomService {
 	
 	public Room exit(String userSid) throws LogicException;
 	
-	
+	public Room refuseInvite(String userSid) throws LogicException;
 }

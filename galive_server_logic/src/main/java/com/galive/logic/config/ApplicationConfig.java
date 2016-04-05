@@ -170,7 +170,7 @@ public class ApplicationConfig {
 			apnsConfig.setPushSound(pushSound);
 			logger.info("pushSound:" + pushSound);
 			
-			Element pushBadgeNode = apnsNode.element("PushBadgeNode");
+			Element pushBadgeNode = apnsNode.element("PushBadge");
 			int pushBadge = NumberUtils.toInt(pushBadgeNode.getStringValue(), 1);
 			apnsConfig.setPushBadge(pushBadge);
 			logger.info("pushBadge:" + pushBadge);

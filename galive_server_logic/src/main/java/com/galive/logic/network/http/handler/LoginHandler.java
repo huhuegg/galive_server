@@ -1,7 +1,5 @@
 package com.galive.logic.network.http.handler;
 
-import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
@@ -12,10 +10,8 @@ import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.RTCConfig;
 import com.galive.logic.config.SocketConfig;
 import com.galive.logic.exception.LogicException;
-import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
 import com.galive.logic.network.http.HttpRequestHandler;
-import com.galive.logic.network.model.RespRoom;
 import com.galive.logic.network.model.RespUser;
 
 @HttpRequestHandler(desc = "用户登录", command = Command.USR_LOGIN)
@@ -32,27 +28,8 @@ public class LoginHandler extends HttpBaseHandler {
 			User u = userService.login(in.username, in.password);
 
 			LoginOut out = new LoginOut();
-			Room room = roomService.findRoomByUser(u.getSid());
 			RespUser respUser = RespUser.convert(u);
 			
-			if (room != null) {
-				RespRoom respRoom = RespRoom.convert(room);
-				Set<String> users = room.getUsers();
-				for (String uid : users) {
-					User roomUser = userService.findUserBySid(uid);
-					if (roomUser != null) {
-						RespUser roomRespUser = RespUser.convert(roomUser);
-						roomRespUser.roomSid = respRoom.sid;
-						respRoom.users.add(roomRespUser);
-					}
-				}
-				out.room = respRoom;
-			} 
-			Room inviteeRoom = roomService.findRoomByInvitee(u.getSid());
-			if (inviteeRoom != null) {
-				RespRoom respRoom = RespRoom.convert(inviteeRoom);
-				out.inviteeRoom = respRoom;
-			} 
 			
 			out.token =  userService.createToken(u.getSid());
 			out.expire = ApplicationConfig.getInstance().getTokenExpire();
@@ -89,8 +66,6 @@ public class LoginHandler extends HttpBaseHandler {
 		public String websocketUrl;
 		public int expire;
 		public RTCConfig rtc_config;
-		public RespRoom room;
-		public RespRoom inviteeRoom;
 		public SocketConfig socket_config;
 	}
 	

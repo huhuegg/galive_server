@@ -6,6 +6,7 @@ import com.galive.common.protocol.CommandOut;
 public class RoomExitPush extends CommandOut {
 
 	public String userSid;
+	public boolean refuseInvite = false;
 	
 	public RoomExitPush() {
 		super(Command.ROOM_EXIT_PUSH);

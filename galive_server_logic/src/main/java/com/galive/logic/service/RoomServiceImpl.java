@@ -173,6 +173,19 @@ public class RoomServiceImpl implements RoomService {
 		return room;
 	}
 
+	@Override
+	public Room refuseInvite(String userSid) throws LogicException {
+		Room inviteeRoom = findRoomByInvitee(userSid);
+		if (inviteeRoom != null) {
+			roomCache.removeRoomToInvitee(userSid);
+			Set<String> invitees = inviteeRoom.getInvitees();
+			invitees.remove(inviteeRoom.getSid());
+			inviteeRoom.setInvitees(invitees);
+			inviteeRoom = roomCache.saveRoom(inviteeRoom);
+		} 
+		return inviteeRoom;
+	}
+
 	
 
 	
