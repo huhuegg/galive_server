@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.lang.time.DateUtils;
 
@@ -16,6 +18,8 @@ import com.notnoop.apns.ApnsService;
 
 public class APNSHelper {
 
+	private static ExecutorService executorService = Executors.newFixedThreadPool(10);
+	
 	private boolean isDistribution;
 	private String cert;
 	private String password;
@@ -36,28 +40,35 @@ public class APNSHelper {
 		push(deviceTokens, content);
 	}
 	
-	public void push(List<String> deviceTokens, String content) {
-		Calendar c = DateUtils.toCalendar(new Date());
-		int hour = c.get(Calendar.HOUR_OF_DAY);
-		if (hour >= 23 || hour < 8) { // 23点到8点不推送
-			return;
-		}
-		
-		/// TODO 当前只有生产环境有效
-		ApnsService service = APNS.newService().withCert(cert, password).withAppleDestination(true).build();
-		String payload = APNS.newPayload()
-				//.alertTitle("alertTitle")
-				.badge(config.getPushBadge())
-				.alertBody(content)
-				.sound(config.getPushSound())
-				.build();				
-		service.push(deviceTokens, payload);
-		
-		Map<String, Date> inactiveDevices = service.getInactiveDevices();
-		// 删除无效token
-		for (String deviceToken : inactiveDevices.keySet()) {
-			userService.deleteDeviceToken(deviceToken);
-		}
+	public void push(final List<String> deviceTokens, final String content) {
+		executorService.execute(new Runnable() {
+			
+			@Override
+			public void run() {
+				Calendar c = DateUtils.toCalendar(new Date());
+				int hour = c.get(Calendar.HOUR_OF_DAY);
+				if (hour >= 23 || hour < 8) { // 23点到8点不推送
+					return;
+				}
+				
+				/// TODO 当前只有生产环境有效
+				ApnsService service = APNS.newService().withCert(cert, password).withAppleDestination(true).build();
+				String payload = APNS.newPayload()
+						//.alertTitle("alertTitle")
+						.badge(config.getPushBadge())
+						.alertBody(content)
+						.sound(config.getPushSound())
+						.build();				
+				service.push(deviceTokens, payload);
+				
+				Map<String, Date> inactiveDevices = service.getInactiveDevices();
+				// 删除无效token
+				for (String deviceToken : inactiveDevices.keySet()) {
+					userService.deleteDeviceToken(deviceToken);
+				}
+				
+			}
+		});
 	}
 	
 	
