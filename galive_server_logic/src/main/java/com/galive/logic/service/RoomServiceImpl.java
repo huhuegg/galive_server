@@ -171,6 +171,7 @@ public class RoomServiceImpl implements RoomService {
 		if (users.isEmpty() || userSid.equals(room.getOwnerId())) {
 			// 销毁房间
 			roomCache.deleteRoom(room);
+			roomCache.removeRoomToUser(userSid);
 			// 清除邀请的人
 			Set<String> invitees = room.getInvitees();
 			for (String s : invitees) {
@@ -180,7 +181,6 @@ public class RoomServiceImpl implements RoomService {
 				roomCache.removeRoomToUser(s);
 			}
 			roomCache.removeFromListByCreateTime(room.getSid());
-			return null;
 		} else {
 			room.setUsers(users);
 			room = roomCache.saveRoom(room);

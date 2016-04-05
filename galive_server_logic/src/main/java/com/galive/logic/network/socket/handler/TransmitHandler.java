@@ -23,7 +23,9 @@ public class TransmitHandler extends SocketBaseHandler {
 			TransmitPush push = new TransmitPush();
 			push.content = in.content;
 			push.senderSid = userSid;
-			pushMessage(in.to, push.socketResp());
+			String transmitContent = push.socketResp();
+			logger.debug("客户端转发|推送消息:" + in.to + "|" + transmitContent);
+			pushMessage(in.to, transmitContent);
 			
 			CommandOut out = new CommandOut(Command.TRANSMIT);
 			String resp = out.socketResp();

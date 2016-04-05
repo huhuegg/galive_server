@@ -30,7 +30,7 @@ public class RoomEnterHandler extends SocketBaseHandler {
 
 			Room room = roomService.enter(roomSid, userSid);
 			User u = userService.findUserBySid(userSid);
-			
+			RespRoom respRoom =  RespRoom.convert(room);
 			RoomEnterPush push = new RoomEnterPush();
 			push.user = RespUser.convert(u);
 			String pushMessage = push.socketResp();
@@ -39,11 +39,15 @@ public class RoomEnterHandler extends SocketBaseHandler {
 			for (String roomerSid : users) {
 				// 推送通知房间其他用户
 				if (!roomerSid.equals(userSid)) {
+					User roomUser = userService.findUserBySid(roomerSid);
+					RespUser respUser = RespUser.convert(roomUser);
+					respRoom.users.add(respUser);
 					pushMessage(roomerSid, pushMessage);
 				}
 			}
 			
 			RoomEnterOut out = new RoomEnterOut();
+			out.room = respRoom;
 			String resp = out.socketResp();
 			logger.debug("进入房间|" + resp);
 			return resp;
