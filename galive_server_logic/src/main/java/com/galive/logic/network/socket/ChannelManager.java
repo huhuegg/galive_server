@@ -3,6 +3,7 @@ package com.galive.logic.network.socket;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.model.User.UserOnlineState;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -16,9 +17,12 @@ public class ChannelManager {
 	
 	private static ChannelManager instance = null;
 	
+	private String delimiter = "";
+	
 	public static ChannelManager getInstance() {
 		if (instance == null) {
 			instance = new ChannelManager();
+			instance.delimiter = ApplicationConfig.getInstance().getSocketConfig().getMessageDelimiter();
 		}
 		return instance;
 	}
@@ -50,6 +54,7 @@ public class ChannelManager {
 		if (message != null) {
 			ChannelHandlerContext channel = clientChannels.get(userSid);
 			if (channel != null && channel.channel().isActive()) {
+				message += delimiter;
 				channel.writeAndFlush(message);
 			}
 		}

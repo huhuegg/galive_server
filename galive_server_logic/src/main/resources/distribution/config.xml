@@ -25,10 +25,10 @@
 	<Apns>
 		<!-- 推送 -->
 		<DevelopmentCertName>cert_development.p12</DevelopmentCertName>
-		<DevelopmentCertPassword>123456</DevelopmentCertPassword>
+		<DevelopmentCertPassword>1234</DevelopmentCertPassword>
 		<DistructionCertName>cert_production.p12</DistructionCertName>
-		<DistructionCertPassword>123456</DistructionCertPassword>
-		<PushSound>push.wav</PushSound>
+		<DistructionCertPassword>1234</DistructionCertPassword>
+		<PushSound>call.caf</PushSound>
 		<PushBadge>1</PushBadge>
 	</Apns>
 

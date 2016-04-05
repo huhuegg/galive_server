@@ -38,13 +38,17 @@ public class RoomServiceImpl implements RoomService {
 
 	@Override
 	public Room create(String roomname, String userSid, List<String> invitees, int maxUser) throws LogicException {
+		Room existRoom = roomCache.findRoomByUser(userSid);
+		if (existRoom != null) {
+			throw new LogicException("已在其他房间中。");
+		}
 		if (StringUtils.isBlank(roomname)) {
 			throw new LogicException("房间名不能为空。");
 		}
 		if (maxUser > ApplicationConfig.getInstance().getLogicConfig().getRoomMaxUser()) {
 			throw new LogicException("房间人数超过上限。");
 		}
-
+		
 		Room room = new Room();
 		room.setName(roomname);
 		room.setMaxMemberCount(maxUser);
@@ -53,12 +57,27 @@ public class RoomServiceImpl implements RoomService {
 		Set<String> roomInvitees = new HashSet<>();
 		if (!CollectionUtils.isEmpty(invitees)) {
 			for (String s : invitees) {
-				if (roomCache.findRoomByUser(s) == null || userService.isOnline(s)) {
-					// 不在房间中或离线的用户才能被邀请
+				boolean online = userService.isOnline(s);
+				Room inRoom = roomCache.findRoomByUser(s);
+				Room inviteeRoom = roomCache.findRoomByInvitee(s);
+				boolean canBeInvite = false;
+				if (online) {
+					// 目标在线时仅能邀请不在房间中与未被邀请的人
+					if (inRoom == null && inviteeRoom == null) {
+						canBeInvite = true;
+					} 
+				} else {
+					// 目标离线时未被邀请的人
+					if (inviteeRoom == null) {
+						canBeInvite = true;
+					} 
+				}
+				if (canBeInvite) {
 					roomInvitees.add(s);
 				} else {
-					throw new LogicException("所邀请的用户正在其他房间中。"); 
+					throw new LogicException("所邀请的用户正在其他房间中或已被邀请"); 
 				}
+				
 			}
 			room.setPrivacy(RoomPrivacy.Privacy);
 		} else {

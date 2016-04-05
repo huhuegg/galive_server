@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void updateUserDeviceToken(String userSid, String deviceToken) throws LogicException {
+	public void updateDeviceToken(String userSid, String deviceToken) throws LogicException {
 		User u = userDao.findUser(userSid);
 		if (u == null) {
 			throw new LogicException("用户不存在。");
@@ -93,8 +93,8 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public void deleteUserDeviceToken(String userSid) {
-		userCache.deleteDeviceToken(userSid);
+	public void deleteDeviceToken(String deviceToken) {
+		userCache.deleteDeviceToken(deviceToken);
 	}
 	
 	@Override

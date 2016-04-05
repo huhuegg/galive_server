@@ -18,6 +18,7 @@ import com.galive.logic.helper.APNSHelper;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
 import com.galive.logic.network.model.RespRoom;
+import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.RoomInviteePush;
 
@@ -32,29 +33,35 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 			logger.debug("创建房间|" + userSid + "|" + reqData);
 			EnterRoomRequest in = JSON.parseObject(reqData, EnterRoomRequest.class);
 			Room room = roomService.create(in.name, userSid, in.invitees, in.maxUser);
-		
-			RoomInviteePush inviteePush = new RoomInviteePush();
-			inviteePush.room = RespRoom.convert(room);
-			String pushMessage = inviteePush.socketResp();
-			logger.debug("创建房间|推送邀请人：" + pushMessage);
+			
 			Set<String> invitees = room.getInvitees();
-			List<String> deviceTokens = new ArrayList<>();
-			for (String invitee : invitees) {
-				if (userService.isOnline(invitee)) {
-					pushMessage(invitee, pushMessage);
-				} else {
-					String token = userService.findDeviceToken(invitee);
-					if (!StringUtils.isBlank(token)) {
-						deviceTokens.add(token);
+			if (!CollectionUtils.isEmpty(invitees)) {
+				User invitor = userService.findUserBySid(userSid);
+				
+				RoomInviteePush inviteePush = new RoomInviteePush();
+				RespRoom inviteeRoom = RespRoom.convert(room);
+				inviteeRoom.invitor = RespUser.convert(invitor);
+				inviteePush.room = inviteeRoom;
+				String pushMessage = inviteePush.socketResp();
+				logger.debug("创建房间|推送邀请人：" + pushMessage);
+				
+				List<String> deviceTokens = new ArrayList<>();
+				for (String invitee : invitees) {
+					if (userService.isOnline(invitee)) {
+						pushMessage(invitee, pushMessage);
+					} else {
+						String token = userService.findDeviceToken(invitee);
+						if (!StringUtils.isBlank(token)) {
+							deviceTokens.add(token);
+						}
 					}
 				}
-			}
-			// 苹果推送
-			if (!CollectionUtils.isEmpty(deviceTokens)) {
-				APNSHelper apns = new APNSHelper(ApplicationMain.getInstance().getMode() == ApplicationMode.Distribution);
-				User invitor = userService.findUserBySid(userSid);
-				String content = String.format("%s邀请你加入Ta的房间。", invitor.getNickname());
-				apns.push(deviceTokens, content);
+				// 苹果推送
+				if (!CollectionUtils.isEmpty(deviceTokens)) {
+					APNSHelper apns = new APNSHelper(ApplicationMain.getInstance().getMode() == ApplicationMode.Distribution);
+					String content = String.format("%s邀请你加入Ta的房间。", invitor.getNickname());
+					apns.push(deviceTokens, content);
+				}
 			}
 			
 			RoomCreateOut out = new RoomCreateOut();

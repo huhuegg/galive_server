@@ -15,9 +15,9 @@ public interface UserService {
 
 	public List<User> listByLatestLogin(int index, int size);
 	
-	public void updateUserDeviceToken(String userSid, String deviceToken) throws LogicException;
+	public void updateDeviceToken(String userSid, String deviceToken) throws LogicException;
 	
-	public void deleteUserDeviceToken(String userSid) throws LogicException;
+	public void deleteDeviceToken(String deviceToken) throws LogicException;
 	
 	public String findDeviceToken(String userSid);
 	

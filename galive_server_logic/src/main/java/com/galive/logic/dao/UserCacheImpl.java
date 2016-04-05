@@ -30,9 +30,12 @@ public class UserCacheImpl implements UserCache {
 		return RedisManager.keyPrefix() + "user:list:latest_login";
 	}
 
-	private String userDeviceTokenKey(String userSid) {
-		Long id = Long.parseLong(userSid);
-		return RedisManager.keyPrefix() + "user:device_token:" + (id % 5);
+	private String deviceTokenKey() {
+		return RedisManager.keyPrefix() + "user:device_token";
+	}
+	
+	private String deviceTokenForUserKey() {
+		return RedisManager.keyPrefix() + "user:device_token:user";
 	}
 
 	@Override
@@ -60,19 +63,33 @@ public class UserCacheImpl implements UserCache {
 
 	@Override
 	public void saveDeviceToken(String userSid, String deviceToken) {
-		String key = userDeviceTokenKey(userSid);
-		jedis.hset(key, userSid, deviceToken);
+		String key1 = deviceTokenKey();
+		String key2 = deviceTokenForUserKey();
+		jedis.hset(key1, userSid, deviceToken);
+		jedis.hset(key2, deviceToken, userSid);
 	}
 	
 	@Override
-	public void deleteDeviceToken(String userSid) {
-		String key = userDeviceTokenKey(userSid);
-		jedis.hdel(key, userSid);
+	public void deleteDeviceToken(String deviceToken) {
+		String key2 = deviceTokenForUserKey();
+		String key1 = deviceTokenKey();
+		String userSid = jedis.hget(key2, deviceToken);
+		jedis.hdel(key1, userSid);
+		jedis.hdel(key2, deviceToken);
+	}
+	
+	@Override
+	public void deleteDeviceTokenByUserSid(String userSid) {
+		String key1 = deviceTokenKey();
+		String token = jedis.hget(key1, userSid);
+		String key2 = deviceTokenForUserKey();
+		jedis.hdel(key1, userSid);
+		jedis.hdel(key2, token);
 	}
 	
 	@Override
 	public String findDeviceToken(String userSid) {
-		String key = userDeviceTokenKey(userSid);
+		String key = deviceTokenKey();
 		String token = jedis.hget(key, userSid);
 		return token;
 	}
@@ -90,6 +107,8 @@ public class UserCacheImpl implements UserCache {
 		jedis.set(key, token);
 		jedis.expire(key, ApplicationConfig.getInstance().getTokenExpire());
 	}
+
+	
 
 	
 

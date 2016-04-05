@@ -43,7 +43,8 @@ public class APNSHelper {
 			return;
 		}
 		
-		ApnsService service = APNS.newService().withCert(cert, password).withAppleDestination(isDistribution).build();
+		/// TODO 当前只有生产环境有效
+		ApnsService service = APNS.newService().withCert(cert, password).withAppleDestination(true).build();
 		String payload = APNS.newPayload()
 				//.alertTitle("alertTitle")
 				.badge(config.getPushBadge())
@@ -55,7 +56,7 @@ public class APNSHelper {
 		Map<String, Date> inactiveDevices = service.getInactiveDevices();
 		// 删除无效token
 		for (String deviceToken : inactiveDevices.keySet()) {
-			userService.deleteUserDeviceToken(deviceToken);
+			userService.deleteDeviceToken(deviceToken);
 		}
 	}
 	
@@ -63,8 +64,8 @@ public class APNSHelper {
 	// Test
 	public static void main(String args[]) throws Exception {
 		APNSHelper apns = new APNSHelper(true);
-		apns.cert = "D:\\doodduck\\apns\\cert_production.p12";
-		apns.password = "superman";
-		apns.push("c3560c330098ddb75a6a222261399d0b1de9f3297a320b3b48eea3cbb7b44934", "");
+		apns.cert = "/Users/luguangqing/Downloads/cert_production.p12";
+		apns.password = "1234";
+		apns.push("14be385c531c07197a0b77b157c1b499d0c3084da2ceecfdff805572e86d8d3d", "asdasdas");
 	}
 }

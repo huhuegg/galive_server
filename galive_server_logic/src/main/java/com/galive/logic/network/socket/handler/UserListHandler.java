@@ -31,11 +31,16 @@ public class UserListHandler extends SocketBaseHandler  {
 			
 			List<User> users = new ArrayList<>();
 			if (in.type == UserListType.LatestLogin.ordinal()) {
-				users = userService.listByLatestLogin(in.index, in.index + in.size - 1);
+				users = userService.listByLatestLogin(in.index, in.size);
+				logger.debug("获取用户列表|查询用户数:" + users.size());
 			}
 
 			List<RespUser> respUsers = new ArrayList<>();
 			for (User u : users) {
+				if (u.getSid().equals(userSid)) {
+					// 过滤自己
+					continue;
+				}
 				RespUser ru = RespUser.convert(u);
 				Room room = roomService.findRoomByUser(u.getSid());
 				if (room != null) {
@@ -58,7 +63,6 @@ public class UserListHandler extends SocketBaseHandler  {
 			String resp = respFail(null);
 			return resp;
 		}
-		
 	}
 	
 	private String respFail(String message) {
@@ -67,7 +71,7 @@ public class UserListHandler extends SocketBaseHandler  {
 		return resp;
 	}
 	
-	public class UserListParams extends PageParams {
+	public static class UserListParams extends PageParams {
 		public int type;
 	}
 }

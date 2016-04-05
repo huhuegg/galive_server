@@ -52,6 +52,7 @@ public class UserOnlineHandler extends SocketBaseHandler {
 			Room inviteeRoom = roomService.findRoomByInvitee(userSid);
 			if (inviteeRoom != null) {
 				RespRoom respRoom = RespRoom.convert(inviteeRoom);
+				respRoom.invitor = RespUser.convert(userService.findUserBySid(inviteeRoom.getOwnerId()));
 				out.inviteeRoom = respRoom;
 			}
 			

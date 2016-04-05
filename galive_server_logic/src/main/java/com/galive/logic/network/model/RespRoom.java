@@ -16,6 +16,8 @@ public class RespRoom {
 	
 	public List<RespUser> users = new ArrayList<>();
 	
+	public RespUser invitor;
+	
 	public static RespRoom convert(Room room) {
 		RespRoom rr = new RespRoom();
 		rr.sid = room.getSid();
