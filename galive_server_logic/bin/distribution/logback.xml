@@ -2,59 +2,37 @@
 <!DOCTYPE configuration>
 <configuration>
 	<!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径 -->
-	<property name="LOG_HOME" value="/tmp/ga_live" />
+	<property name="LOG_HOME" value="/tmp/ga_live_log" />
 	<!-- 控制台输出 -->
-	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
 			<charset>UTF-8</charset>
-			<pattern>%d{HH:mm:ss.SSS}|%-5level|%logger{36}|%msg%n</pattern>
+			<pattern>%d %-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
 		</encoder>
 	</appender>
 	<!-- 按照每天生成日志文件 -->
-	<appender name="FILE-AUDIT"
+	<appender name="file-log"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${LOG_HOME}/ga_live.log</file>
-		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+		<file>${LOG_HOME}/logic.log</file>
+		<encoder>
 			<charset>UTF-8</charset>
-			<Pattern>
-				%d{HH:mm:ss.SSS}|%-5level|%logger{36}|%msg%n
-			</Pattern>
+			<Pattern>%d %-4relative [%thread] %-5level %logger{35} - %msg%n</Pattern>
 		</encoder>
 
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<!-- rollover daily -->
 			<fileNamePattern>
-				${LOG_HOME}/ga_live_%d{yyyy-MM-dd}.log
+				${LOG_HOME}/logic_%d{yyyy-MM-dd}%i.log
 			</fileNamePattern>
 			<timeBasedFileNamingAndTriggeringPolicy
 				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
 				<maxFileSize>10MB</maxFileSize>
 			</timeBasedFileNamingAndTriggeringPolicy>
+			<maxHistory>30</maxHistory>
 		</rollingPolicy>
 	</appender>
 
-	<appender name="FILE-ERROR"
-		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${LOG_HOME}/error.log</file>
-		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			<charset>UTF-8</charset>
-			<Pattern>
-				%d{HH:mm:ss.SSS}|%-5level|%logger{36}|%msg%n
-			</Pattern>
-		</encoder>
-
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<!-- rollover daily -->
-			<fileNamePattern>
-				${LOG_HOME}/error_%d{yyyy-MM-dd}.log
-			</fileNamePattern>
-			<timeBasedFileNamingAndTriggeringPolicy
-				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-				<maxFileSize>10MB</maxFileSize>
-			</timeBasedFileNamingAndTriggeringPolicy>
-		</rollingPolicy>
-
-	</appender>
+	
 
 	<logger name="org.mongodb" level="WARN" />
 	<logger name="org.eclipse.jetty" level="INFO" />
@@ -62,12 +40,9 @@
 
 	<!-- 日志输出级别 -->
 	<root level="INFO">
-		<appender-ref ref="STDOUT" />
-		<appender-ref ref="FILE-AUDIT" />
+		<appender-ref ref="console" />
+		<appender-ref ref="file-log" />
 	</root>
 	
-	<root level="ERROR">
-		<appender-ref ref="FILE-ERROR" />
-	</root>
-	
+
 </configuration>
