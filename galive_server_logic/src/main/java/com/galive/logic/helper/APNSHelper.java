@@ -1,5 +1,6 @@
 package com.galive.logic.helper;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -10,6 +11,7 @@ import java.util.concurrent.Executors;
 
 import org.apache.commons.lang.time.DateUtils;
 
+import com.galive.logic.ApplicationMain;
 import com.galive.logic.config.APNSConfig;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.service.UserServiceImpl;
@@ -20,8 +22,9 @@ public class APNSHelper {
 
 	private static ExecutorService executorService = Executors.newFixedThreadPool(10);
 	
+	private static final String SEPARATOR = "/";
+	
 	private boolean isDistribution;
-	private String cert;
 	private String password;
 	private APNSConfig config;
 	private UserServiceImpl userService = new UserServiceImpl();
@@ -29,8 +32,6 @@ public class APNSHelper {
 	public APNSHelper(boolean isDistribution) {
 		this.isDistribution = isDistribution;
 		config = ApplicationConfig.getInstance().getApnsConfig();
-		String certName = isDistribution ? config.getCertNameDistruction() : config.getCertNameDevelopment();
-		cert = LogicHelper.loadApnsCertPath(certName);
 		password = isDistribution ? config.getCertPasswordDistruction() : config.getCertPasswordDevelopment();
 	}
 	
@@ -50,9 +51,12 @@ public class APNSHelper {
 				if (hour >= 23 || hour < 8) { // 23点到8点不推送
 					return;
 				}
+				String certName = isDistribution ? config.getCertNameDistruction() : config.getCertNameDevelopment();
 				
-				/// TODO 当前只有生产环境有效
-				ApnsService service = APNS.newService().withCert(cert, password).withAppleDestination(true).build();
+				String name = SEPARATOR + ApplicationMain.getInstance().getMode().name + SEPARATOR + certName;
+				InputStream in = APNSHelper.class.getResourceAsStream(name);
+				
+				ApnsService service = APNS.newService().withCert(in, password).withAppleDestination(isDistribution).build();
 				String payload = APNS.newPayload()
 						//.alertTitle("alertTitle")
 						.badge(config.getPushBadge())
@@ -75,7 +79,7 @@ public class APNSHelper {
 	// Test
 	public static void main(String args[]) throws Exception {
 		APNSHelper apns = new APNSHelper(true);
-		apns.cert = "/Users/luguangqing/Downloads/cert_production.p12";
+		//apns.cert = "/Users/luguangqing/Downloads/cert_production.p12";
 		apns.password = "1234";
 		apns.push("14be385c531c07197a0b77b157c1b499d0c3084da2ceecfdff805572e86d8d3d", "asdasdas");
 	}

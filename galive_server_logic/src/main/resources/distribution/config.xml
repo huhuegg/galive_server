@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE ServerConfig>
-<ServerConfig>
+<!DOCTYPE Config>
+<Config>
 
 	<WebRTC>
 		<IceServer>
@@ -13,12 +13,12 @@
 	<TokenExpire>7200</TokenExpire>
 
 	<Socket>
-		<Host>192.168.1.211</Host>
-		<Port>52194</Port>
+		<Host>222.73.196.99</Host>
+		<Port>6888</Port>
 		<LiveReq>ga</LiveReq>
 		<LiveResp>live</LiveResp>
 		<HeartBeatInterval>20</HeartBeatInterval>
-		<ParamsDelimiter>&amp;</ParamsDelimiter><!-- # -->
+		<ParamsDelimiter>&amp;</ParamsDelimiter><!-- & -->
 		<MessageDelimiter>-@-xmn-@-</MessageDelimiter><!-- 消息定界符 -->
 	</Socket>
 
@@ -31,8 +31,18 @@
 		<PushSound>call.caf</PushSound>
 		<PushBadge>1</PushBadge>
 	</Apns>
+	
+	<Platform>
+		<QQ>
+			<AppId>123</AppId>
+		</QQ>
+		<Wechat>
+			<AppId>123</AppId>
+			<AppSecret>123</AppSecret>
+		</Wechat>
+	</Platform>
 
 	<Logic>
 		<RoomMaxUser>5</RoomMaxUser>
 	</Logic>
-</ServerConfig>
+</Config>

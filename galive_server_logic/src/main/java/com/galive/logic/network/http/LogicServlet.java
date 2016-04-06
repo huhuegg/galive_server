@@ -48,6 +48,7 @@ public class LogicServlet extends HttpServlet {
 	}
 	
 	private void badRequest(HttpServletResponse resp) throws IOException {
+		logger.error("参数错误");
 		resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		resp.getWriter().write("invalidate request");
 	}

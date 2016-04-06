@@ -66,17 +66,17 @@ public class ChannelHandler extends ChannelInboundHandlerAdapter {
     		return;
     	}
     	logger.debug(reqData);
-		CommandIn in = CommandIn.fromSocketReq(reqData);
+		CommandIn in = CommandIn.fromSocketReq(reqData, ApplicationConfig.getInstance().getSocketConfig().getParamsDelimiter());
 		if (in != null) {
 			SocketBaseHandler handler = AnnotationManager.createSocketHandlerInstance(in.getCommand());
 			if (handler != null) {
 				handler.handle(in, ctx);
 			} else {
-				printLog("channelRead 消息错误:" + reqData, ctx);
+				logger.error("channelRead 消息错误:" + reqData);
 				closeAndRemoveChannel(ctx);
 			}
 		} else {
-			printLog("channelRead 消息错误:" + reqData, ctx);
+			logger.error("channelRead 消息错误:" + reqData);
 			closeAndRemoveChannel(ctx);
 		}
     }

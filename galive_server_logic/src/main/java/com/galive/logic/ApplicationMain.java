@@ -8,8 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.dao.cache.RedisManager;
+import com.galive.logic.helper.LogicHelper;
 import com.galive.logic.manager.AnnotationManager;
-import com.galive.logic.manager.LogManager;
 import com.galive.logic.model.Sid;
 import com.galive.logic.model.Sid.EntitySeq;
 import com.galive.logic.network.http.jetty.JettyServer;
@@ -77,7 +77,7 @@ public class ApplicationMain implements Daemon {
 			ApplicationConfig.getInstance();
 			
 			logger.info("重载log配置");
-			LogManager.resetLogConfigPath();
+			LogicHelper.resetLogConfigPath();
 			
 			logger.info("加载Handler标签");
 			AnnotationManager.initAnnotation();

@@ -26,6 +26,7 @@ import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.CharsetUtil;
 
 public class NettyServer {
 
@@ -56,10 +57,10 @@ public class NettyServer {
 						
 						// 基于最大长度
 //						e.pipeline().addLast(new FixedLengthFrameDecoder(4));
-						ch.pipeline().addLast(new StringDecoder());
+						ch.pipeline().addLast(new StringDecoder(CharsetUtil.UTF_8));
 						
 						// 编码器 String
-						ch.pipeline().addLast(new StringEncoder());
+						ch.pipeline().addLast(new StringEncoder(CharsetUtil.UTF_8));
 						
 						//心跳
 						ch.pipeline().addLast(new IdleStateHandler(0, 0, nettyConfig.getBothIdleTime(), TimeUnit.SECONDS));

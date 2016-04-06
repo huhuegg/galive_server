@@ -2,6 +2,8 @@ package com.galive.logic.service;
 
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
+
+import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.dao.UserCacheImpl;
 import com.galive.logic.dao.UserDaoImpl;
 import com.galive.logic.exception.LogicException;
@@ -42,6 +44,10 @@ public class UserServiceImpl implements UserService {
 		int nicknameLen = StringUtils.length(nickname);
 		if (nicknameLen > 20) {
 			throw new LogicException("昵称最大为20位。");
+		}
+		String delimiter = ApplicationConfig.getInstance().getSocketConfig().getParamsDelimiter();
+		if (StringUtils.contains(username, delimiter)) {
+			throw new LogicException("用户名不得包含特殊字符。");
 		}
 		u.setUsername(username);
 		u.setPassword(password);

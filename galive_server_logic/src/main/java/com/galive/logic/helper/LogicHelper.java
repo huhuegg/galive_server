@@ -5,7 +5,14 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.UUID;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.LoggerFactory;
+
 import com.galive.logic.ApplicationMain;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class LogicHelper {
 
@@ -25,10 +32,19 @@ public class LogicHelper {
 		return in;
 	}
 	
-	public static String loadApnsCertPath(String certName) {
-		String name = SEPARATOR + ApplicationMain.getInstance().getMode().name + SEPARATOR + certName;
-		String path = LogicHelper.class.getResource(name).getPath();
-		return path;
+	public static void resetLogConfigPath() {
+		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+		JoranConfigurator configurator = new JoranConfigurator();
+		configurator.setContext(lc);
+		lc.reset();
+		String name = SEPARATOR + ApplicationMain.getInstance().getMode().name + SEPARATOR + "logback.xml";
+		InputStream in = LogicHelper.class.getResourceAsStream(name);
+		try {
+			configurator.doConfigure(in);
+		} catch (JoranException e) {
+			e.printStackTrace();
+		}
+		StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
 	}
 	
 	public static String generateRandomMd5() {

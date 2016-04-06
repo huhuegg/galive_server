@@ -7,9 +7,13 @@ import java.nio.charset.StandardCharsets;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class CommandIn {
 
+	private static Logger logger = LoggerFactory.getLogger(CommandIn.class);
 	/**
 	 * 请求id
 	 */
@@ -35,10 +39,10 @@ public class CommandIn {
 	 * @param req command&userSid&token&params
 	 * @return
 	 */
-	public static CommandIn fromSocketReq(String req) {
+	public static CommandIn fromSocketReq(String req, String paramsDelimiter) {
 		try {
-			String s[] = req.split("&");
-			if (s.length != 4) {
+			String s[] = StringUtils.split(req, paramsDelimiter, 4);
+			if (s.length < 4) {
 				return null;
 			}
 			String command = s[0];
@@ -74,12 +78,13 @@ public class CommandIn {
 			String userSid = req.getHeader("userSid");
 			String token = req.getHeader("token");
 			String params = req.getParameter("params");
+			logger.debug(String.format("command:%s,userSid:%s,token:%s,params:%s", command,userSid,token,params));
 			CommandIn in = new CommandIn();
 			in.setCommand(command);
 			in.setUserSid(userSid);
 			in.setToken(token);
 			if (params != null) {
-				in.setParams(URLDecoder.decode(req.getParameter("params"), StandardCharsets.UTF_8.name()));
+				in.setParams(URLDecoder.decode(params, StandardCharsets.UTF_8.name()));
 			}
 			return in;
 		} catch (UnsupportedEncodingException e) {
@@ -87,7 +92,7 @@ public class CommandIn {
 		}
 		return null;
 	}
-
+	
 	public String getUserSid() {
 		return userSid;
 	}
