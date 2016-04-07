@@ -50,11 +50,11 @@ public class RedisConfig {
 	
 	private String auth = "superman";
 	
-	private int connectTimeout = 10000;
+	private int connectTimeout = 60;
 	
 	private int maxIdle = 0;
 	
-	private int maxWaitMillis = 0;
+	private int maxWaitMillis = 30;
 	
 	private boolean testWhileIdle = true;
 	

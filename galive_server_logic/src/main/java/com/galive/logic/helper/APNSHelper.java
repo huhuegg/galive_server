@@ -53,7 +53,7 @@ public class APNSHelper {
 				}
 				String certName = isDistribution ? config.getCertNameDistruction() : config.getCertNameDevelopment();
 				
-				String name = SEPARATOR + ApplicationMain.getInstance().getMode().name + SEPARATOR + certName;
+				String name = SEPARATOR + ApplicationMain.get().getMode().name + SEPARATOR + certName;
 				InputStream in = APNSHelper.class.getResourceAsStream(name);
 				
 				ApnsService service = APNS.newService().withCert(in, password).withAppleDestination(isDistribution).build();

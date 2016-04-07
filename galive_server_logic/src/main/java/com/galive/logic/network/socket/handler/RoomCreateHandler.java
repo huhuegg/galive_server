@@ -58,7 +58,7 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 				}
 				// 苹果推送
 				if (!CollectionUtils.isEmpty(deviceTokens)) {
-					APNSHelper apns = new APNSHelper(ApplicationMain.getInstance().getMode() == ApplicationMode.Distribution);
+					APNSHelper apns = new APNSHelper(ApplicationMain.get().getMode() == ApplicationMode.Distribution);
 					String content = String.format("%s邀请你加入Ta的房间。", invitor.getNickname());
 					apns.push(deviceTokens, content);
 				}

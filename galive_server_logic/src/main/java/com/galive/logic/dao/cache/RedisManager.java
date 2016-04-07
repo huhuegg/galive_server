@@ -28,10 +28,13 @@ public class RedisManager {
 	}
 	
 	public static void returnToPool(Jedis j) {
-		//deprecation
-//		if (j != null) {
-//			pool.returnResource(j);
-//		}
+		if (j != null) {
+			j.close();
+		}
+	}
+	
+	public static void destroy() {
+		pool.destroy();
 	}
 
 	public static Jedis getResource() {

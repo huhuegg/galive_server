@@ -93,8 +93,9 @@ public class ChannelHandler extends ChannelInboundHandlerAdapter {
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent event = (IdleStateEvent) evt;
             IdleState state = event.state();
-            logger.debug(state.toString());
             if (state == IdleState.ALL_IDLE) {
+            	String ip = ctx.channel().remoteAddress().toString();  
+            	logger.info("ALL_IDLE:" + ip + " close connection");
             	closeAndRemoveChannel(ctx);
             }
         }

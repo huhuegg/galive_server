@@ -23,14 +23,16 @@ public class ApplicationMain implements Daemon {
 
 	private static ApplicationMain instance;
 
-	private ApplicationMain() {
-	}
-
-	public static synchronized ApplicationMain getInstance() {
+	public static ApplicationMain get() {
 		if (instance == null) {
-			instance = new ApplicationMain();
+			return new ApplicationMain();
 		}
 		return instance;
+	}
+
+	public ApplicationMain() {
+		super();
+		instance = this;
 	}
 
 	public enum ApplicationMode {
@@ -48,7 +50,15 @@ public class ApplicationMain implements Daemon {
 	private ApplicationMode mode = ApplicationMode.Develop;
 
 	public static void main(String[] args) {
-		ApplicationMain app = ApplicationMain.getInstance();
+		if (ArrayUtils.isEmpty(args)) {
+			logger.info("start args is null, start with debug mode.");
+		} else {
+			for (String arg : args) {
+				logger.info("arg:" + arg);
+			}
+		}
+
+		ApplicationMain app = ApplicationMain.get();
 		app.initParams(args);
 		try {
 			app.start();
@@ -62,12 +72,20 @@ public class ApplicationMain implements Daemon {
 				e1.printStackTrace();
 			}
 		}
+
 	}
 
 	public void init(DaemonContext context) throws DaemonInitException, Exception {
-		String attrs[] = context.getArguments();
-		ApplicationMain app = ApplicationMain.getInstance();
-		app.initParams(attrs);
+		String args[] = context.getArguments();
+		if (ArrayUtils.isEmpty(args)) {
+			logger.info("start args is null, start with debug mode.");
+		} else {
+			for (String arg : args) {
+				logger.info("arg:" + arg);
+			}
+		}
+		ApplicationMain app = ApplicationMain.get();
+		app.initParams(args);
 	}
 
 	public void start() throws Exception {
@@ -75,10 +93,10 @@ public class ApplicationMain implements Daemon {
 		try {
 			logger.info("加载配置文件");
 			ApplicationConfig.getInstance();
-			
+
 			logger.info("重载log配置");
 			LogicHelper.resetLogConfigPath();
-			
+
 			logger.info("加载Handler标签");
 			AnnotationManager.initAnnotation();
 		} catch (Exception e) {
@@ -91,7 +109,7 @@ public class ApplicationMain implements Daemon {
 		try {
 			long seq = Sid.getNextSequence(EntitySeq.Test);
 			logger.info("mongo test seq:" + seq + ",连接成功");
-			
+
 			Jedis j = RedisManager.getResource();
 			j.set("test", System.currentTimeMillis() + "");
 			logger.info("redis test value:" + j.get("test") + ",连接成功");
@@ -99,7 +117,7 @@ public class ApplicationMain implements Daemon {
 			e.printStackTrace();
 			logger.error("数据库连接失败:" + e.getMessage());
 			throw new Exception("数据库连接失败:" + e.getMessage());
-		} 
+		}
 
 		logger.info("【绑定http服务】");
 		try {
@@ -112,7 +130,7 @@ public class ApplicationMain implements Daemon {
 			logger.error("jetty启动失败:" + e.getMessage());
 			throw new Exception("jetty启动失败:" + e.getMessage());
 		}
-		
+
 		logger.info("【绑定socket服务】");
 		try {
 			logger.info("启动netty...");
@@ -149,6 +167,7 @@ public class ApplicationMain implements Daemon {
 			if (nettyServer != null) {
 				nettyServer.stop();
 			}
+			RedisManager.destroy();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -162,7 +181,8 @@ public class ApplicationMain implements Daemon {
 				mode = ApplicationMode.Distribution;
 			}
 		}
-		ApplicationMain.getInstance().setMode(mode);
+		logger.info("ApplicationMain start with mode:" + mode);
+		ApplicationMain.instance.setMode(mode);
 	}
 
 	private void addShutdownHook() {
