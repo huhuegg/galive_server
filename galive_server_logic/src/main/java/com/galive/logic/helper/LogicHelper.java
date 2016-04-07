@@ -2,7 +2,6 @@ package com.galive.logic.helper;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
 import java.util.UUID;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.LoggerFactory;
@@ -18,12 +17,10 @@ public class LogicHelper {
 
 	private static final String SEPARATOR = "/";
 	
-	public static Properties loadProperties() throws IOException {
-		Properties prop = new Properties();
+	public static InputStream loadProperties() throws IOException {
 		String name = SEPARATOR + ApplicationMain.get().getMode().name + SEPARATOR + "jdbc.properties";
 		InputStream in = LogicHelper.class.getResourceAsStream(name);
-		prop.load(in);
-		return prop;
+		return in;
 	}
 	
 	public static InputStream loadConfig() throws IOException {
@@ -43,6 +40,14 @@ public class LogicHelper {
 			configurator.doConfigure(in);
 		} catch (JoranException e) {
 			e.printStackTrace();
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
 	}

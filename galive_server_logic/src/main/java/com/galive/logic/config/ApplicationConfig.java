@@ -1,5 +1,6 @@
 package com.galive.logic.config;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class ApplicationConfig {
 	/**
 	 * 重载间隔
 	 */
-	private static final long RELOAD_INTERVAL = 1000 * 60 * 10;
+	private static final long RELOAD_INTERVAL = 1000 * 60 * 60 * 24;
 	private static ApplicationConfig instance = null;
 
 	private RTCConfig rtcConfig;
@@ -56,8 +57,9 @@ public class ApplicationConfig {
 
 	private static ApplicationConfig loadConfig() {
 		ApplicationConfig sc = new ApplicationConfig();
+		InputStream in = null;
 		try {
-			InputStream in = LogicHelper.loadConfig();
+			in = LogicHelper.loadConfig();
 			if (in == null) {
 				logger.error("读取配置文件失败: 文件不存在。");
 				return sc;
@@ -204,6 +206,14 @@ public class ApplicationConfig {
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("读取配置文件失败:" + e.getLocalizedMessage());
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		return sc;
 	}

@@ -1,6 +1,7 @@
 package com.galive.logic.network.socket.netty;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.apache.commons.lang.math.NumberUtils;
@@ -21,18 +22,33 @@ public class NettyConfig {
 
 	private String liveResp = "";
 
-	public static NettyConfig loadConfig() throws IOException {
+	public static NettyConfig loadConfig()  {
 		NettyConfig config = new NettyConfig();
-		Properties prop = LogicHelper.loadProperties();
-		config.port = ApplicationConfig.getInstance().getSocketConfig().getPort();
-		
-		int bufferSize = NumberUtils.toInt(prop.getProperty("netty.bufferSize"), 8192);
-		int idleTime = NumberUtils.toInt(prop.getProperty("netty.bothIdleTime"), 60);
-		
-		config.bufferSize = bufferSize;
-		config.bothIdleTime = idleTime;
-		config.liveReq = ApplicationConfig.getInstance().getSocketConfig().getLiveReq();
-		config.liveResp = ApplicationConfig.getInstance().getSocketConfig().getLiveResp();
+		InputStream in = null;
+		try {
+			in = LogicHelper.loadProperties();
+			Properties prop = new Properties(); LogicHelper.loadProperties();
+			prop.load(in);
+			config.port = ApplicationConfig.getInstance().getSocketConfig().getPort();
+			
+			int bufferSize = NumberUtils.toInt(prop.getProperty("netty.bufferSize"), 8192);
+			int idleTime = NumberUtils.toInt(prop.getProperty("netty.bothIdleTime"), 60);
+			
+			config.bufferSize = bufferSize;
+			config.bothIdleTime = idleTime;
+			config.liveReq = ApplicationConfig.getInstance().getSocketConfig().getLiveReq();
+			config.liveResp = ApplicationConfig.getInstance().getSocketConfig().getLiveResp();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		return config;
 	}
 

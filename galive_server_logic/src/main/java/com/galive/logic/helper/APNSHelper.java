@@ -1,5 +1,6 @@
 package com.galive.logic.helper;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -70,7 +71,13 @@ public class APNSHelper {
 				for (String deviceToken : inactiveDevices.keySet()) {
 					userService.deleteDeviceToken(deviceToken);
 				}
-				
+				if (in != null) {
+					try {
+						in.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		});
 	}

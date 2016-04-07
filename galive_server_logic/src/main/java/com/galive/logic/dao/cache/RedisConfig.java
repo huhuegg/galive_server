@@ -1,10 +1,10 @@
 package com.galive.logic.dao.cache;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
-
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.math.NumberUtils;
-
 import com.galive.logic.helper.LogicHelper;
 
 
@@ -16,8 +16,11 @@ public class RedisConfig {
 	
 	public static RedisConfig loadConfig() {
 		RedisConfig config = new RedisConfig();
+		InputStream in = null;
 		try {
-			Properties prop = LogicHelper.loadProperties();
+			in = LogicHelper.loadProperties();
+			Properties prop = new Properties(); LogicHelper.loadProperties();
+			prop.load(in);
 			int port = NumberUtils.toInt(prop.getProperty("redis.port"), 6379);
 			int connectTimeout = NumberUtils.toInt(prop.getProperty("redis.connectTimeout"), 10000);
 			int maxIdle = NumberUtils.toInt(prop.getProperty("redis.maxIdle"), 1000);
@@ -40,6 +43,14 @@ public class RedisConfig {
 			config.keyPrefix = prop.getProperty("redis.keyPrefix");
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		return config;
 	}

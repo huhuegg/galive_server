@@ -1,5 +1,7 @@
 package com.galive.logic.dao.db;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.apache.commons.lang.BooleanUtils;
@@ -15,9 +17,11 @@ public class MongoConfig {
 	
 	public static MongoConfig loadConfig() {
 		MongoConfig config = new MongoConfig();
+		InputStream in = null;
 		try {
-			Properties prop = LogicHelper.loadProperties();
-			
+			in = LogicHelper.loadProperties();
+			Properties prop = new Properties(); LogicHelper.loadProperties();
+			prop.load(in);
 			int poolSize = NumberUtils.toInt(prop.getProperty("mongo.poolSize"), 10);
 			int maxWaitTime = NumberUtils.toInt(prop.getProperty("mongo.maxWaitTime"), 120000);
 			int connectTimeout = NumberUtils.toInt(prop.getProperty("mongo.connectTimeout"), 10000);
@@ -39,6 +43,14 @@ public class MongoConfig {
 			config.socketKeepAlive = keepAlive;
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		return config;
 	}
