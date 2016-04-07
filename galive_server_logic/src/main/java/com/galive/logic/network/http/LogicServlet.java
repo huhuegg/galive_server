@@ -44,6 +44,8 @@ public class LogicServlet extends HttpServlet {
 			e.printStackTrace();
 			logger.error(e.getMessage());
 			badRequest(resp);
+		} finally {
+			
 		}
 	}
 	

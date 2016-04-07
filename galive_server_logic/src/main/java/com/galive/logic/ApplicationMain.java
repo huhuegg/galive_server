@@ -113,6 +113,7 @@ public class ApplicationMain implements Daemon {
 			Jedis j = RedisManager.getResource();
 			j.set("test", System.currentTimeMillis() + "");
 			logger.info("redis test value:" + j.get("test") + ",连接成功");
+			RedisManager.returnToPool(j);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("数据库连接失败:" + e.getMessage());

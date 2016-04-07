@@ -26,7 +26,7 @@ public class ApplicationConfig {
 	/**
 	 * 重载间隔
 	 */
-	private static final long RELOAD_INTERVAL = 1000 * 60 * 3;
+	private static final long RELOAD_INTERVAL = 1000 * 60 * 10;
 	private static ApplicationConfig instance = null;
 
 	private RTCConfig rtcConfig;
