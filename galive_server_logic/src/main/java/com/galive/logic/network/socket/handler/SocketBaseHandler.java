@@ -13,6 +13,8 @@ public abstract class SocketBaseHandler {
 	private static Logger logger = LoggerFactory.getLogger(SocketBaseHandler.class);
 	
 	public abstract String handle(String userSid, String reqData);
+	
+	protected StringBuffer loggerBuffer = new StringBuffer();
 
 	public void handle(CommandIn in, ChannelHandlerContext channel) {
 		try {
@@ -41,4 +43,8 @@ public abstract class SocketBaseHandler {
 		ChannelManager.getInstance().sendMessage(userSid, message);
 	}
 	
+	protected void appendLog(String log) {
+		loggerBuffer.append(log);
+		loggerBuffer.append("/n");
+	}
 }

@@ -139,7 +139,7 @@ public class RoomServiceImpl implements RoomService {
 			}
 		}
 		Set<String> users = room.getUsers();
-		if (users.size() >= room.getMaxMemberCount()) {
+		if (users.size() >= room.getMaxMemberCount() && !users.contains(userSid)) {
 			throw new LogicException("该房间已满员。");
 		}
 		users.add(userSid);
