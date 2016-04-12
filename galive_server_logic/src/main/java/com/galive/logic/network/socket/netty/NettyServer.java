@@ -37,8 +37,8 @@ public class NettyServer {
 	private EventLoopGroup workerGroup;
 
 	public void start() throws InterruptedException, IOException {
-		bossGroup = new NioEventLoopGroup(); 
-		workerGroup = new NioEventLoopGroup();
+		bossGroup = new NioEventLoopGroup(1); 
+		workerGroup = new NioEventLoopGroup(1);
 		final NettyConfig nettyConfig = NettyConfig.loadConfig();
 		final SocketConfig socketConfig = ApplicationConfig.getInstance().getSocketConfig();
 		ServerBootstrap b = new ServerBootstrap(); 
@@ -82,7 +82,7 @@ public class NettyServer {
 				workerGroup.shutdownGracefully().sync();
 			}
 			if (bossGroup != null) {
-				bossGroup.shutdownGracefully();
+				bossGroup.shutdownGracefully().sync();
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

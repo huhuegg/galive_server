@@ -15,42 +15,42 @@ public class RoomCacheImpl implements RoomCache {
 	public static final int ROOM_REFRESH_INTERVAL = 60 * 60;
 	public static final int ROOM_INVITEE_TIMEOUT = 60 * 60;
 	
-	private Jedis jedis = RedisManager.getResource();
+	private Jedis jedis = RedisManager.getInstance().getResource();
 
 	@Override
 	protected void finalize() throws Throwable {
-		RedisManager.returnToPool(jedis);
+		RedisManager.getInstance().returnToPool(jedis);
 		super.finalize();
 	}
 
 	// 记录用户所在的房间，用于重连 set k:[room:user_room:用户id] v:[房间id]
 	private String userInRoomKey(String userSid) {
-		return RedisManager.keyPrefix() + "room:user_room:" + userSid;
+		return RedisManager.getInstance().keyPrefix() + "room:user_room:" + userSid;
 	}
 	
 	// 记录用户被邀请进入的房间，用于自动进入 set k:[room:user_room_invitee:用户id] v:[房间id]
 	private String inviteeInRoomKey(String inviteeUserSid) {
-		return RedisManager.keyPrefix() + "room:user_room_invitee:" + inviteeUserSid;
+		return RedisManager.getInstance().keyPrefix() + "room:user_room_invitee:" + inviteeUserSid;
 	}
 
 	// 房间信息 set k:[room:房间id] v:[房间json]
 	private String roomKey(String roomId) {
-		return RedisManager.keyPrefix() + "room:" + roomId;
+		return RedisManager.getInstance().keyPrefix() + "room:" + roomId;
 	}
 
 	// 房间id list
 	private String roomSidListKey() {
-		return RedisManager.keyPrefix() + "room:sid:seq";
+		return RedisManager.getInstance().keyPrefix() + "room:sid:seq";
 	}
 
 	// 房间id set incr
 	private String roomSidSeqKey() {
-		return RedisManager.keyPrefix() + "room:sid:incr";
+		return RedisManager.getInstance().keyPrefix() + "room:sid:incr";
 	}
 
 	// 记录用户所在的房间，用于重连 set k:[room:list:create_time:用户id] v:[房间id]
 	private String listByCreateTimeKey() {
-		return RedisManager.keyPrefix() + "room:list:create_time";
+		return RedisManager.getInstance().keyPrefix() + "room:list:create_time";
 	}
 	
 	/**

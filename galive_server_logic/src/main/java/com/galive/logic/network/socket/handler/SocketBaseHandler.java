@@ -6,17 +6,11 @@ import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
 import com.galive.logic.network.socket.ChannelManager;
 import com.galive.logic.network.socket.handler.push.KickOffPush;
-import com.galive.logic.service.RoomServiceImpl;
-import com.galive.logic.service.UserServiceImpl;
-
 import io.netty.channel.ChannelHandlerContext;
 
 public abstract class SocketBaseHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(SocketBaseHandler.class);
-	
-	protected UserServiceImpl userService = new UserServiceImpl();
-	protected RoomServiceImpl roomService = new RoomServiceImpl();
 	
 	public abstract String handle(String userSid, String reqData);
 

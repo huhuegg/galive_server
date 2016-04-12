@@ -12,30 +12,30 @@ import redis.clients.jedis.Jedis;
 
 public class UserCacheImpl implements UserCache {
 
-	private Jedis jedis = RedisManager.getResource();
+	private Jedis jedis = RedisManager.getInstance().getResource();
 	private UserDaoImpl userDao = new UserDaoImpl();
 
 	@Override
 	protected void finalize() throws Throwable {
-		RedisManager.returnToPool(jedis);
+		RedisManager.getInstance().returnToPool(jedis);
 		super.finalize();
 	}
 	
 	private String userTokenKey(String userSid) {
-		return RedisManager.keyPrefix() + "user:token:" + userSid;
+		return RedisManager.getInstance().keyPrefix() + "user:token:" + userSid;
 	}
 
 	// zadd score:登录时间 val:用户Sid
 	private String userListByLatestLoginKey() {
-		return RedisManager.keyPrefix() + "user:list:latest_login";
+		return RedisManager.getInstance().keyPrefix() + "user:list:latest_login";
 	}
 
 	private String deviceTokenKey() {
-		return RedisManager.keyPrefix() + "user:device_token";
+		return RedisManager.getInstance().keyPrefix() + "user:device_token";
 	}
 	
 	private String deviceTokenForUserKey() {
-		return RedisManager.keyPrefix() + "user:device_token:user";
+		return RedisManager.getInstance().keyPrefix() + "user:device_token:user";
 	}
 
 	@Override

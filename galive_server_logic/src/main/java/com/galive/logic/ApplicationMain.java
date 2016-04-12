@@ -110,10 +110,10 @@ public class ApplicationMain implements Daemon {
 			long seq = Sid.getNextSequence(EntitySeq.Test);
 			logger.info("mongo test seq:" + seq + ",连接成功");
 
-			Jedis j = RedisManager.getResource();
+			Jedis j = RedisManager.getInstance().getResource();
 			j.set("test", System.currentTimeMillis() + "");
 			logger.info("redis test value:" + j.get("test") + ",连接成功");
-			RedisManager.returnToPool(j);
+			RedisManager.getInstance().returnToPool(j);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("数据库连接失败:" + e.getMessage());
@@ -153,22 +153,27 @@ public class ApplicationMain implements Daemon {
 	}
 
 	public void stop() throws Exception {
+		
 		stopServer();
 	}
 
 	public void destroy() {
+		logger.info("===Daemon destroy===");
 		stopServer();
 	}
 
 	private void stopServer() {
+		logger.info("===Server stop===");
 		try {
 			if (jettyServer != null) {
 				jettyServer.stop();
+				logger.info("jetty关闭成功。");
 			}
 			if (nettyServer != null) {
 				nettyServer.stop();
+				logger.info("netty关闭成功。");
 			}
-			RedisManager.destroy();
+			RedisManager.getInstance().destroy();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

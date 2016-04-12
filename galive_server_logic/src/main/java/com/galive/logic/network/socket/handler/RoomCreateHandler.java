@@ -21,12 +21,17 @@ import com.galive.logic.network.model.RespRoom;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.RoomInviteePush;
+import com.galive.logic.service.RoomServiceImpl;
+import com.galive.logic.service.UserServiceImpl;
 
 @SocketRequestHandler(desc = "创建房间", command = Command.ROOM_CREATE)
 public class RoomCreateHandler extends SocketBaseHandler  {
 
 	private static Logger logger = LoggerFactory.getLogger(RoomCreateHandler.class);
 
+	private UserServiceImpl userService = new UserServiceImpl();
+	private RoomServiceImpl roomService = new RoomServiceImpl();
+	
 	@Override
 	public String handle(String userSid, String reqData) {
 		try {

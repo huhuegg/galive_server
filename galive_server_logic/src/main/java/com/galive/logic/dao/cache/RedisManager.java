@@ -7,11 +7,12 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 public class RedisManager {
-	
+
+	private static RedisManager instance = null;
 	private static JedisPool pool;
 	private static RedisConfig config;
-	
-	static {
+
+	private RedisManager() {
 		config = RedisConfig.loadConfig();
 		JedisPoolConfig c = new JedisPoolConfig();
 		c.setMaxIdle(config.getMaxIdle());
@@ -24,24 +25,35 @@ public class RedisManager {
 			pool = new JedisPool(c, config.getHost(), config.getPort(), config.getConnectTimeout());
 		} else {
 			pool = new JedisPool(c, config.getHost(), config.getPort(), config.getConnectTimeout(), config.getAuth());
-		}		
+		}
 	}
-	
-	public static void returnToPool(Jedis j) {
+
+	public final static RedisManager getInstance() {
+		if (instance == null) {
+			synchronized (RedisManager.class) {
+				if (instance == null) {
+					instance = new RedisManager();
+				}
+			}
+		}
+		return instance;
+	}
+
+	public void returnToPool(Jedis j) {
 		if (j != null) {
 			j.close();
 		}
 	}
-	
-	public static void destroy() {
+
+	public void destroy() {
 		pool.destroy();
 	}
 
-	public static Jedis getResource() {
+	public Jedis getResource() {
 		return pool.getResource();
 	}
-	
-	public static String keyPrefix() {
+
+	public String keyPrefix() {
 		return config.getKeyPrefix();
 	}
 }

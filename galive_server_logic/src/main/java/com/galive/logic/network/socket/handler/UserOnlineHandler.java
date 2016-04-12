@@ -13,11 +13,16 @@ import com.galive.logic.network.model.RespRoom;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.UserOnlinePush;
+import com.galive.logic.service.RoomServiceImpl;
+import com.galive.logic.service.UserServiceImpl;
 
 @SocketRequestHandler(desc = "客户端上线", command = Command.USR_ONLINE)
 public class UserOnlineHandler extends SocketBaseHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(UserOnlineHandler.class);
+	
+	private UserServiceImpl userService = new UserServiceImpl();
+	private RoomServiceImpl roomService = new RoomServiceImpl();
 	
 	@Override
 	public String handle(String userSid, String reqData) {

@@ -11,12 +11,16 @@ import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.SocketRequestHandler;
+import com.galive.logic.service.RoomServiceImpl;
+import com.galive.logic.service.UserServiceImpl;
 
 @SocketRequestHandler(desc = "获取用户信息", command = Command.USR_INFO)
 public class UserInfoHandler extends SocketBaseHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(UserInfoHandler.class);
-
+	private UserServiceImpl userService = new UserServiceImpl();
+	private RoomServiceImpl roomService = new RoomServiceImpl();
+	
 	@Override
 	public String handle(String userSid, String reqData) {
 		try {

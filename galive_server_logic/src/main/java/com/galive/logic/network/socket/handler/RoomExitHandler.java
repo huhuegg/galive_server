@@ -14,12 +14,17 @@ import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.RoomExitPush;
+import com.galive.logic.service.RoomServiceImpl;
+import com.galive.logic.service.UserServiceImpl;
 
 @SocketRequestHandler(desc = "退出房间", command = Command.ROOM_EXIT)
 public class RoomExitHandler extends SocketBaseHandler  {
 
 	private static Logger logger = LoggerFactory.getLogger(RoomExitHandler.class);
 
+	private UserServiceImpl userService = new UserServiceImpl();
+	private RoomServiceImpl roomService = new RoomServiceImpl();
+	
 	@Override
 	public String handle(String userSid, String reqData) {
 		try {

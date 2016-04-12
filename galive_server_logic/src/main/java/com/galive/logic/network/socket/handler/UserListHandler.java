@@ -13,6 +13,8 @@ import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.SocketRequestHandler;
+import com.galive.logic.service.RoomServiceImpl;
+import com.galive.logic.service.UserServiceImpl;
 
 @SocketRequestHandler(desc = "获取用户列表", command = Command.USR_LIST)
 public class UserListHandler extends SocketBaseHandler  {
@@ -22,6 +24,9 @@ public class UserListHandler extends SocketBaseHandler  {
 	}
 	
 	private static Logger logger = LoggerFactory.getLogger(UserListHandler.class);
+	
+	private UserServiceImpl userService = new UserServiceImpl();
+	private RoomServiceImpl roomService = new RoomServiceImpl();
 	
 	@Override
 	public String handle(String userSid, String reqData) {

@@ -15,11 +15,16 @@ import com.galive.logic.network.model.RespRoom;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.RoomEnterPush;
+import com.galive.logic.service.RoomServiceImpl;
+import com.galive.logic.service.UserServiceImpl;
 
 @SocketRequestHandler(desc = "进入房间", command = Command.ROOM_ENTER)
 public class RoomEnterHandler extends SocketBaseHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(RoomEnterHandler.class);
+	private UserServiceImpl userService = new UserServiceImpl();
+	private RoomServiceImpl roomService = new RoomServiceImpl();
+	
 	
 	@Override
 	public String handle(String userSid, String reqData) {

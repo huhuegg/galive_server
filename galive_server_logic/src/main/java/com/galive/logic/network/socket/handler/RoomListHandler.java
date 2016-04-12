@@ -12,12 +12,14 @@ import com.galive.common.protocol.PageCommandOut;
 import com.galive.logic.model.Room;
 import com.galive.logic.network.model.RespRoom;
 import com.galive.logic.network.socket.SocketRequestHandler;
+import com.galive.logic.service.RoomServiceImpl;
 
 @SocketRequestHandler(desc = "房间列表", command = Command.ROOM_LIST)
 public class RoomListHandler extends SocketBaseHandler  {
 
 	private static Logger logger = LoggerFactory.getLogger(RoomListHandler.class);
-
+	private RoomServiceImpl roomService = new RoomServiceImpl();
+	
 	@Override
 	public String handle(String userSid, String reqData) {
 		try {

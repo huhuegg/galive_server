@@ -19,15 +19,6 @@ public class ApplicationConfig {
 
 	private static Logger logger = LoggerFactory.getLogger(ApplicationConfig.class);
 
-	/**
-	 * 重载时间
-	 */
-	private static long RELOAD_TIMESTAMP = 0;
-
-	/**
-	 * 重载间隔
-	 */
-	private static final long RELOAD_INTERVAL = 1000 * 60 * 60 * 24;
 	private static ApplicationConfig instance = null;
 
 	private RTCConfig rtcConfig;
@@ -37,20 +28,13 @@ public class ApplicationConfig {
 	private APNSConfig apnsConfig;
 	private PlatformConfig platformConfig;
 
-	public static ApplicationConfig getInstance() {
+	public final static ApplicationConfig getInstance() {
 		if (instance == null) {
-			instance = loadConfig();
-		}
-		final long NOW = System.currentTimeMillis();
-		if (NOW - RELOAD_TIMESTAMP > RELOAD_INTERVAL) {
-			RELOAD_TIMESTAMP = NOW;
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					instance = loadConfig();
+			synchronized (ApplicationConfig.class) {
+				if (instance == null) {
+					instance = ApplicationConfig.loadConfig();
 				}
-			}).start();
+			}
 		}
 		return instance;
 	}
