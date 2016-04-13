@@ -47,19 +47,20 @@ public class RoomEnterHandler extends SocketBaseHandler {
 			push.user = RespUser.convert(u);
 			String pushMessage = push.socketResp();
 			
-			LoggerHelper.appendLog("推送房间内其他成员：" + pushMessage, logBuffer);
+			LoggerHelper.appendLog("ROOM_ENTER_PUSH:" + pushMessage, logBuffer);
 			Set<String> users = room.getUsers();
 			for (String roomerSid : users) {
 				// 推送通知房间其他用户
 				if (!roomerSid.equals(userSid)) {
+					String userDesc = userService.findUserBySid(roomerSid).desc();
 					User roomUser = userService.findUserBySid(roomerSid);
 					RespUser respUser = RespUser.convert(roomUser);
 					respRoom.users.add(respUser);
 					if (userService.isOnline(roomerSid)) {
 						pushMessage(roomerSid, pushMessage);
-						LoggerHelper.appendLog(String.format("用户%s 当前在线, 推送在线消息", roomerSid), logBuffer);
+						LoggerHelper.appendLog(String.format("用户%s当前在线, 发送ROOM_ENTER_PUSH", userDesc), logBuffer);
 					} else {
-						LoggerHelper.appendLog(String.format("用户%s 当前离线。", roomerSid), logBuffer);
+						LoggerHelper.appendLog(String.format("用户%s当前离线, 无法发送ROOM_ENTER_PUSH", userDesc), logBuffer);
 					}
 				}
 			}
@@ -83,6 +84,7 @@ public class RoomEnterHandler extends SocketBaseHandler {
 			return resp;
 		} catch (Exception e) {
 			String resp = respFail(null);
+			LoggerHelper.appendLog("发生错误" + e.getMessage(), logBuffer);
 			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
 			LoggerHelper.appendSplit(logBuffer);
 			String logicLog = LoggerHelper.loggerString(logBuffer);
@@ -108,7 +110,6 @@ public class RoomEnterHandler extends SocketBaseHandler {
 	
 	private String respFail(String message) {
 		String resp = CommandOut.failureOut(Command.ROOM_ENTER, message).httpResp();
-		logger.error("进入房间失败|" + resp);
 		return resp;
 	}
 }

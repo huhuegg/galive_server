@@ -66,7 +66,7 @@ public class UserListHandler extends SocketBaseHandler  {
 			PageCommandOut<RespUser> out = new PageCommandOut<>(Command.USR_LIST, in);
 			out.setData(respUsers);
 			String resp = out.socketResp();
-			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendLog("响应客户端:" + resp, logBuffer);
 			LoggerHelper.appendSplit(logBuffer);
 			String logicLog = LoggerHelper.loggerString(logBuffer);
 			logger.info(logicLog);
@@ -74,7 +74,8 @@ public class UserListHandler extends SocketBaseHandler  {
 			return resp;
 		} catch (Exception e) {
 			String resp = respFail(null);
-			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendLog("发生错误:" + e.getMessage(), logBuffer);
+			LoggerHelper.appendLog("响应客户端:" + resp, logBuffer);
 			LoggerHelper.appendSplit(logBuffer);
 			String logicLog = LoggerHelper.loggerString(logBuffer);
 			logger.error(logicLog);
@@ -85,7 +86,6 @@ public class UserListHandler extends SocketBaseHandler  {
 	
 	private String respFail(String message) {
 		String resp = CommandOut.failureOut(Command.USR_LIST, message).httpResp();
-		logger.error("获取用户列表失败|" + resp);
 		return resp;
 	}
 	

@@ -43,7 +43,7 @@ public class LoginHandler extends HttpBaseHandler {
 			out.user = respUser;
 			out.socket_config = ApplicationConfig.getInstance().getSocketConfig();
 			String resp = out.httpResp();
-			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendLog("响应客户端:" + resp, logBuffer);
 			LoggerHelper.appendSplit(logBuffer);
 			String logicLog = LoggerHelper.loggerString(logBuffer);
 			logger.info(logicLog);
@@ -51,7 +51,7 @@ public class LoginHandler extends HttpBaseHandler {
 			return resp;
 		} catch (LogicException e) {
 			String resp = respFail(e.getMessage());
-			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendLog("响应客户端:" + resp, logBuffer);
 			LoggerHelper.appendSplit(logBuffer);
 			String logicLog = LoggerHelper.loggerString(logBuffer);
 			logger.error(logicLog);
@@ -59,7 +59,8 @@ public class LoginHandler extends HttpBaseHandler {
 			return resp;
 		} catch (Exception e) {
 			String resp = respFail(null);
-			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendLog("发生错误:" + e.getMessage(), logBuffer);
+			LoggerHelper.appendLog("响应客户端:" + resp, logBuffer);
 			LoggerHelper.appendSplit(logBuffer);
 			String logicLog = LoggerHelper.loggerString(logBuffer);
 			logger.error(logicLog);
@@ -90,7 +91,6 @@ public class LoginHandler extends HttpBaseHandler {
 	
 	private String respFail(String message) {
 		String resp = CommandOut.failureOut(Command.USR_LOGIN, message).httpResp();
-		logger.error("用户登录失败|" + resp);
 		return resp;
 	}
 

@@ -54,22 +54,23 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 				inviteeRoom.invitor = RespUser.convert(invitor);
 				inviteePush.room = inviteeRoom;
 				String pushMessage = inviteePush.socketResp();
-				LoggerHelper.appendLog("推送邀请人：" + pushMessage, logBuffer);
+				LoggerHelper.appendLog("ROOM_INVITEE_PUSH:" + pushMessage, logBuffer);
 				
 				List<String> deviceTokens = new ArrayList<>();
 				for (String invitee : invitees) {
+					String userDesc = userService.findUserBySid(invitee).desc();
 					if (userService.isOnline(invitee)) {
 						pushMessage(invitee, pushMessage);
-						LoggerHelper.appendLog(String.format("用户%s 当前在线, 推送在线消息", invitee), logBuffer);
+						LoggerHelper.appendLog(String.format("用户%s当前在线, 发送ROOM_INVITEE_PUSH", userDesc), logBuffer);
 					} else {
-						LoggerHelper.appendLog(String.format("用户%s 当前离线。", invitee), logBuffer);
+						LoggerHelper.appendLog(String.format("用户%s当前离线, 无法发送ROOM_INVITEE_PUSH", userDesc), logBuffer);
 					}
 					String token = userService.findDeviceToken(invitee);
 					if (!StringUtils.isBlank(token)) {
-						LoggerHelper.appendLog(String.format("用户%s device_token(%s) 发送苹果推送。", invitee, token), logBuffer);
+						LoggerHelper.appendLog(String.format("用户%sDeviceToken(%s) 发送苹果推送。", userDesc, token), logBuffer);
 						deviceTokens.add(token);
 					} else {
-						LoggerHelper.appendLog(String.format("用户%s device_token(%s) 无效。", invitee, token), logBuffer);
+						LoggerHelper.appendLog(String.format("用户%sDeviceToken(%s) 无效。", userDesc, token), logBuffer);
 					}
 				}
 				// 苹果推送
@@ -77,7 +78,7 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 					APNSHelper apns = new APNSHelper(ApplicationMain.get().getMode() == ApplicationMode.Distribution);
 					String content = String.format("%s邀请你加入Ta的房间。", invitor.getNickname());
 					apns.push(deviceTokens, content);
-					LoggerHelper.appendLog(String.format("推送信息:" + content), logBuffer);
+					LoggerHelper.appendLog(String.format("APNS推送信息:" + content), logBuffer);
 				}
 			}
 			
@@ -100,6 +101,7 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 			return resp;
 		} catch (Exception e) {
 			String resp = respFail(null);
+			LoggerHelper.appendLog("发生错误" + e.getMessage(), logBuffer);
 			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
 			LoggerHelper.appendSplit(logBuffer);
 			String logicLog = LoggerHelper.loggerString(logBuffer);
@@ -127,7 +129,6 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 	
 	private String respFail(String message) {
 		String resp = CommandOut.failureOut(Command.ROOM_CREATE, message).httpResp();
-		logger.error("创建房间失败|" + resp);
 		return resp;
 	}
 	

@@ -17,9 +17,13 @@ public abstract class SocketBaseHandler {
 		LoggerHelper.appendSplit(logBuffer);
 		String command = in.getCommand();
 		String userSid = in.getUserSid();
+		String token = in.getToken();
+		String params = in.getParams();
 		LoggerHelper.appendLog("请求参数", logBuffer);
 		LoggerHelper.appendLog("command:" + command, logBuffer);
 		LoggerHelper.appendLog("userSid:" + userSid, logBuffer);
+		LoggerHelper.appendLog("token:" + token, logBuffer);
+		LoggerHelper.appendLog("params:" + params, logBuffer);
 		LoggerHelper.appendLog("-------------------------", logBuffer);
 		// 客户端打开连接
 		if (command.equals(Command.USR_ONLINE)) {

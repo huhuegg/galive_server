@@ -41,7 +41,7 @@ public class RoomListHandler extends SocketBaseHandler  {
 			PageCommandOut<RespRoom> out = new PageCommandOut<>(Command.ROOM_LIST, in);
 			out.setData(respRooms);
 			String resp = out.socketResp();
-			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendLog("响应客户端:" + resp, logBuffer);
 			LoggerHelper.appendSplit(logBuffer);
 			String logicLog = LoggerHelper.loggerString(logBuffer);
 			logger.info(logicLog);
@@ -49,7 +49,8 @@ public class RoomListHandler extends SocketBaseHandler  {
 			return out.socketResp();
 		} catch (Exception e) {
 			String resp = respFail(null);
-			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendLog("发生错误:" + e.getMessage(), logBuffer);
+			LoggerHelper.appendLog("响应客户端:" + resp, logBuffer);
 			LoggerHelper.appendSplit(logBuffer);
 			String logicLog = LoggerHelper.loggerString(logBuffer);
 			logger.error(logicLog);
@@ -60,7 +61,6 @@ public class RoomListHandler extends SocketBaseHandler  {
 	
 	private String respFail(String message) {
 		String resp = CommandOut.failureOut(Command.ROOM_LIST, message).httpResp();
-		logger.error("获取房间列表失败|" + resp);
 		return resp;
 	}
 }

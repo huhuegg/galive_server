@@ -62,7 +62,7 @@ public class RoomCacheImpl implements RoomCache {
 		String listKey = roomSidListKey();
 		String roomSid = jedis.rpop(listKey);
 		if (roomSid == null) {
-			long seq = jedis.incr(roomSidSeqKey());
+			long seq = jedis.incr(roomSidSeqKey()) + 1;
 			roomSid = seq + "";
 			if (seq % 100 == 0) { // 回收房间id
 				for (long i = 0; i < seq - 1; i++) {

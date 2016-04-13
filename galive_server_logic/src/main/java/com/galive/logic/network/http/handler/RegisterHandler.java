@@ -38,7 +38,7 @@ public class RegisterHandler extends HttpBaseHandler {
 			out.expire = ApplicationConfig.getInstance().getTokenExpire();
 			out.user = RespUser.convert(u);
 			String resp = out.httpResp();
-			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendLog("响应客户端:" + resp, logBuffer);
 			LoggerHelper.appendSplit(logBuffer);
 			String logicLog = LoggerHelper.loggerString(logBuffer);
 			logger.info(logicLog);
@@ -46,7 +46,7 @@ public class RegisterHandler extends HttpBaseHandler {
 			return resp;
 		} catch (LogicException e) {
 			String resp = respFail(e.getMessage());
-			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendLog("响应客户端:" + resp, logBuffer);
 			LoggerHelper.appendSplit(logBuffer);
 			String logicLog = LoggerHelper.loggerString(logBuffer);
 			logger.error(logicLog);
@@ -54,7 +54,8 @@ public class RegisterHandler extends HttpBaseHandler {
 			return resp;
 		} catch (Exception e) {
 			String resp = respFail(null);
-			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendLog("发生错误:" + e.getMessage(), logBuffer);
+			LoggerHelper.appendLog("响应客户端:" + resp, logBuffer);
 			LoggerHelper.appendSplit(logBuffer);
 			String logicLog = LoggerHelper.loggerString(logBuffer);
 			logger.error(logicLog);
@@ -80,7 +81,6 @@ public class RegisterHandler extends HttpBaseHandler {
 	
 	private String respFail(String message) {
 		String resp = CommandOut.failureOut(Command.USR_REGISTER, message).httpResp();
-		logger.error("用户注册失败|" + resp);
 		return resp;
 	}
 }

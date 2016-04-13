@@ -57,17 +57,16 @@ public class RoomExitHandler extends SocketBaseHandler  {
 					RoomExitPush push = new RoomExitPush();
 					push.userSid = userSid;
 					String pushMessage = push.socketResp();
-					LoggerHelper.appendLog("通知房间内其他成员:" + pushMessage, logBuffer);
-					
-					logger.debug("退出房间|推送其他用户：" + pushMessage);
+					LoggerHelper.appendLog("ROOM_EXIT_PUSH:" + pushMessage, logBuffer);
 					Set<String> users = room.getUsers();
 					for (String roomerSid : users) {
 						if (!roomerSid.equals(userSid)) {
+							String userDesc = userService.findUserBySid(roomerSid).desc();
 							if (userService.isOnline(roomerSid)) {
 								pushMessage(roomerSid, pushMessage);
-								LoggerHelper.appendLog(String.format("用户%s 当前在线, 推送在线消息", roomerSid), logBuffer);
+								LoggerHelper.appendLog(String.format("用户%s当前在线, 发送ROOM_EXIT_PUSH", userDesc), logBuffer);
 							} else {
-								LoggerHelper.appendLog(String.format("用户%s 当前离线。", roomerSid), logBuffer);
+								LoggerHelper.appendLog(String.format("用户%s当前离线, 无法发送ROOM_EXIT_PUSH", userDesc), logBuffer);
 							}
 						}
 					}
@@ -91,6 +90,7 @@ public class RoomExitHandler extends SocketBaseHandler  {
 			return resp;
 		} catch (Exception e) {
 			String resp = respFail(null);
+			LoggerHelper.appendLog("发生错误" + e.getMessage(), logBuffer);
 			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
 			LoggerHelper.appendSplit(logBuffer);
 			String logicLog = LoggerHelper.loggerString(logBuffer);
@@ -107,7 +107,6 @@ public class RoomExitHandler extends SocketBaseHandler  {
 	
 	private String respFail(String message) {
 		String resp = CommandOut.failureOut(Command.ROOM_EXIT, message).httpResp();
-		logger.error("退出房间失败|" + resp);
 		return resp;
 	}
 }

@@ -40,14 +40,15 @@ public class UserOfflineHandler extends SocketBaseHandler {
 				UserOfflinePush push = new UserOfflinePush();
 				push.user = ru;
 				String pushMessage = push.socketResp();
-				LoggerHelper.appendLog("用户" + u.desc() + "在房间内，通知房间内其他成员：" + pushMessage, logBuffer);
+				LoggerHelper.appendLog("用户" + u.desc() + "在房间内, USR_OFFLINE_PUSH:" + pushMessage, logBuffer);
 				for (String roomUserSid : room.getUsers()) {
 					if (!roomUserSid.equals(userSid)) {
+						String userDesc = userService.findUserBySid(roomUserSid).desc();
 						if (userService.isOnline(roomUserSid)) {
 							pushMessage(roomUserSid, pushMessage);
-							LoggerHelper.appendLog(String.format("用户%s 当前在线, 推送在线消息", roomUserSid), logBuffer);
+							LoggerHelper.appendLog(String.format("用户%s当前在线, 发送USR_OFFLINE_PUSH", userDesc), logBuffer);
 						} else {
-							LoggerHelper.appendLog(String.format("用户%s 当前离线。", roomUserSid), logBuffer);
+							LoggerHelper.appendLog(String.format("用户%s当前离线, 无法发送USR_OFFLINE_PUSH", userDesc), logBuffer);
 						}
 					}
 				}
@@ -66,6 +67,7 @@ public class UserOfflineHandler extends SocketBaseHandler {
 			return resp;
 		} catch (Exception e) {
 			String resp = respFail(null);
+			LoggerHelper.appendLog("发生错误" + e.getMessage(), logBuffer);
 			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
 			LoggerHelper.appendSplit(logBuffer);
 			String logicLog = LoggerHelper.loggerString(logBuffer);
@@ -78,7 +80,6 @@ public class UserOfflineHandler extends SocketBaseHandler {
 	
 	private String respFail(String message) {
 		String resp = CommandOut.failureOut(Command.USR_ONLINE, message).httpResp();
-		logger.error("客户端上线失败|" + resp);
 		return resp;
 	}
 }
