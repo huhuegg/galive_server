@@ -10,18 +10,17 @@ import io.netty.channel.ChannelHandlerContext;
 public abstract class SocketBaseHandler {
 	
 	public abstract String handle(String userSid, String reqData);
-	
-	protected StringBuffer loggerBuffer = new StringBuffer();
 
 	protected StringBuffer logBuffer = new StringBuffer();
 	
 	public void handle(CommandIn in, ChannelHandlerContext channel) {
+		LoggerHelper.appendSplit(logBuffer);
 		String command = in.getCommand();
 		String userSid = in.getUserSid();
-		LoggerHelper.appendLog("====请求参数====", logBuffer);
+		LoggerHelper.appendLog("请求参数", logBuffer);
 		LoggerHelper.appendLog("command:" + command, logBuffer);
 		LoggerHelper.appendLog("userSid:" + userSid, logBuffer);
-		LoggerHelper.appendLog("==============", logBuffer);
+		LoggerHelper.appendLog("-------------------------", logBuffer);
 		// 客户端打开连接
 		if (command.equals(Command.USR_ONLINE)) {
 			// 是否不同设备连接
@@ -40,9 +39,5 @@ public abstract class SocketBaseHandler {
 	protected void pushMessage(String userSid, String message) {
 		ChannelManager.getInstance().sendMessage(userSid, message);
 	}
-	
-	protected void appendLog(String log) {
-		loggerBuffer.append(log);
-		loggerBuffer.append("/n");
-	}
+
 }

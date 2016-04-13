@@ -21,12 +21,12 @@ public abstract class HttpBaseHandler {
 		String userSid = in.getUserSid();
 		String token = in.getToken();
 		String params = in.getParams();
-		LoggerHelper.appendLog("====请求参数====", logBuffer);
+		LoggerHelper.appendLog("请求参数", logBuffer);
 		LoggerHelper.appendLog("command:" + command, logBuffer);
 		LoggerHelper.appendLog("userSid:" + userSid, logBuffer);
 		LoggerHelper.appendLog("token:" + token, logBuffer);
 		LoggerHelper.appendLog("params:" + params, logBuffer);
-		LoggerHelper.appendLog("==============", logBuffer);
+		LoggerHelper.appendLog("-------------------------", logBuffer);
 		if ((!command.equals(Command.USR_LOGIN) && !command.equals(Command.USR_REGISTER))) {
 			UserService userService = new UserServiceImpl(logBuffer);
 			if (!userService.verifyToken(userSid, token)) {
@@ -35,6 +35,8 @@ public abstract class HttpBaseHandler {
 				out.setRet_code(RetCode.TOKEN_EXPIRE);
 				resp = out.httpResp();
 				LoggerHelper.appendLog("验证token失败,登录已过期。" + params, logBuffer);
+			} else {
+				resp = handle(userSid, params);
 			}
 		} else {
 			resp = handle(userSid, params);
