@@ -10,6 +10,8 @@ import io.netty.channel.ChannelHandlerContext;
 public abstract class SocketBaseHandler {
 	
 	public abstract String handle(String userSid, String reqData);
+	
+	protected StringBuffer loggerBuffer = new StringBuffer();
 
 	protected StringBuffer logBuffer = new StringBuffer();
 	
@@ -39,4 +41,8 @@ public abstract class SocketBaseHandler {
 		ChannelManager.getInstance().sendMessage(userSid, message);
 	}
 	
+	protected void appendLog(String log) {
+		loggerBuffer.append(log);
+		loggerBuffer.append("/n");
+	}
 }
