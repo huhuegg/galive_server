@@ -7,13 +7,18 @@ import org.slf4j.LoggerFactory;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.exception.LogicException;
+import com.galive.logic.helper.LoggerHelper;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
 import com.galive.logic.network.model.RespRoom;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.UserOnlinePush;
+import com.galive.logic.service.LoggerService;
+import com.galive.logic.service.LoggerServiceImpl;
+import com.galive.logic.service.RoomService;
 import com.galive.logic.service.RoomServiceImpl;
+import com.galive.logic.service.UserService;
 import com.galive.logic.service.UserServiceImpl;
 
 @SocketRequestHandler(desc = "客户端上线", command = Command.USR_ONLINE)
@@ -21,13 +26,14 @@ public class UserOnlineHandler extends SocketBaseHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(UserOnlineHandler.class);
 	
-	private UserServiceImpl userService = new UserServiceImpl();
-	private RoomServiceImpl roomService = new RoomServiceImpl();
+	private UserService userService = new UserServiceImpl(logBuffer);
+	private RoomService roomService = new RoomServiceImpl(logBuffer);
+	private LoggerService loggerService = new LoggerServiceImpl();
 	
 	@Override
 	public String handle(String userSid, String reqData) {
 		try {
-			logger.debug("客户端上线|" + userSid + "|" + reqData);
+			LoggerHelper.appendLog("--用户上线--", logBuffer);
 			
 			UserOnlineOut out = new UserOnlineOut();
 			
@@ -39,12 +45,17 @@ public class UserOnlineHandler extends SocketBaseHandler {
 				UserOnlinePush push = new UserOnlinePush();
 				push.user = ru;
 				String pushMessage = push.socketResp();
-				logger.debug("用户在房间内 ,推送房间其他成员:" + pushMessage);
+				LoggerHelper.appendLog(String.format("用户%s device_token(%s) 在房间内 ,推送房间其他成员:", pushMessage), logBuffer);
 				Set<String> roomUsers = room.getUsers();
 				for (String roomUserSid : roomUsers) {
 					if (!roomUserSid.equals(userSid)) {
 						pushMessage(roomUserSid, pushMessage);
-						
+						if (userService.isOnline(roomUserSid)) {
+							pushMessage(roomUserSid, pushMessage);
+							LoggerHelper.appendLog(String.format("用户%s 当前在线, 推送在线消息", roomUserSid), logBuffer);
+						} else {
+							LoggerHelper.appendLog(String.format("用户%s 当前离线。", roomUserSid), logBuffer);
+						}
 						User roomUser = userService.findUserBySid(roomUserSid);
 						RespUser roomRespUser = RespUser.convert(roomUser);
 						respRoom.users.add(roomRespUser);
@@ -62,15 +73,27 @@ public class UserOnlineHandler extends SocketBaseHandler {
 			}
 			
 			String resp = out.socketResp();
-			logger.debug("客户端上线响应|" + resp);
+			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendSplit(logBuffer);
+			String logicLog = LoggerHelper.loggerString(logBuffer);
+			logger.info(logicLog);
+			loggerService.saveLogicLog(logicLog);
 			return resp;
 		} catch (LogicException e) {
-			logger.error(e.getMessage());
 			String resp = respFail(e.getMessage());
+			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendSplit(logBuffer);
+			String logicLog = LoggerHelper.loggerString(logBuffer);
+			logger.error(logicLog);
+			loggerService.saveLogicLog(logicLog);
 			return resp;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
 			String resp = respFail(null);
+			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendSplit(logBuffer);
+			String logicLog = LoggerHelper.loggerString(logBuffer);
+			logger.error(logicLog);
+			loggerService.saveLogicLog(logicLog);
 			return resp;
 		}
 		

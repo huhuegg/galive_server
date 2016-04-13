@@ -26,6 +26,10 @@ public class Room {
 	 * 邀请人,仅当Privacy时候有
 	 */
 	private Set<String> invitees = new HashSet<>();
+	
+	public String desc() {
+		return " " + name + "( " + sid + ") "; 
+	}
 
 	public String getOwnerId() {
 		return ownerId;

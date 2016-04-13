@@ -1,13 +1,16 @@
 package com.galive.logic.dao.cache;
 
 import org.apache.commons.lang.StringUtils;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 public class RedisManager {
 
+	private static Logger logger = LoggerFactory.getLogger(RedisManager.class);
+	
 	private static RedisManager instance = null;
 	private static JedisPool pool;
 	private static RedisConfig config;
@@ -50,6 +53,7 @@ public class RedisManager {
 	}
 
 	public Jedis getResource() {
+		logger.debug("num of active" + pool.getNumActive());
 		return pool.getResource();
 	}
 

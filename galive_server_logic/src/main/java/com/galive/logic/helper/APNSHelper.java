@@ -15,6 +15,8 @@ import org.apache.commons.lang.time.DateUtils;
 import com.galive.logic.ApplicationMain;
 import com.galive.logic.config.APNSConfig;
 import com.galive.logic.config.ApplicationConfig;
+import com.galive.logic.exception.LogicException;
+import com.galive.logic.service.UserService;
 import com.galive.logic.service.UserServiceImpl;
 import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;
@@ -28,7 +30,7 @@ public class APNSHelper {
 	private boolean isDistribution;
 	private String password;
 	private APNSConfig config;
-	private UserServiceImpl userService = new UserServiceImpl();
+	private UserService userService = new UserServiceImpl(null);
 	
 	public APNSHelper(boolean isDistribution) {
 		this.isDistribution = isDistribution;
@@ -69,7 +71,11 @@ public class APNSHelper {
 				Map<String, Date> inactiveDevices = service.getInactiveDevices();
 				// 删除无效token
 				for (String deviceToken : inactiveDevices.keySet()) {
-					userService.deleteDeviceToken(deviceToken);
+					try {
+						userService.deleteDeviceToken(deviceToken);
+					} catch (LogicException e) {
+						e.printStackTrace();
+					}
 				}
 				if (in != null) {
 					try {

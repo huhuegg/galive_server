@@ -5,10 +5,15 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.exception.LogicException;
+import com.galive.logic.helper.LoggerHelper;
 import com.galive.logic.model.User;
 import com.galive.logic.network.http.HttpRequestHandler;
 import com.galive.logic.network.http.handler.LoginHandler.LoginOut;
 import com.galive.logic.network.model.RespUser;
+import com.galive.logic.service.LoggerService;
+import com.galive.logic.service.LoggerServiceImpl;
+import com.galive.logic.service.UserService;
+import com.galive.logic.service.UserServiceImpl;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
@@ -18,10 +23,13 @@ public class RegisterHandler extends HttpBaseHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(RegisterHandler.class);
 
+	private UserService userService = new UserServiceImpl(logBuffer);
+	private LoggerService loggerService = new LoggerServiceImpl();
+	
 	@Override
 	public String handle(String userSid, String reqData) {
 		try {
-			logger.debug("用户注册|" + reqData);
+			LoggerHelper.appendLog("--用户注册--", logBuffer);
 			RegisterIn in = JSON.parseObject(reqData, RegisterIn.class);
 			User u = userService.register(in.username, in.password, in.nickname);
 			
@@ -30,15 +38,27 @@ public class RegisterHandler extends HttpBaseHandler {
 			out.expire = ApplicationConfig.getInstance().getTokenExpire();
 			out.user = RespUser.convert(u);
 			String resp = out.httpResp();
-			logger.info("用户注册|" + resp);
+			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendSplit(logBuffer);
+			String logicLog = LoggerHelper.loggerString(logBuffer);
+			logger.info(logicLog);
+			loggerService.saveLogicLog(logicLog);
 			return resp;
 		} catch (LogicException e) {
-			logger.error(e.getMessage());
 			String resp = respFail(e.getMessage());
+			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendSplit(logBuffer);
+			String logicLog = LoggerHelper.loggerString(logBuffer);
+			logger.error(logicLog);
+			loggerService.saveLogicLog(logicLog);
 			return resp;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
 			String resp = respFail(null);
+			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendSplit(logBuffer);
+			String logicLog = LoggerHelper.loggerString(logBuffer);
+			logger.error(logicLog);
+			loggerService.saveLogicLog(logicLog);
 			return resp;
 		}
 		

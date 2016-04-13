@@ -10,19 +10,27 @@ import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.RTCConfig;
 import com.galive.logic.config.SocketConfig;
 import com.galive.logic.exception.LogicException;
+import com.galive.logic.helper.LoggerHelper;
 import com.galive.logic.model.User;
 import com.galive.logic.network.http.HttpRequestHandler;
 import com.galive.logic.network.model.RespUser;
+import com.galive.logic.service.LoggerService;
+import com.galive.logic.service.LoggerServiceImpl;
+import com.galive.logic.service.UserService;
+import com.galive.logic.service.UserServiceImpl;
 
 @HttpRequestHandler(desc = "用户登录", command = Command.USR_LOGIN)
 public class LoginHandler extends HttpBaseHandler {
-
+	
 	private static Logger logger = LoggerFactory.getLogger(LoginHandler.class);
+	
+	private UserService userService = new UserServiceImpl(logBuffer);
+	private LoggerService loggerService = new LoggerServiceImpl();
 	
 	@Override
 	public String handle(String userSid, String reqData) {
 		try {
-			logger.debug("用户登录|" + reqData);
+			LoggerHelper.appendLog("--用户登录--", logBuffer);
 			LoginIn in = JSON.parseObject(reqData, LoginIn.class);
 
 			User u = userService.login(in.username, in.password);
@@ -30,23 +38,34 @@ public class LoginHandler extends HttpBaseHandler {
 			LoginOut out = new LoginOut();
 			RespUser respUser = RespUser.convert(u);
 			
-			
 			out.token =  userService.createToken(u.getSid());
 			out.expire = ApplicationConfig.getInstance().getTokenExpire();
 			out.user = respUser;
 			out.socket_config = ApplicationConfig.getInstance().getSocketConfig();
 			String resp = out.httpResp();
-			logger.info("用户登录|" + resp);
+			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendSplit(logBuffer);
+			String logicLog = LoggerHelper.loggerString(logBuffer);
+			logger.info(logicLog);
+			loggerService.saveLogicLog(logicLog);
 			return resp;
 		} catch (LogicException e) {
-			logger.error(e.getMessage());
 			String resp = respFail(e.getMessage());
+			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendSplit(logBuffer);
+			String logicLog = LoggerHelper.loggerString(logBuffer);
+			logger.error(logicLog);
+			loggerService.saveLogicLog(logicLog);
 			return resp;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
 			String resp = respFail(null);
+			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendSplit(logBuffer);
+			String logicLog = LoggerHelper.loggerString(logBuffer);
+			logger.error(logicLog);
+			loggerService.saveLogicLog(logicLog);
 			return resp;
-		}
+		} 
 	}
 
 	public static class LoginIn extends CommandIn {

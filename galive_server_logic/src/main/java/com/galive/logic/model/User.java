@@ -29,6 +29,10 @@ public class User extends BaseModel {
 	
 	private UserGender gender = UserGender.Unknown;
 	
+	public String desc() {
+		return String.format(" %s(%s) ", nickname, sid);
+	}
+	
 	/* ======================= Getter Setter ======================= */
 	public String getUsername() {
 		return username;
