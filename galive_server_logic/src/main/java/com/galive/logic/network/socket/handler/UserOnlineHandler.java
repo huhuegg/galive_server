@@ -41,7 +41,8 @@ public class UserOnlineHandler extends SocketBaseHandler {
 			if (room != null) {
 				User u = userService.findUserBySid(userSid);
 				RespRoom respRoom = RespRoom.convert(room);
-				RespUser ru = RespUser.convert(u);
+				RespUser ru = new RespUser();
+				ru.convert(u);
 				UserOnlinePush push = new UserOnlinePush();
 				push.user = ru;
 				String pushMessage = push.socketResp();
@@ -57,7 +58,8 @@ public class UserOnlineHandler extends SocketBaseHandler {
 							LoggerHelper.appendLog(String.format("用户%s当前离线, 无法发送USR_ONLINE_PUSH", userDesc), logBuffer);
 						}
 						User roomUser = userService.findUserBySid(roomUserSid);
-						RespUser roomRespUser = RespUser.convert(roomUser);
+						RespUser roomRespUser = new RespUser();
+						roomRespUser.convert(roomUser);
 						respRoom.users.add(roomRespUser);
 					}
 				}				
@@ -68,7 +70,9 @@ public class UserOnlineHandler extends SocketBaseHandler {
 			Room inviteeRoom = roomService.findRoomByInvitee(userSid);
 			if (inviteeRoom != null) {
 				RespRoom respRoom = RespRoom.convert(inviteeRoom);
-				respRoom.invitor = RespUser.convert(userService.findUserBySid(inviteeRoom.getOwnerId()));
+				RespUser invitor = new RespUser();
+				invitor.convert(userService.findUserBySid(inviteeRoom.getOwnerId()));
+				respRoom.invitor = invitor;
 				out.inviteeRoom = respRoom;
 			}
 			

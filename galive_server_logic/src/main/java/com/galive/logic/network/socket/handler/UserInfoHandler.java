@@ -35,7 +35,8 @@ public class UserInfoHandler extends SocketBaseHandler {
 			UserInfoRequest req = JSON.parseObject(reqData, UserInfoRequest.class);
 			User u = userService.findUserBySid(req.userSid);
 			UserInfoOut out = new UserInfoOut();
-			RespUser ru = RespUser.convert(u);
+			RespUser ru = new RespUser();
+			ru.convert(u);
 			Room room = roomService.findRoomByUser(u.getSid());
 			if (room != null) {
 				ru.roomSid = room.getSid();

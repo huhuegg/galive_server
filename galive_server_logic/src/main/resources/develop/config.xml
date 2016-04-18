@@ -21,6 +21,11 @@
 		<ParamsDelimiter>&amp;</ParamsDelimiter><!-- & -->
 		<MessageDelimiter>-@-xmn-@-</MessageDelimiter><!-- 消息定界符 -->
 	</Socket>
+	
+	<Live>
+		<RTMPUrl>rtmp://webrtc.ztchatsdk.mztgame.com/hls/client</RTMPUrl>
+		<HLSUrl>http://webrtc.ztchatsdk.mztgame.com/hls/client</HLSUrl>
+	</Live>
 
 	<Apns>
 		<!-- 推送 -->

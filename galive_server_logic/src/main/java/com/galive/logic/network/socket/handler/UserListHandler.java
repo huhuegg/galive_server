@@ -51,7 +51,8 @@ public class UserListHandler extends SocketBaseHandler  {
 					// 过滤自己
 					continue;
 				}
-				RespUser ru = RespUser.convert(u);
+				RespUser ru = new RespUser();
+				ru.convert(u);
 				Room room = roomService.findRoomByUser(u.getSid());
 				if (room != null) {
 					ru.roomSid = room.getSid();

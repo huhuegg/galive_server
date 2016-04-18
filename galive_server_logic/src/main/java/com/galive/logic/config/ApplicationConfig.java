@@ -27,6 +27,7 @@ public class ApplicationConfig {
 	private LogicConfig logicConfig;
 	private APNSConfig apnsConfig;
 	private PlatformConfig platformConfig;
+	private LiveConfig liveConfig;
 
 	public final static ApplicationConfig getInstance() {
 		if (instance == null) {
@@ -186,6 +187,20 @@ public class ApplicationConfig {
 			
 			sc.setPlatformConfig(platformConfig);
 			
+			LiveConfig liveConfig = new LiveConfig();
+			Element liveNode = node.element("Live");
+			Element rtmpUrlNode = liveNode.element("RTMPUrl");
+			String rtmpUrl = rtmpUrlNode.getStringValue();
+			liveConfig.setRtmpUrl(rtmpUrl);
+			logger.info("rtmpUrl:" + rtmpUrl);
+			
+			Element hlsUrlNode = liveNode.element("HLSUrl");
+			String hlsUrl = hlsUrlNode.getStringValue();
+			liveConfig.setHlsUrl(hlsUrl);
+			logger.info("hlsUrl:" + hlsUrl);
+			
+			sc.setLiveConfig(liveConfig);
+			
 			logger.info("配置文件加载成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -248,5 +263,13 @@ public class ApplicationConfig {
 
 	public void setPlatformConfig(PlatformConfig platformConfig) {
 		this.platformConfig = platformConfig;
+	}
+
+	public LiveConfig getLiveConfig() {
+		return liveConfig;
+	}
+
+	public void setLiveConfig(LiveConfig liveConfig) {
+		this.liveConfig = liveConfig;
 	}
 }

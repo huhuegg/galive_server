@@ -44,7 +44,9 @@ public class RoomEnterHandler extends SocketBaseHandler {
 			User u = userService.findUserBySid(userSid);
 			RespRoom respRoom =  RespRoom.convert(room);
 			RoomEnterPush push = new RoomEnterPush();
-			push.user = RespUser.convert(u);
+			RespUser respUser = new RespUser();
+			respUser.convert(u);
+			push.user = respUser;
 			String pushMessage = push.socketResp();
 			
 			LoggerHelper.appendLog("ROOM_ENTER_PUSH:" + pushMessage, logBuffer);
@@ -54,8 +56,9 @@ public class RoomEnterHandler extends SocketBaseHandler {
 				if (!roomerSid.equals(userSid)) {
 					String userDesc = userService.findUserBySid(roomerSid).desc();
 					User roomUser = userService.findUserBySid(roomerSid);
-					RespUser respUser = RespUser.convert(roomUser);
-					respRoom.users.add(respUser);
+					RespUser roomRespUser = new RespUser();
+					roomRespUser.convert(roomUser);
+					respRoom.users.add(roomRespUser);
 					if (userService.isOnline(roomerSid)) {
 						pushMessage(roomerSid, pushMessage);
 						LoggerHelper.appendLog(String.format("用户%s当前在线, 发送ROOM_ENTER_PUSH", userDesc), logBuffer);

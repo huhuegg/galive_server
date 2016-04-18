@@ -19,14 +19,12 @@ public class RespUser {
 	
 	public boolean invite = true;
 	
-	public static RespUser convert(User u) {
-		RespUser user = new RespUser();
-		user.sid = u.getSid();
-		user.nickname = u.getNickname();
-		user.gender = u.getGender().ordinal();
-		user.avatar = u.getAvatar();
-		user.onlineState = ChannelManager.getInstance().getOnlineState(user.sid).ordinal();
-		return user;
+	public void convert(User u) {
+		sid = u.getSid();
+		nickname = u.getNickname();
+		gender = u.getGender().ordinal();
+		avatar = u.getAvatar();
+		onlineState = ChannelManager.getInstance().getOnlineState(sid).ordinal();
 	}
 
 }

@@ -13,7 +13,7 @@ import com.galive.logic.exception.LogicException;
 import com.galive.logic.helper.LoggerHelper;
 import com.galive.logic.model.User;
 import com.galive.logic.network.http.HttpRequestHandler;
-import com.galive.logic.network.model.RespUser;
+import com.galive.logic.network.model.RespLoginUser;
 import com.galive.logic.service.LoggerService;
 import com.galive.logic.service.LoggerServiceImpl;
 import com.galive.logic.service.UserService;
@@ -36,7 +36,8 @@ public class LoginHandler extends HttpBaseHandler {
 			User u = userService.login(in.username, in.password);
 
 			LoginOut out = new LoginOut();
-			RespUser respUser = RespUser.convert(u);
+			RespLoginUser respUser = new RespLoginUser();
+			respUser.convert(u);
 			
 			out.token =  userService.createToken(u.getSid());
 			out.expire = ApplicationConfig.getInstance().getTokenExpire();
@@ -81,7 +82,7 @@ public class LoginHandler extends HttpBaseHandler {
 			rtc_config = ApplicationConfig.getInstance().getRtcConfig();
 		}
 
-		public RespUser user;
+		public RespLoginUser user;
 		public String token;
 		public String websocketUrl;
 		public int expire;

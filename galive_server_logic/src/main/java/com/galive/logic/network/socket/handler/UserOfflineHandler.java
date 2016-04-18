@@ -36,7 +36,8 @@ public class UserOfflineHandler extends SocketBaseHandler {
 			
 			Room room = roomService.findRoomByUser(userSid);
 			if (room != null) {
-				RespUser ru = RespUser.convert(u);
+				RespUser ru = new RespUser();
+				ru.convert(u);
 				UserOfflinePush push = new UserOfflinePush();
 				push.user = ru;
 				String pushMessage = push.socketResp();

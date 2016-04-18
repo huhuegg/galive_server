@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
 	public User findUserBySid(String userSid) throws LogicException {
 		User u = userDao.findUser(userSid);
 		if (u == null) {
-			String error = "用户不存在";
+			String error = "用户不存在。";
 			LoggerHelper.appendLog(error, logBuffer);
 			throw new LogicException(error);
 		}

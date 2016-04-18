@@ -48,7 +48,7 @@ public class RoomCacheImpl implements RoomCache {
 		return RedisManager.getInstance().keyPrefix() + "room:sid:incr";
 	}
 
-	// 记录用户所在的房间，用于重连 set k:[room:list:create_time:用户id] v:[房间id]
+	// 按创建时间排序 zadd
 	private String listByCreateTimeKey() {
 		return RedisManager.getInstance().keyPrefix() + "room:list:create_time";
 	}

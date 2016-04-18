@@ -51,7 +51,9 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 				
 				RoomInviteePush inviteePush = new RoomInviteePush();
 				RespRoom inviteeRoom = RespRoom.convert(room);
-				inviteeRoom.invitor = RespUser.convert(invitor);
+				RespUser respUser = new RespUser();
+				respUser.convert(invitor);
+				inviteeRoom.invitor = respUser;
 				inviteePush.room = inviteeRoom;
 				String pushMessage = inviteePush.socketResp();
 				LoggerHelper.appendLog("ROOM_INVITEE_PUSH:" + pushMessage, logBuffer);
@@ -85,7 +87,7 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 			RoomCreateOut out = new RoomCreateOut();
 			out.room = RespRoom.convert(room);
 			String resp = out.socketResp();
-			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendLog("响应客户端:" + resp, logBuffer);
 			LoggerHelper.appendSplit(logBuffer);
 			String logicLog = LoggerHelper.loggerString(logBuffer);
 			logger.info(logicLog);
@@ -93,7 +95,7 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 			return resp;
 		} catch (LogicException e) {
 			String resp = respFail(e.getMessage());
-			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendLog("响应客户端:" + resp, logBuffer);
 			LoggerHelper.appendSplit(logBuffer);
 			String logicLog = LoggerHelper.loggerString(logBuffer);
 			logger.error(logicLog);
@@ -102,7 +104,7 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 		} catch (Exception e) {
 			String resp = respFail(null);
 			LoggerHelper.appendLog("发生错误" + e.getMessage(), logBuffer);
-			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
+			LoggerHelper.appendLog("响应客户端:" + resp, logBuffer);
 			LoggerHelper.appendSplit(logBuffer);
 			String logicLog = LoggerHelper.loggerString(logBuffer);
 			logger.error(logicLog);
