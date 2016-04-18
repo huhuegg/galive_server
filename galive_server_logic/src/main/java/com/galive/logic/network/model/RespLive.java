@@ -19,6 +19,8 @@ public class RespLive {
 	
 	public String hlsUrl;
 	
+	public int state;
+	
 	public void convert(Live live) {
 		this.name = live.getName();
 		this.sid = live.getSid();
@@ -26,6 +28,7 @@ public class RespLive {
 		this.latestLiveAt = live.getLatestLiveAt();
 		this.thumbnail = "http://img1.imgtn.bdimg.com/it/u=1990110392,1863050465&fm=21&gp=0.jpg";
 		this.rtmpUrl = ApplicationConfig.getInstance().getLiveConfig().getRtmpUrl() + "/" + sid;
-		this.hlsUrl = ApplicationConfig.getInstance().getLiveConfig().getHlsUrl() + "/" + sid;
+		this.hlsUrl = ApplicationConfig.getInstance().getLiveConfig().getHlsUrl() + "/" + sid + ".m3u8";
+		this.state = live.getState().ordinal();
 	}
 }

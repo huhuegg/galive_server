@@ -42,7 +42,7 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 	public String handle(String userSid, String reqData) {
 		try {
 			LoggerHelper.appendLog("--创建房间--", logBuffer);
-			EnterRoomRequest in = JSON.parseObject(reqData, EnterRoomRequest.class);
+			EnterRoomIn in = JSON.parseObject(reqData, EnterRoomIn.class);
 			Room room = roomService.create(in.name, userSid, in.invitees, in.maxUser);
 			
 			Set<String> invitees = room.getInvitees();
@@ -114,7 +114,7 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 		
 	}
 	
-	public static class EnterRoomRequest {
+	public static class EnterRoomIn {
 		public String name = "";
 		public int maxUser = 0;
 		public List<String> invitees = new ArrayList<>();

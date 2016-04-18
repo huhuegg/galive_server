@@ -7,7 +7,7 @@ import org.mongodb.morphia.annotations.Indexes;
 @Entity(value="user", noClassnameStored = true)
 @Indexes({@Index("username")})
 public class User extends BaseModel {
-
+	
 	public static enum UserOnlineState {
 		Online,
 		Offline;

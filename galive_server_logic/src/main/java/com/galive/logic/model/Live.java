@@ -2,6 +2,11 @@ package com.galive.logic.model;
 
 public class Live {
 
+	public static enum LiveState {
+		On,
+		Off;
+	}
+	
 	private String sid = "";
 	
 	private String name = "";
@@ -11,6 +16,8 @@ public class Live {
 	private long createAt = System.currentTimeMillis();
 	
 	private long latestLiveAt = System.currentTimeMillis();
+	
+	private LiveState state = LiveState.Off;
 
 	public String getSid() {
 		return sid;
@@ -50,6 +57,14 @@ public class Live {
 
 	public void setLatestLiveAt(long latestLiveAt) {
 		this.latestLiveAt = latestLiveAt;
+	}
+
+	public LiveState getState() {
+		return state;
+	}
+
+	public void setState(LiveState state) {
+		this.state = state;
 	}
 	
 	

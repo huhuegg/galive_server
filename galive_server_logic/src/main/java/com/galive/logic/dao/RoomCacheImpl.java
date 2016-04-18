@@ -151,15 +151,12 @@ public class RoomCacheImpl implements RoomCache {
 	}
 
 	@Override
-	public List<Room> listByCreateTime(int start, int end) {
-		List<Room> rooms = new ArrayList<Room>();
+	public List<String> listByCreateTime(int start, int end) {
+		List<String> rooms = new ArrayList<>();
 		String key = listByCreateTimeKey();
 		Set<String> sets = jedis.zrevrange(key, start, end);
 		for (String sid : sets) {
-			Room r = findRoom(sid);
-			if (r != null) {
-				rooms.add(r);
-			}
+			rooms.add(sid);
 		}
 		return rooms;
 	}

@@ -39,6 +39,16 @@ public class LiveCacheImpl implements LiveCache {
 		return RedisManager.getInstance().keyPrefix() + "live:list:latest_live_time";
 	}
 
+	// 观众列表 按加入时间排序 zadd
+	private String listAudienceByJoinTimeKey(String liveSid) {
+		return RedisManager.getInstance().keyPrefix() + "live:audience:list:join_time:" + liveSid;
+	}
+
+	// 查找用户当前观看的直播
+	private String audienceKey() {
+		return RedisManager.getInstance().keyPrefix() + "live:audience";
+	}
+
 	/**
 	 * 生成房间id
 	 * 
@@ -62,7 +72,7 @@ public class LiveCacheImpl implements LiveCache {
 		jedis.hset(liveOwnerKey(), live.getOwnerSid(), liveSid);
 		return live;
 	}
-	
+
 	@Override
 	public Live findLive(String liveSid) {
 		String json = jedis.get(liveKey(liveSid));
@@ -82,6 +92,16 @@ public class LiveCacheImpl implements LiveCache {
 		}
 		return null;
 	}
+	
+	@Override
+	public Live findLiveByAudienceSid(String audienceSid) {
+		String liveSid = jedis.hget(audienceKey(), audienceSid);
+		if (!StringUtils.isEmpty(liveSid)) {
+			Live live = findLive(liveSid);
+			return live;
+		}
+		return null;
+	}
 
 	@Override
 	public void insertToLiveListByLatestLiveAt(String liveSid) {
@@ -89,17 +109,40 @@ public class LiveCacheImpl implements LiveCache {
 	}
 
 	@Override
-	public List<Live> listByLatestLiveTime(int start, int end) {
-		List<Live> lives = new ArrayList<>();
+	public List<String> listByLatestLiveTime(int start, int end) {
+		List<String> lives = new ArrayList<>();
 		String key = listByLatestLiveTimeKey();
 		Set<String> sets = jedis.zrevrange(key, start, end);
 		for (String sid : sets) {
-			Live live = findLive(sid);
-			if (live != null) {
-				lives.add(live);
-			}
+			lives.add(sid);
 		}
 		return lives;
+	}
+
+	@Override
+	public void saveAudience(String liveSid, String userSid) {
+		jedis.hset(audienceKey(), userSid, liveSid);
+		jedis.zadd(listAudienceByJoinTimeKey(liveSid), System.currentTimeMillis(), userSid);
+	}
+
+	@Override
+	public void removeAudience(String userSid) {
+		String liveSid = jedis.hget(audienceKey(), userSid);
+		if (!StringUtils.isEmpty(liveSid)) {
+			jedis.zrem(listAudienceByJoinTimeKey(liveSid), userSid);
+		}
+		jedis.hdel(audienceKey(), userSid);
+	}
+
+	@Override
+	public List<String> listAudience(String liveSid, int start, int end) {
+		List<String> userSids = new ArrayList<>();
+		String key = listAudienceByJoinTimeKey(liveSid);
+		Set<String> sets = jedis.zrevrange(key, start, end);
+		for (String sid : sets) {
+			userSids.add(sid);
+		}
+		return userSids;
 	}
 
 	

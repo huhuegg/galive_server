@@ -1,5 +1,6 @@
 package com.galive.logic.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.galive.logic.dao.LiveCache;
@@ -7,6 +8,7 @@ import com.galive.logic.dao.LiveCacheImpl;
 import com.galive.logic.exception.LogicException;
 import com.galive.logic.helper.LoggerHelper;
 import com.galive.logic.model.Live;
+import com.galive.logic.model.Live.LiveState;
 import com.galive.logic.model.User;
 
 public class LiveServiceImpl implements LiveService {
@@ -19,6 +21,12 @@ public class LiveServiceImpl implements LiveService {
 		this.logBuffer = logBuffer;
 		liveCache = new LiveCacheImpl();
 		userService = new UserServiceImpl(logBuffer);
+	}
+	
+	@Override
+	public Live findLiveByUser(String userSid) {
+		Live live = liveCache.findLiveByOwnerSid(userSid);
+		return live;
 	}
 
 	@Override
@@ -36,7 +44,7 @@ public class LiveServiceImpl implements LiveService {
 			live.setName(u.getNickname() + "的直播间");
 			live.setOwnerSid(userSid);
 		}
-		// 更新最后直播时间
+		live.setState(LiveState.On);
 		live.setLatestLiveAt(now);
 		liveCache.saveLive(live);
 		
@@ -44,18 +52,65 @@ public class LiveServiceImpl implements LiveService {
 		liveCache.insertToLiveListByLatestLiveAt(live.getSid());
 		return live;
 	}
-
+	
 	@Override
-	public void stopLive() {
-		// TODO Auto-generated method stub
-		
+	public Live stopLive(String userSid) throws LogicException {
+		Live live = liveCache.findLiveByOwnerSid(userSid);
+		if (live == null) {
+			return null;
+		}
+		live.setState(LiveState.Off);
+		live.setLatestLiveAt(0);
+		liveCache.saveLive(live);
+		return live;
 	}
 
 	@Override
 	public List<Live> listByLatestLiveTime(int index, int size) {
-		List<Live> lives = liveCache.listByLatestLiveTime(index, index + size - 1);
+		List<Live> lives = new ArrayList<>();
+		List<String> liveSids = liveCache.listByLatestLiveTime(index, index + size - 1);
+		for (String sid : liveSids) {
+			Live live = liveCache.findLive(sid);
+			if (live != null) {
+				lives.add(live);
+			}
+		}
 		return lives;
 	}
+
+	@Override
+	public Live joinLive(String liveSid, String userSid) throws LogicException {
+		Live live = liveCache.findLive(liveSid);
+		if (live != null) {
+			liveCache.saveAudience(liveSid, userSid);
+			return live;
+		}
+		return null;
+	}
+
+	@Override
+	public Live leaveLive(String userSid) throws LogicException {
+		Live live = liveCache.findLiveByAudienceSid(userSid);
+		liveCache.removeAudience(userSid);
+		return live;
+	}
+
+	@Override
+	public List<User> listAudiences(String liveSid, int index, int size) throws LogicException {
+		List<User> audiences = new ArrayList<>();
+		List<String> audienceSids = liveCache.listAudience(liveSid, index, index + size - 1);
+		for (String sid : audienceSids) {
+			User u = userService.findUserBySid(sid);
+			if (u != null) {
+				audiences.add(u);
+			}
+		}
+		return audiences;
+	}
+
+	
+
+	
 	
 	
 

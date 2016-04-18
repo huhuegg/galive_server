@@ -12,7 +12,15 @@ public interface LiveCache {
 
 	public Live findLiveByOwnerSid(String ownerSid);
 	
+	public Live findLiveByAudienceSid(String audienceSid);
+	
 	public void insertToLiveListByLatestLiveAt(String liveSid);
 	
-	public List<Live> listByLatestLiveTime(int start, int end);
+	public List<String> listByLatestLiveTime(int start, int end);
+	
+	public void saveAudience(String liveSid, String userSid);
+	
+	public void removeAudience(String userSid);
+	
+	public List<String> listAudience(String liveSid, int start, int end);
 }

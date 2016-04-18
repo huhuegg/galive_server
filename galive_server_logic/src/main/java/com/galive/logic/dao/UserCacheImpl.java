@@ -6,14 +6,11 @@ import java.util.Set;
 
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.dao.cache.RedisManager;
-import com.galive.logic.model.User;
-
 import redis.clients.jedis.Jedis;
 
 public class UserCacheImpl implements UserCache {
 
 	private Jedis jedis = RedisManager.getInstance().getResource();
-	private UserDaoImpl userDao = new UserDaoImpl();
 
 	@Override
 	protected void finalize() throws Throwable {
@@ -48,15 +45,12 @@ public class UserCacheImpl implements UserCache {
 	
 
 	@Override
-	public List<User> listByLatestLogin(int start, int end) {
-		List<User> users = new ArrayList<>();
+	public List<String> listByLatestLogin(int start, int end) {
+		List<String> users = new ArrayList<>();
 		String key = userListByLatestLoginKey();
 		Set<String> sets = jedis.zrevrange(key, start, end);
 		for (String sid : sets) {
-			User u = userDao.findUser(sid);
-			if (u != null) {
-				users.add(u);
-			}
+			users.add(sid);
 		}
 		return users;
 	}

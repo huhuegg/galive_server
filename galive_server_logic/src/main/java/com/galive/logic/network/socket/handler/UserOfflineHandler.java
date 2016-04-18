@@ -6,12 +6,15 @@ import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.exception.LogicException;
 import com.galive.logic.helper.LoggerHelper;
+import com.galive.logic.model.Live;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.ChannelManager;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.UserOfflinePush;
+import com.galive.logic.service.LiveService;
+import com.galive.logic.service.LiveServiceImpl;
 import com.galive.logic.service.LoggerService;
 import com.galive.logic.service.LoggerServiceImpl;
 import com.galive.logic.service.RoomService;
@@ -26,6 +29,7 @@ public class UserOfflineHandler extends SocketBaseHandler {
 	
 	private UserService userService = new UserServiceImpl(logBuffer);
 	private RoomService roomService = new RoomServiceImpl(logBuffer);
+	private LiveService liveService = new LiveServiceImpl(logBuffer);
 	private LoggerService loggerService = new LoggerServiceImpl();
 	
 	@Override
@@ -54,6 +58,15 @@ public class UserOfflineHandler extends SocketBaseHandler {
 					}
 				}
 			}
+			
+			Live live = liveService.findLiveByUser(userSid);
+			if (live != null) {
+				liveService.stopLive(userSid);
+				// TODO 推送
+			}
+			
+			// TODO 退出观看
+			
 			// 移除用户session
 			ChannelManager.getInstance().closeAndRemoveChannel(userSid);
 			LoggerHelper.appendLog("移除用户session channel", logBuffer);

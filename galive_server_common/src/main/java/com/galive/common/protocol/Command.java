@@ -31,8 +31,16 @@ public class Command {
 	
 	// 开始直播
 	public static final String LIVE_START = "LIVE_START";
+	// 结束直播
+	public static final String LIVE_STOP = "LIVE_STOP";
 	// 直播列表
 	public static final String LIVE_LIST = "LIVE_LIST";
+	// 观看直播
+	public static final String LIVE_JOIN = "LIVE_JOIN";
+	// 退出观看直播
+	public static final String LIVE_LEAVE = "LIVE_LEAVE";
+	// 直播观众列表
+	public static final String LIVE_AUDIENCE_LIST = "LIVE_AUDIENCE_LIST";
 	
 	// 客户端上线推送
 	public static final String USR_ONLINE_PUSH = "USR_ONLINE_PUSH";

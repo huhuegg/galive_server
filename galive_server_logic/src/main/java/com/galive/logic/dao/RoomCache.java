@@ -24,7 +24,7 @@ public interface RoomCache {
 
 	public void removeRoomToInvitee(String inviteeUserSid);
 	
-	public List<Room> listByCreateTime(int start, int end);
+	public List<String> listByCreateTime(int start, int end);
 
 	public void insertToRoomListByCreateTime(String roomSid);
 

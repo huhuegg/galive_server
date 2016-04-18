@@ -1,5 +1,6 @@
 package com.galive.logic.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
@@ -117,7 +118,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<User> listByLatestLogin(int index, int size) {
-		List<User> users = userCache.listByLatestLogin(index, index + size - 1);
+		List<User> users = new ArrayList<>();
+		List<String> userSids = userCache.listByLatestLogin(index, index + size - 1);
+		for (String sid : userSids) {
+			User u = userDao.findUser(sid);
+			if (u != null) {
+				users.add(u);
+			}
+		}
 		return users;
 	}
 

@@ -1,5 +1,6 @@
 package com.galive.logic.service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,6 +13,8 @@ import com.galive.logic.dao.RoomCache;
 import com.galive.logic.dao.RoomCacheImpl;
 import com.galive.logic.exception.LogicException;
 import com.galive.logic.helper.LoggerHelper;
+import com.galive.logic.model.Live;
+import com.galive.logic.model.Live.LiveState;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.Room.RoomPrivacy;
 
@@ -21,11 +24,13 @@ public class RoomServiceImpl implements RoomService {
 	
 	private RoomCache roomCache;
 	private UserService userService;
+	private LiveService liveService;
 
 	public RoomServiceImpl(StringBuffer logBuffer) {
 		this.logBuffer = logBuffer;
 		roomCache = new RoomCacheImpl();
 		userService = new UserServiceImpl(logBuffer);
+		liveService = new LiveServiceImpl(logBuffer);
 	}
 
 	@Override
@@ -42,7 +47,14 @@ public class RoomServiceImpl implements RoomService {
 
 	@Override
 	public List<Room> listByCreateTime(int index, int size) {
-		List<Room> rooms = roomCache.listByCreateTime(index, index + size - 1);
+		List<Room> rooms = new ArrayList<>();
+		List<String> roomSids = roomCache.listByCreateTime(index, index + size - 1);
+		for (String sid : roomSids) {
+			Room room = roomCache.findRoom(sid);
+			if (room != null) {
+				rooms.add(room);
+			}
+		}
 		return rooms;
 	}
 
@@ -96,7 +108,12 @@ public class RoomServiceImpl implements RoomService {
 					LoggerHelper.appendLog(error, logBuffer);
 					throw new LogicException(error);
 				}
-
+				Live live = liveService.findLiveByUser(s);
+				if (live.getState() == LiveState.On) {
+					String error = "所邀请的用户正在直播";
+					LoggerHelper.appendLog(error, logBuffer);
+					throw new LogicException(error);
+				}
 			}
 			room.setPrivacy(RoomPrivacy.Privacy);
 		} else {
