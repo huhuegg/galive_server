@@ -4,12 +4,11 @@ import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.network.model.RespUser;
 
-public class LiveMessagePush extends CommandOut {
+public class LiveLikePush extends CommandOut {
 
-	public RespUser sender;
-	public String content;
+	public RespUser user;
 	
-	public LiveMessagePush() {
-		super(Command.LIVE_MESSAGE_PUSH);
+	public LiveLikePush() {
+		super(Command.LIVE_LIKE_PUSH);
 	}
 }

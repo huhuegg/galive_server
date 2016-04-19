@@ -1,7 +1,5 @@
 package com.galive.logic.network.socket.handler;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,9 +10,9 @@ import com.galive.logic.exception.LogicException;
 import com.galive.logic.helper.LoggerHelper;
 import com.galive.logic.model.Live;
 import com.galive.logic.model.User;
+import com.galive.logic.network.model.RespLiveInfo;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.SocketRequestHandler;
-import com.galive.logic.network.socket.handler.push.LiveMessagePush;
 import com.galive.logic.service.LiveService;
 import com.galive.logic.service.LiveServiceImpl;
 import com.galive.logic.service.LoggerService;
@@ -22,47 +20,35 @@ import com.galive.logic.service.LoggerServiceImpl;
 import com.galive.logic.service.UserService;
 import com.galive.logic.service.UserServiceImpl;
 
-@SocketRequestHandler(desc = "发送直播消息", command = Command.LIVE_MESSAGE_SEND)
-public class LiveMessageSendHandler extends SocketBaseHandler {
+@SocketRequestHandler(desc = "获取直播信息", command = Command.LIVE_INFO)
+public class LiveInfoHandler extends SocketBaseHandler  {
 
-	private static Logger logger = LoggerFactory.getLogger(LiveMessageSendHandler.class);
+	private static Logger logger = LoggerFactory.getLogger(LiveInfoHandler.class);
 
-	private UserService userService = new UserServiceImpl(logBuffer);
 	private LiveService liveService = new LiveServiceImpl(logBuffer);
+	private UserService userService = new UserServiceImpl(logBuffer);
 	private LoggerService loggerService = new LoggerServiceImpl();
-
+	
 	@Override
 	public String handle(String userSid, String reqData) {
 		try {
-			LoggerHelper.appendLog("--发送直播消息--", logBuffer);
+			LoggerHelper.appendLog("--获取直播信息--", logBuffer);
+			LiveInfoIn in = JSON.parseObject(reqData, LiveInfoIn.class);
+			String liveSid = in.liveSid;
+			Live live = liveService.findLive(liveSid);
 			
-			LiveMessageSendIn in = JSON.parseObject(reqData, LiveMessageSendIn.class);
 			
-			Live live = liveService.findLiveByUser(userSid);
-			if (live != null) {
-				User sender = userService.findUserBySid(userSid);
-				LoggerHelper.appendLog(sender.desc() + "发送直播消息:" + in.content, logBuffer);
-
-				// 推送
-				List<String> audienceSids = liveService.listAllAudiences(live.getSid());
-				LiveMessagePush push = new LiveMessagePush();
-				push.content = in.content;
-				RespUser respSender = new RespUser();
-				respSender.convert(sender);
-				push.sender = respSender;
-				String pushMessage = push.socketResp();
-				LoggerHelper.appendLog("LIVE_MESSAGE_PUSH:" + pushMessage, logBuffer);
-				LoggerHelper.appendLog("推送用户数量:" + audienceSids.size(), logBuffer);
-				for (String sid : audienceSids) {
-					if (!sid.equals(userSid)) {
-						if (userService.isOnline(sid)) {
-							pushMessage(sid, pushMessage);
-						}
-					}
-				}
-			}
-			
-			CommandOut out = new CommandOut(Command.LIVE_MESSAGE_SEND);
+			LiveInfoOut out = new LiveInfoOut();
+			RespLiveInfo info = new RespLiveInfo();
+			info.convert(live);
+			long[] likeNums = liveService.likeNums(liveSid);
+			info.likeNum = likeNums[0];
+			info.likeAllNum = likeNums[1];
+			User user = userService.findUserBySid(live.getOwnerSid());
+			RespUser respUser = new RespUser();
+			respUser.convert(user);
+			info.presenter = respUser;
+			out.live = info;
 			String resp = out.socketResp();
 			LoggerHelper.appendLog("响应客户端:" + resp, logBuffer);
 			LoggerHelper.appendSplit(logBuffer);
@@ -88,17 +74,25 @@ public class LiveMessageSendHandler extends SocketBaseHandler {
 			loggerService.saveLogicLog(logicLog);
 			return resp;
 		}
-
+		
 	}
-
-	public static class LiveMessageSendIn {
-
-		public String content;
+	
+	public static class LiveInfoIn {
+		public String liveSid = "";
 	}
-
+	
+	public static class LiveInfoOut extends CommandOut {
+		
+		public RespLiveInfo live;
+		
+		public LiveInfoOut() {
+			super(Command.LIVE_INFO);
+		}
+	}
+	
 	private String respFail(String message) {
-		String resp = CommandOut.failureOut(Command.LIVE_MESSAGE_SEND, message).httpResp();
+		String resp = CommandOut.failureOut(Command.LIVE_INFO, message).httpResp();
 		return resp;
 	}
-
+	
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
+
 import com.alibaba.fastjson.JSON;
 import com.galive.logic.dao.cache.RedisManager;
 import com.galive.logic.model.Live;
@@ -49,6 +51,21 @@ public class LiveCacheImpl implements LiveCache {
 		return RedisManager.getInstance().keyPrefix() + "live:audience";
 	}
 
+	// 直播单场点赞数 hset
+	private String likeKey() {
+		return RedisManager.getInstance().keyPrefix() + "live:like";
+	}
+
+	// 直播点赞总数 hset
+	private String likeAllKey() {
+		return RedisManager.getInstance().keyPrefix() + "live:like:all";
+	}
+
+	// 最后点赞时间 hset
+	private String latestLikeTimeKey(String liveSid) {
+		return RedisManager.getInstance().keyPrefix() + "live:like:latest_time:" + liveSid;
+	}
+
 	/**
 	 * 生成房间id
 	 * 
@@ -92,7 +109,7 @@ public class LiveCacheImpl implements LiveCache {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public Live findLiveByAudienceSid(String audienceSid) {
 		String liveSid = jedis.hget(audienceKey(), audienceSid);
@@ -135,7 +152,7 @@ public class LiveCacheImpl implements LiveCache {
 	}
 
 	@Override
-	public List<String> listAudience(String liveSid, int start, int end) {
+	public List<String> listAudiences(String liveSid, int start, int end) {
 		List<String> userSids = new ArrayList<>();
 		String key = listAudienceByJoinTimeKey(liveSid);
 		Set<String> sets = jedis.zrevrange(key, start, end);
@@ -145,6 +162,45 @@ public class LiveCacheImpl implements LiveCache {
 		return userSids;
 	}
 
-	
+	@Override
+	public long countAudiences(String liveSid) {
+		String key = listAudienceByJoinTimeKey(liveSid);
+		long count = jedis.zcard(key);
+		return count;
+	}
+
+	@Override
+	public long[] incrLike(String liveSid, String userSid) {
+		String likeKey = likeKey();
+		String likeAllKey = likeAllKey();
+		long likeNum = jedis.hincrBy(likeKey, liveSid, 1);
+		long likeAllNum = jedis.hincrBy(likeAllKey, liveSid, 1);
+		String key = latestLikeTimeKey(liveSid);
+		jedis.hset(key, userSid, System.currentTimeMillis() + "");
+		return new long[] { likeNum, likeAllNum };
+	}
+
+	@Override
+	public void clearLikeNum(String liveSid) {
+		String likeKey = likeKey();
+		jedis.hdel(likeKey, liveSid);
+	}
+
+	@Override
+	public long[] likeNum(String liveSid) {
+		String likeKey = likeKey();
+		String likeAllKey = likeAllKey();
+		long likeNum = NumberUtils.toLong(jedis.hget(likeKey, liveSid), 0);
+		long likeAllNum = NumberUtils.toLong(jedis.hget(likeAllKey, liveSid), 0);
+		return new long[] { likeNum, likeAllNum };
+	}
+
+	@Override
+	public long latestLikeTime(String liveSid, String userSid) {
+		String key = latestLikeTimeKey(liveSid);
+		String timeStr = jedis.hget(key, userSid);
+		long time = NumberUtils.toLong(timeStr, 0);
+		return time;
+	}
 
 }

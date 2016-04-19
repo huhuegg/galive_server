@@ -43,6 +43,10 @@ public class Command {
 	public static final String LIVE_LEAVE = "LIVE_LEAVE";
 	// 直播观众列表
 	public static final String LIVE_AUDIENCE_LIST = "LIVE_AUDIENCE_LIST";
+	// 直播点赞
+	public static final String LIVE_LIKE = "LIVE_LIKE";
+	// 获取直播信息
+	public static final String LIVE_INFO = "LIVE_INFO";
 
 	// 客户端上线推送
 	public static final String USR_ONLINE_PUSH = "USR_ONLINE_PUSH";
@@ -69,6 +73,7 @@ public class Command {
 	public static final String LIVE_STOP_PUSH = "LIVE_STOP_PUSH";
 	// 直播消息推送
 	public static final String LIVE_MESSAGE_PUSH = "LIVE_MESSAGE_PUSH";
-	
+	// 直播点赞推送
+	public static final String LIVE_LIKE_PUSH = "LIVE_LIKE_PUSH";
 
 }

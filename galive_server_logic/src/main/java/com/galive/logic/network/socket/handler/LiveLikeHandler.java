@@ -5,7 +5,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.exception.LogicException;
@@ -14,7 +13,7 @@ import com.galive.logic.model.Live;
 import com.galive.logic.model.User;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.SocketRequestHandler;
-import com.galive.logic.network.socket.handler.push.LiveMessagePush;
+import com.galive.logic.network.socket.handler.push.LiveLikePush;
 import com.galive.logic.service.LiveService;
 import com.galive.logic.service.LiveServiceImpl;
 import com.galive.logic.service.LoggerService;
@@ -22,36 +21,32 @@ import com.galive.logic.service.LoggerServiceImpl;
 import com.galive.logic.service.UserService;
 import com.galive.logic.service.UserServiceImpl;
 
-@SocketRequestHandler(desc = "发送直播消息", command = Command.LIVE_MESSAGE_SEND)
-public class LiveMessageSendHandler extends SocketBaseHandler {
+@SocketRequestHandler(desc = "直播点赞", command = Command.LIVE_LIKE)
+public class LiveLikeHandler extends SocketBaseHandler  {
 
-	private static Logger logger = LoggerFactory.getLogger(LiveMessageSendHandler.class);
+	private static Logger logger = LoggerFactory.getLogger(LiveLikeHandler.class);
 
-	private UserService userService = new UserServiceImpl(logBuffer);
 	private LiveService liveService = new LiveServiceImpl(logBuffer);
+	private UserService userService = new UserServiceImpl(logBuffer);
 	private LoggerService loggerService = new LoggerServiceImpl();
-
+	
 	@Override
 	public String handle(String userSid, String reqData) {
 		try {
-			LoggerHelper.appendLog("--发送直播消息--", logBuffer);
-			
-			LiveMessageSendIn in = JSON.parseObject(reqData, LiveMessageSendIn.class);
-			
-			Live live = liveService.findLiveByUser(userSid);
+			LoggerHelper.appendLog("--直播点赞--", logBuffer);
+			Live live = liveService.findLiveByAudience(userSid);
 			if (live != null) {
-				User sender = userService.findUserBySid(userSid);
-				LoggerHelper.appendLog(sender.desc() + "发送直播消息:" + in.content, logBuffer);
-
+				String liveSid = live.getSid();
+				liveService.doLike(liveSid, userSid);
 				// 推送
-				List<String> audienceSids = liveService.listAllAudiences(live.getSid());
-				LiveMessagePush push = new LiveMessagePush();
-				push.content = in.content;
-				RespUser respSender = new RespUser();
-				respSender.convert(sender);
-				push.sender = respSender;
+				List<String> audienceSids = liveService.listAllAudiences(liveSid);
+				LiveLikePush push = new LiveLikePush();
+				RespUser respUser = new RespUser();
+				User user = userService.findUserBySid(userSid);
+				respUser.convert(user);
+				push.user = respUser;
 				String pushMessage = push.socketResp();
-				LoggerHelper.appendLog("LIVE_MESSAGE_PUSH:" + pushMessage, logBuffer);
+				LoggerHelper.appendLog("LIVE_LIKE_PUSH:" + pushMessage, logBuffer);
 				LoggerHelper.appendLog("推送用户数量:" + audienceSids.size(), logBuffer);
 				for (String sid : audienceSids) {
 					if (!sid.equals(userSid)) {
@@ -62,7 +57,10 @@ public class LiveMessageSendHandler extends SocketBaseHandler {
 				}
 			}
 			
-			CommandOut out = new CommandOut(Command.LIVE_MESSAGE_SEND);
+			
+			
+			CommandOut out = new CommandOut(Command.LIVE_LIKE);
+
 			String resp = out.socketResp();
 			LoggerHelper.appendLog("响应客户端:" + resp, logBuffer);
 			LoggerHelper.appendSplit(logBuffer);
@@ -88,17 +86,12 @@ public class LiveMessageSendHandler extends SocketBaseHandler {
 			loggerService.saveLogicLog(logicLog);
 			return resp;
 		}
-
+		
 	}
-
-	public static class LiveMessageSendIn {
-
-		public String content;
-	}
-
+	
 	private String respFail(String message) {
-		String resp = CommandOut.failureOut(Command.LIVE_MESSAGE_SEND, message).httpResp();
+		String resp = CommandOut.failureOut(Command.LIVE_LIKE, message).httpResp();
 		return resp;
 	}
-
+	
 }

@@ -22,5 +22,15 @@ public interface LiveCache {
 	
 	public void removeAudience(String userSid);
 	
-	public List<String> listAudience(String liveSid, int start, int end);
+	public List<String> listAudiences(String liveSid, int start, int end);
+	
+	public long countAudiences(String liveSid);
+	
+	public long[] incrLike(String liveSid, String userSid);
+	
+	public void clearLikeNum(String liveSid);
+	
+	public long[] likeNum(String liveSid);
+	
+	public long latestLikeTime(String liveSid, String userSid);
 }

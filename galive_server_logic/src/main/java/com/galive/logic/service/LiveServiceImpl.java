@@ -24,10 +24,26 @@ public class LiveServiceImpl implements LiveService {
 	}
 	
 	@Override
+	public Live findLive(String liveSid) throws LogicException {
+		Live live = liveCache.findLive(liveSid);
+		if (live == null) {
+			throw new LogicException("直播不存在");
+		}
+		return live;
+	}
+	
+	@Override
 	public Live findLiveByUser(String userSid) {
 		Live live = liveCache.findLiveByOwnerSid(userSid);
 		return live;
 	}
+	
+	@Override
+	public Live findLiveByAudience(String userSid) {
+		Live live = liveCache.findLiveByAudienceSid(userSid);
+		return live;
+	}
+
 
 	@Override
 	public Live startLive(String userSid) throws LogicException {
@@ -101,7 +117,7 @@ public class LiveServiceImpl implements LiveService {
 	@Override
 	public List<User> listAudiences(String liveSid, int index, int size) throws LogicException {
 		List<User> audiences = new ArrayList<>();
-		List<String> audienceSids = liveCache.listAudience(liveSid, index, index + size - 1);
+		List<String> audienceSids = liveCache.listAudiences(liveSid, index, index + size - 1);
 		for (String sid : audienceSids) {
 			User u = userService.findUserBySid(sid);
 			if (u != null) {
@@ -113,10 +129,28 @@ public class LiveServiceImpl implements LiveService {
 
 	@Override
 	public List<String> listAllAudiences(String liveSid) throws LogicException {
-		List<String> audienceSids = liveCache.listAudience(liveSid, 0, -1);
+		List<String> audienceSids = liveCache.listAudiences(liveSid, 0, -1);
 		return audienceSids;
 	}
 
+	@Override
+	public long[] doLike(String liveSid, String userSid) throws LogicException {
+		long latestLikeTime = liveCache.latestLikeTime(liveSid, userSid);
+		if (System.currentTimeMillis() - latestLikeTime <= 1000) {
+			throw new LogicException("点赞过于频繁");
+		}
+		long[] likeNums = liveCache.incrLike(liveSid, userSid);
+		return likeNums;
+	}
+
+	@Override
+	public long[] likeNums(String liveSid) throws LogicException {
+		long[] likeNums = liveCache.likeNum(liveSid);
+		return likeNums;
+	}
+
+	
+	
 	
 
 	
