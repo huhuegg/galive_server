@@ -82,6 +82,9 @@ public class LiveServiceImpl implements LiveService {
 	public Live joinLive(String liveSid, String userSid) throws LogicException {
 		Live live = liveCache.findLive(liveSid);
 		if (live != null) {
+			if (live.getState() == LiveState.Off) {
+				throw new LogicException("该用户当前不在直播。");
+			}
 			liveCache.saveAudience(liveSid, userSid);
 			return live;
 		}
@@ -106,6 +109,12 @@ public class LiveServiceImpl implements LiveService {
 			}
 		}
 		return audiences;
+	}
+
+	@Override
+	public List<String> listAllAudiences(String liveSid) throws LogicException {
+		List<String> audienceSids = liveCache.listAudience(liveSid, 0, -1);
+		return audienceSids;
 	}
 
 	
