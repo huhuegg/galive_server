@@ -67,6 +67,8 @@ public class LiveServiceImpl implements LiveService {
 		live.setLatestLiveAt(now);
 		liveCache.saveLive(live);
 		
+		liveCache.clearLikeNum(live.getSid());
+		
 		LoggerHelper.appendLog(u.desc() + "插入观众列表", logBuffer);
 		liveCache.saveAudience(live.getSid(), userSid, true);
 		LoggerHelper.appendLog(live.desc() + "按最后直播开始时间排序，插入直播列表。", logBuffer);
@@ -85,7 +87,7 @@ public class LiveServiceImpl implements LiveService {
 		liveCache.saveLive(live);
 		String liveSid = live.getSid();
 		liveCache.clearLikeNum(liveSid);
-		liveCache.removeAllAudiences(liveSid);
+		//liveCache.removeAllAudiences(liveSid);
 		return live;
 	}
 
@@ -106,9 +108,9 @@ public class LiveServiceImpl implements LiveService {
 	public Live joinLive(String liveSid, String userSid) throws LogicException {
 		Live live = liveCache.findLive(liveSid);
 		if (live != null) {
-			if (live.getState() == LiveState.Off) {
-				throw new LogicException("该用户当前不在直播。");
-			}
+//			if (live.getState() == LiveState.Off) {
+//				throw new LogicException("该用户当前不在直播。");
+//			}
 			liveCache.saveAudience(liveSid, userSid, false);
 			return live;
 		}
