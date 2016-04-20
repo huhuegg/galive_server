@@ -18,6 +18,10 @@ public class Live {
 	private long latestLiveAt = System.currentTimeMillis();
 	
 	private LiveState state = LiveState.Off;
+	
+	public String desc() {
+		return " " + name + "(" + sid + ") ";
+	}
 
 	public String getSid() {
 		return sid;

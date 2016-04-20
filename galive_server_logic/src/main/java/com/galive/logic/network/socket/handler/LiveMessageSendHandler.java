@@ -37,10 +37,10 @@ public class LiveMessageSendHandler extends SocketBaseHandler {
 			LoggerHelper.appendLog("--发送直播消息--", logBuffer);
 			
 			LiveMessageSendIn in = JSON.parseObject(reqData, LiveMessageSendIn.class);
-			
-			Live live = liveService.findLiveByUser(userSid);
+			Live live = liveService.findLiveByAudience(userSid);
 			if (live != null) {
 				User sender = userService.findUserBySid(userSid);
+				LoggerHelper.appendLog(sender.desc() + live.desc() + "", logBuffer);
 				LoggerHelper.appendLog(sender.desc() + "发送直播消息:" + in.content, logBuffer);
 
 				// 推送
@@ -92,7 +92,6 @@ public class LiveMessageSendHandler extends SocketBaseHandler {
 	}
 
 	public static class LiveMessageSendIn {
-
 		public String content;
 	}
 

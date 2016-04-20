@@ -33,22 +33,25 @@ public class LiveStopHandler extends SocketBaseHandler  {
 		try {
 			LoggerHelper.appendLog("--结束直播--", logBuffer);
 			Live live = liveService.stopLive(userSid);
-			// 推送
-			List<String> audienceSids = liveService.listAllAudiences(live.getSid());
-			LiveStopPush push = new LiveStopPush();
-			RespLive respLive = new RespLive();
-			respLive.convert(live);
-			push.live = respLive;
-			String pushMessage = push.socketResp();
-			LoggerHelper.appendLog("LIVE_STOP_PUSH:" + pushMessage, logBuffer);
-			LoggerHelper.appendLog("推送用户数量:" + audienceSids.size(), logBuffer);
-			for (String sid : audienceSids) {
-				if (!sid.equals(userSid)) {
-					if (userService.isOnline(sid)) {
-						pushMessage(sid, pushMessage);
+			if (live != null) {
+				// 推送
+				List<String> audienceSids = liveService.listAllAudiences(live.getSid());
+				LiveStopPush push = new LiveStopPush();
+				RespLive respLive = new RespLive();
+				respLive.convert(live);
+				push.live = respLive;
+				String pushMessage = push.socketResp();
+				LoggerHelper.appendLog("LIVE_STOP_PUSH:" + pushMessage, logBuffer);
+				LoggerHelper.appendLog("推送用户数量:" + audienceSids.size(), logBuffer);
+				for (String sid : audienceSids) {
+					if (!sid.equals(userSid)) {
+						if (userService.isOnline(sid)) {
+							pushMessage(sid, pushMessage);
+						}
 					}
 				}
 			}
+			
 			
 			CommandOut out = new CommandOut(Command.LIVE_STOP);
 			String resp = out.socketResp();

@@ -36,23 +36,26 @@ public class LiveLeaveHandler extends SocketBaseHandler  {
 			LoggerHelper.appendLog("--退出观看直播--", logBuffer);
 			
 			Live live = liveService.leaveLive(userSid);
-			// 推送
-			List<String> audienceSids = liveService.listAllAudiences(live.getSid());
-			LiveLeavePush push = new LiveLeavePush();
-			RespUser respUser = new RespUser();
-			User user = userService.findUserBySid(userSid);
-			respUser.convert(user);
-			push.user = respUser;
-			String pushMessage = push.socketResp();
-			LoggerHelper.appendLog("LIVE_LEAVE_PUSH:" + pushMessage, logBuffer);
-			LoggerHelper.appendLog("推送用户数量:" + audienceSids.size(), logBuffer);
-			for (String sid : audienceSids) {
-				if (!sid.equals(userSid)) {
-					if (userService.isOnline(sid)) {
-						pushMessage(sid, pushMessage);
+			if (live != null) {
+				// 推送
+				List<String> audienceSids = liveService.listAllAudiences(live.getSid());
+				LiveLeavePush push = new LiveLeavePush();
+				RespUser respUser = new RespUser();
+				User user = userService.findUserBySid(userSid);
+				respUser.convert(user);
+				push.user = respUser;
+				String pushMessage = push.socketResp();
+				LoggerHelper.appendLog("LIVE_LEAVE_PUSH:" + pushMessage, logBuffer);
+				LoggerHelper.appendLog("推送用户数量:" + audienceSids.size(), logBuffer);
+				for (String sid : audienceSids) {
+					if (!sid.equals(userSid)) {
+						if (userService.isOnline(sid)) {
+							pushMessage(sid, pushMessage);
+						}
 					}
 				}
 			}
+			
 			
 			CommandOut out = new CommandOut(Command.LIVE_LEAVE);
 			String resp = out.socketResp();

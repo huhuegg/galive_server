@@ -47,24 +47,29 @@ public class LiveServiceImpl implements LiveService {
 
 	@Override
 	public Live startLive(String userSid) throws LogicException {
+		User u = userService.findUserBySid(userSid);
+		if (u == null) {
+			LoggerHelper.appendLog("用户不存在。", logBuffer);
+			throw new LogicException("用户不存在。");
+		}
 		Live live = liveCache.findLiveByOwnerSid(userSid);
 		long now = System.currentTimeMillis();
 		if (live == null) {
 			live = new Live();
 			live.setCreateAt(now);
-			User u = userService.findUserBySid(userSid);
-			if (u == null) {
-				LoggerHelper.appendLog("用户不存在。", logBuffer);
-				throw new LogicException("用户不存在。");
-			}
 			live.setName(u.getNickname() + "的直播间");
 			live.setOwnerSid(userSid);
+			LoggerHelper.appendLog("创建直播间" + live.desc(), logBuffer);
+		} else {
+			LoggerHelper.appendLog("发现直播间" + live.desc(), logBuffer);
 		}
 		live.setState(LiveState.On);
 		live.setLatestLiveAt(now);
 		liveCache.saveLive(live);
 		
-		// 插入排序
+		LoggerHelper.appendLog(u.desc() + "插入观众列表", logBuffer);
+		liveCache.saveAudience(live.getSid(), userSid, true);
+		LoggerHelper.appendLog(live.desc() + "按最后直播开始时间排序，插入直播列表。", logBuffer);
 		liveCache.insertToLiveListByLatestLiveAt(live.getSid());
 		return live;
 	}
@@ -78,6 +83,9 @@ public class LiveServiceImpl implements LiveService {
 		live.setState(LiveState.Off);
 		live.setLatestLiveAt(0);
 		liveCache.saveLive(live);
+		String liveSid = live.getSid();
+		liveCache.clearLikeNum(liveSid);
+		liveCache.removeAllAudiences(liveSid);
 		return live;
 	}
 
@@ -101,7 +109,7 @@ public class LiveServiceImpl implements LiveService {
 			if (live.getState() == LiveState.Off) {
 				throw new LogicException("该用户当前不在直播。");
 			}
-			liveCache.saveAudience(liveSid, userSid);
+			liveCache.saveAudience(liveSid, userSid, false);
 			return live;
 		}
 		return null;
@@ -110,6 +118,14 @@ public class LiveServiceImpl implements LiveService {
 	@Override
 	public Live leaveLive(String userSid) throws LogicException {
 		Live live = liveCache.findLiveByAudienceSid(userSid);
+		if (live == null) {
+			LoggerHelper.appendLog("直播不存在或未开始。", logBuffer);
+			return null;
+		}
+		if (live.getOwnerSid().equals(userSid)) {
+			LoggerHelper.appendLog("主播不能离开之间。", logBuffer);
+			throw new LogicException("主播不能离开之间。");
+		}
 		liveCache.removeAudience(userSid);
 		return live;
 	}
@@ -130,6 +146,7 @@ public class LiveServiceImpl implements LiveService {
 	@Override
 	public List<String> listAllAudiences(String liveSid) throws LogicException {
 		List<String> audienceSids = liveCache.listAudiences(liveSid, 0, -1);
+		LoggerHelper.appendLog("查询所有观众:" + audienceSids.size(), logBuffer);
 		return audienceSids;
 	}
 
@@ -137,6 +154,7 @@ public class LiveServiceImpl implements LiveService {
 	public long[] doLike(String liveSid, String userSid) throws LogicException {
 		long latestLikeTime = liveCache.latestLikeTime(liveSid, userSid);
 		if (System.currentTimeMillis() - latestLikeTime <= 1000) {
+			LoggerHelper.appendLog("点赞过于频繁", logBuffer);
 			throw new LogicException("点赞过于频繁");
 		}
 		long[] likeNums = liveCache.incrLike(liveSid, userSid);

@@ -63,7 +63,7 @@ public class LiveJoinHandler extends SocketBaseHandler  {
 			respLive.convert(live);
 			out.live = respLive;
 			RespUser presenter = new RespUser();
-			presenter.convert(user);
+			presenter.convert(userService.findUserBySid(live.getOwnerSid()));
 			out.presenter = presenter;
 			
 			String resp = out.socketResp();

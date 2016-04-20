@@ -137,9 +137,10 @@ public class LiveCacheImpl implements LiveCache {
 	}
 
 	@Override
-	public void saveAudience(String liveSid, String userSid) {
+	public void saveAudience(String liveSid, String userSid, boolean isPresenter) {
+		long now = isPresenter ? 0 : System.currentTimeMillis();
 		jedis.hset(audienceKey(), userSid, liveSid);
-		jedis.zadd(listAudienceByJoinTimeKey(liveSid), System.currentTimeMillis(), userSid);
+		jedis.zadd(listAudienceByJoinTimeKey(liveSid), now, userSid);
 	}
 
 	@Override
@@ -149,6 +150,15 @@ public class LiveCacheImpl implements LiveCache {
 			jedis.zrem(listAudienceByJoinTimeKey(liveSid), userSid);
 		}
 		jedis.hdel(audienceKey(), userSid);
+	}
+	
+	@Override
+	public void removeAllAudiences(String liveSid) {
+		List<String> audiences = listAudiences(liveSid, 0, -1);
+		for (String sid : audiences) {
+			jedis.hdel(audienceKey(), sid);
+		}
+		jedis.zremrangeByRank(listAudienceByJoinTimeKey(liveSid), 0, -1);
 	}
 
 	@Override

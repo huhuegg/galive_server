@@ -34,12 +34,12 @@ public class LiveLikeHandler extends SocketBaseHandler  {
 	public String handle(String userSid, String reqData) {
 		try {
 			LoggerHelper.appendLog("--直播点赞--", logBuffer);
+
 			Live live = liveService.findLiveByAudience(userSid);
 			if (live != null) {
-				String liveSid = live.getSid();
-				liveService.doLike(liveSid, userSid);
+				liveService.doLike(live.getSid(), userSid);
 				// 推送
-				List<String> audienceSids = liveService.listAllAudiences(liveSid);
+				List<String> audienceSids = liveService.listAllAudiences(live.getSid());
 				LiveLikePush push = new LiveLikePush();
 				RespUser respUser = new RespUser();
 				User user = userService.findUserBySid(userSid);
@@ -86,7 +86,6 @@ public class LiveLikeHandler extends SocketBaseHandler  {
 			loggerService.saveLogicLog(logicLog);
 			return resp;
 		}
-		
 	}
 	
 	private String respFail(String message) {

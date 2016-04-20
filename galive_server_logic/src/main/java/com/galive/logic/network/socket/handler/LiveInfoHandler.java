@@ -37,7 +37,6 @@ public class LiveInfoHandler extends SocketBaseHandler  {
 			String liveSid = in.liveSid;
 			Live live = liveService.findLive(liveSid);
 			
-			
 			LiveInfoOut out = new LiveInfoOut();
 			RespLiveInfo info = new RespLiveInfo();
 			info.convert(live);

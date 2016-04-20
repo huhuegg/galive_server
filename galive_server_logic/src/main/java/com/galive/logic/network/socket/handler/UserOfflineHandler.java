@@ -40,9 +40,10 @@ public class UserOfflineHandler extends SocketBaseHandler {
 	@Override
 	public String handle(String userSid, String reqData) {
 		try {
-			logger.debug("客户端下线|" + userSid + "|" + reqData);
-			User u = userService.findUserBySid(userSid);
+			LoggerHelper.appendLog("客户端下线|" + userSid + "|" + reqData, logBuffer);
 			
+			User u = userService.findUserBySid(userSid);
+			LoggerHelper.appendLog("用户:" + u.desc(), logBuffer);
 			Room room = roomService.findRoomByUser(userSid);
 			if (room != null) {
 				RespUser ru = new RespUser();
@@ -89,6 +90,7 @@ public class UserOfflineHandler extends SocketBaseHandler {
 			// 退出观看
 			live = liveService.findLiveByAudience(userSid);
 			if (live != null) {
+				liveService.leaveLive(userSid);
 				// 推送
 				LoggerHelper.appendLog("退出正在观看的直播:" + live.getName(), logBuffer);
 				List<String> audienceSids = liveService.listAllAudiences(live.getSid());

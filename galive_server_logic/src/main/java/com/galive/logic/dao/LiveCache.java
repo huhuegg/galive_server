@@ -18,9 +18,11 @@ public interface LiveCache {
 	
 	public List<String> listByLatestLiveTime(int start, int end);
 	
-	public void saveAudience(String liveSid, String userSid);
+	public void saveAudience(String liveSid, String userSid, boolean isPresenter);
 	
 	public void removeAudience(String userSid);
+	
+	public void removeAllAudiences(String liveSid);
 	
 	public List<String> listAudiences(String liveSid, int start, int end);
 	
