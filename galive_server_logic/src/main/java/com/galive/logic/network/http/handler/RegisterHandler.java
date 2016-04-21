@@ -31,7 +31,7 @@ public class RegisterHandler extends HttpBaseHandler {
 		try {
 			LoggerHelper.appendLog("--用户注册--", logBuffer);
 			RegisterIn in = JSON.parseObject(reqData, RegisterIn.class);
-			User u = userService.register(in.username, in.password, in.nickname);
+			User u = userService.register(in.username, in.password, in.nickname, in.avatar, in.profile);
 			
 			RegisterOut out = new RegisterOut();
 			out.token = userService.createToken(u.getSid());
@@ -71,6 +71,8 @@ public class RegisterHandler extends HttpBaseHandler {
 		public String username;
 		public String password;
 		public String nickname;
+		public String avatar;
+		public String profile;
 	}
 	
 	public static class RegisterOut extends LoginOut {

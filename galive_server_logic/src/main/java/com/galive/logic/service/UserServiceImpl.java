@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 	private UserCache userCache = new UserCacheImpl();
 
 	@Override
-	public User register(String username, String password, String nickname) throws LogicException {
+	public User register(String username, String password, String nickname, String avatar, String profile) throws LogicException {
 		User u = userDao.findUserByUsername(username);
 		if (u != null) {
 			String error = "用户名" + username + "已存在。";
@@ -75,10 +75,17 @@ public class UserServiceImpl implements UserService {
 			LoggerHelper.appendLog(error, logBuffer);
 			throw new LogicException(error);
 		}
+		if (StringUtils.isEmpty(avatar)) {
+			String error = "头像为空";
+			LoggerHelper.appendLog(error, logBuffer);
+			throw new LogicException(error);
+		}
 		LoggerHelper.appendLog("保存用户", logBuffer);
 		u.setUsername(username);
 		u.setPassword(password);
 		u.setNickname(nickname);
+		u.setAvatar(avatar);
+		u.setProfile(profile);
 		u = userDao.saveUser(u);
 		
 		LoggerHelper.appendLog("更新最后登录时间", logBuffer);

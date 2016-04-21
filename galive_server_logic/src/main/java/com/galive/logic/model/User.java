@@ -27,6 +27,8 @@ public class User extends BaseModel {
 
 	private String avatar = "";
 	
+	private String profile = "";
+	
 	private UserGender gender = UserGender.Unknown;
 	
 	public String desc() {
@@ -72,6 +74,14 @@ public class User extends BaseModel {
 
 	public void setGender(UserGender gender) {
 		this.gender = gender;
+	}
+
+	public String getProfile() {
+		return profile;
+	}
+
+	public void setProfile(String profile) {
+		this.profile = profile;
 	}
 	
 	

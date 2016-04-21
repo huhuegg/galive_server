@@ -7,7 +7,7 @@ import com.galive.logic.model.User;
 
 public interface UserService {
 	
-	public User register(String username, String password, String nickname) throws LogicException;
+	public User register(String username, String password, String nickname, String avatar, String profile) throws LogicException;
 	
 	public User login(String username, String password) throws LogicException;
 	
