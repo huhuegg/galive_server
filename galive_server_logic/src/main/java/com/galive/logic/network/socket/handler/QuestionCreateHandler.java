@@ -30,7 +30,7 @@ public class QuestionCreateHandler extends SocketBaseHandler  {
 		try {
 			LoggerHelper.appendLog("--创建问题--", logBuffer);
 			QuestionCreateIn in = JSON.parseObject(reqData, QuestionCreateIn.class);
-			Question q = questionService.create(in.desc, in.imageUrls, in.recordUrl, in.tags);
+			Question q = questionService.createQuestion(in.desc, in.imageUrls, in.recordUrl, in.tags);
 			
 			
 			QuestionCreateOut out = new QuestionCreateOut();

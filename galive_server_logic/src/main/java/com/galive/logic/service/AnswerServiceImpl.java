@@ -1,5 +1,7 @@
 package com.galive.logic.service;
 
+import java.util.List;
+
 import com.galive.logic.dao.AnswerDao;
 import com.galive.logic.dao.AnswerDaoImpl;
 import com.galive.logic.exception.LogicException;
@@ -32,6 +34,24 @@ public class AnswerServiceImpl extends BaseService implements AnswerService {
 		answer.setTime(System.currentTimeMillis());
 		answerDao.saveOrUpdate(answer);
 		return answer;
+	}
+
+	@Override
+	public Answer resolveAnswer(String answerSids) throws LogicException {
+		Answer a = answerDao.find(answerSids);
+		if (a == null) {
+			appendLog("解答不存在。");
+			throw new LogicException("解答不存在。");
+		}
+		a.setResult(AnswerResult.Resolved);
+		a = answerDao.saveOrUpdate(a);
+		return a;
+	}
+
+	@Override
+	public List<Answer> listAnserByQuestion(String questionSid, int index, int size) throws LogicException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

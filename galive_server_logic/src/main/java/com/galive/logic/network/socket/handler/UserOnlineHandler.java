@@ -82,7 +82,7 @@ public class UserOnlineHandler extends SocketBaseHandler {
 				respRoom.invitor = invitor;
 				if (inviteeRoom.getType() == RoomType.Question) {
 					RespQuestion rq = new RespQuestion();
-					rq.convert(questionService.findBySid(inviteeRoom.getQuestionSid()));
+					rq.convert(questionService.findQuestionBySid(inviteeRoom.getQuestionSid()));
 					respRoom.question = rq;
 				}
 				out.inviteeRoom = respRoom;

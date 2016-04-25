@@ -36,7 +36,11 @@ public class Command {
 	public static final String QUESTION_LIST = "QUESTION_LIST";
 	// 创建解答
 	public static final String ANSWER_CREATE = "ANSWER_CREATE";
-	
+	// 修改解答结果
+	public static final String ANSWER_RESOLVE = "ANSWER_RESOLVE";
+	// 解答列表
+	public static final String ANSWER_LIST = "ANSWER_LIST";
+
 	// 开始直播
 	public static final String LIVE_START = "LIVE_START";
 	// 发送直播消息

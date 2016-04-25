@@ -58,7 +58,7 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 				RoomInviteePush inviteePush = new RoomInviteePush();
 				RespRoom inviteeRoom = RespRoom.convert(room);
 				if (room.getType() == RoomType.Question) {
-					Question question = questionService.findBySid(room.getQuestionSid());
+					Question question = questionService.findQuestionBySid(room.getQuestionSid());
 					RespQuestion rq = new RespQuestion();
 					rq.convert(question);
 					inviteeRoom.question = rq;

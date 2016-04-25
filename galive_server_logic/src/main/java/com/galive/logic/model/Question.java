@@ -9,7 +9,7 @@ public class Question extends BaseModel {
 	
 	public static enum QuestionState {
 		Pending,
-		Answered;
+		Resolved;
 	}
 	
 	private String userSid = "";

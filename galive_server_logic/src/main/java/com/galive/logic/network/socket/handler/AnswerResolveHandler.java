@@ -1,52 +1,40 @@
 package com.galive.logic.network.socket.handler;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
-import com.galive.common.protocol.PageCommandOut;
-import com.galive.common.protocol.PageParams;
 import com.galive.logic.exception.LogicException;
 import com.galive.logic.helper.LoggerHelper;
-import com.galive.logic.model.Question;
-import com.galive.logic.network.model.RespQuestion;
+import com.galive.logic.model.Answer;
 import com.galive.logic.network.socket.SocketRequestHandler;
+import com.galive.logic.service.AnswerService;
+import com.galive.logic.service.AnswerServiceImpl;
 import com.galive.logic.service.LoggerService;
 import com.galive.logic.service.LoggerServiceImpl;
 import com.galive.logic.service.QuestionService;
 import com.galive.logic.service.QuestionServiceImpl;
 
-@SocketRequestHandler(desc = "问题列表", command = Command.QUESTION_LIST)
-public class QuestionListHandler extends SocketBaseHandler  {
+@SocketRequestHandler(desc = "修改解答结果", command = Command.ANSWER_RESOLVE)
+public class AnswerResolveHandler extends SocketBaseHandler  {
 
-	public static enum QuestionListBy {
-		CreateTime
-	}
-	
-	private static Logger logger = LoggerFactory.getLogger(QuestionListHandler.class);
+	private static Logger logger = LoggerFactory.getLogger(AnswerResolveHandler.class);
 
+	private AnswerService answerService = new AnswerServiceImpl();
 	private QuestionService questionService = new QuestionServiceImpl();
 	private LoggerService loggerService = new LoggerServiceImpl();
 	
 	@Override
 	public String handle(String userSid, String reqData) {
 		try {
-			LoggerHelper.appendLog("--问题列表--", logBuffer);
-			QuestionListIn in = JSON.parseObject(reqData, QuestionListIn.class);
-			List<Question> questions = questionService.listQuestionByCreateTime(in.index, in.size);
+			LoggerHelper.appendLog("--修改解答结果--", logBuffer);
+			AnswerResolveIn in = JSON.parseObject(reqData, AnswerResolveIn.class);
+			Answer a = answerService.resolveAnswer(in.answerSid);
 			
+			questionService.resolveQuestion(a.getQuestionSid());
 			
-			PageCommandOut<RespQuestion> out = new PageCommandOut<>(Command.QUESTION_LIST, in);
-			List<RespQuestion> rqs = new ArrayList<>();
-			for (Question q : questions) {
-				RespQuestion rq = new RespQuestion();
-				rq.convert(q);
-				rqs.add(rq);
-			}
-			out.setData(rqs);
+			CommandOut out = new CommandOut(Command.ANSWER_RESOLVE);
 			String resp = out.socketResp();
 			LoggerHelper.appendLog("响应客户端:" + resp, logBuffer);
 			LoggerHelper.appendSplit(logBuffer);
@@ -75,12 +63,12 @@ public class QuestionListHandler extends SocketBaseHandler  {
 		
 	}
 	
-	public static class QuestionListIn extends PageParams {
-		public QuestionListBy listBy;
+	public static class AnswerResolveIn {
+		public String answerSid;
 	}
 	
 	private String respFail(String message) {
-		String resp = CommandOut.failureOut(Command.QUESTION_LIST, message).httpResp();
+		String resp = CommandOut.failureOut(Command.ANSWER_RESOLVE, message).httpResp();
 		return resp;
 	}
 	

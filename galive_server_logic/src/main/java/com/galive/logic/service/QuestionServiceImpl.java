@@ -22,7 +22,7 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 	}
 	
 	@Override
-	public Question create(String desc, List<String> imageUrls, String recordUrl, List<String> tags)
+	public Question createQuestion(String desc, List<String> imageUrls, String recordUrl, List<String> tags)
 			throws LogicException {
 		appendLog("-创建问题-");
 		if (StringUtils.isBlank(desc) && CollectionUtils.isEmpty(imageUrls) && StringUtils.isBlank(recordUrl)) {
@@ -43,15 +43,27 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 		appendLog(q.desc() + "保存成功");
 		return q;
 	}
+	
+	@Override
+	public void resolveQuestion(String questionSid) throws LogicException {
+		Question q = questionDao.find(questionSid);
+		if (q == null) {
+			appendLog("问题不存在。");
+			throw new LogicException("问题不存在。");
+		}
+		q.setState(QuestionState.Resolved);
+		appendLog(q.desc() + "设置为已解决");
+		questionDao.saveOrUpdate(q);
+	}
 
 	@Override
-	public List<Question> listByCreateTime(int index, int size) throws LogicException {
+	public List<Question> listQuestionByCreateTime(int index, int size) throws LogicException {
 		List<Question> questions = questionDao.listByCreateTime(index, index + size - 1);
 		return questions;
 	}
 
 	@Override
-	public Question findBySid(String questionSid) throws LogicException {
+	public Question findQuestionBySid(String questionSid) throws LogicException {
 		Question q = questionDao.find(questionSid);
 		if (q == null) {
 			throw new LogicException("问题不存在。");
@@ -65,5 +77,9 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 		appendLog("问题总数:" + count);
 		return count;
 	}
+
+	
+
+	
 
 }

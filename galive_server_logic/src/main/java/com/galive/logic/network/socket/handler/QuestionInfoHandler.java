@@ -36,7 +36,7 @@ public class QuestionInfoHandler extends SocketBaseHandler  {
 		try {
 			LoggerHelper.appendLog("--问题详情--", logBuffer);
 			QuestionInfoIn in = JSON.parseObject(reqData, QuestionInfoIn.class);
-			Question q = questionService.findBySid(in.questionSid);
+			Question q = questionService.findQuestionBySid(in.questionSid);
 			
 			QuestionInfoOut out = new QuestionInfoOut();
 			RespQuestion rq = new RespQuestion();
