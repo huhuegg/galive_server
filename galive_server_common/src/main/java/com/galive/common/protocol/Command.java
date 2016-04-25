@@ -34,6 +34,8 @@ public class Command {
 	public static final String QUESTION_INFO = "QUESTION_INFO";
 	// 问题列表
 	public static final String QUESTION_LIST = "QUESTION_LIST";
+	// 创建解答
+	public static final String ANSWER_CREATE = "ANSWER_CREATE";
 	
 	// 开始直播
 	public static final String LIVE_START = "LIVE_START";

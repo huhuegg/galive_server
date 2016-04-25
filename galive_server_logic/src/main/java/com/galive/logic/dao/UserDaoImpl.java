@@ -1,5 +1,6 @@
 package com.galive.logic.dao;
 
+import org.apache.commons.lang.StringUtils;
 import org.mongodb.morphia.query.Query;
 
 import com.galive.logic.dao.db.MongoDao;
@@ -39,8 +40,15 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public User saveOrUpdate(User u) {
-		String sid = Sid.getNextSequence(EntitySeq.User) + "";
-		u.setSid(sid);
+		if (StringUtils.isBlank(u.getSid())) {
+			String sid = Sid.getNextSequence(EntitySeq.User) + "";
+			u.setSid(sid);
+		} else {
+			User existU = find(u.getSid());
+			if (existU != null) {
+				u.setId(existU.getId());
+			}
+		}
 		dao.save(u);
 		return u;
 	}
