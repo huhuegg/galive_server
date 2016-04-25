@@ -28,7 +28,13 @@ public class Command {
 	public static final String ROOM_SDP = "ROOM_SDP";
 	// 客户端转发
 	public static final String TRANSMIT = "CLIENT_TRANSMIT";
-
+	// 创建问题
+	public static final String QUESTION_CREATE = "QUESTION_CREATE";
+	// 创建详情
+	public static final String QUESTION_INFO = "QUESTION_INFO";
+	// 问题列表
+	public static final String QUESTION_LIST = "QUESTION_LIST";
+	
 	// 开始直播
 	public static final String LIVE_START = "LIVE_START";
 	// 发送直播消息

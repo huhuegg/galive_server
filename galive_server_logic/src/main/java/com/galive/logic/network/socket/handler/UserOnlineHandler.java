@@ -1,5 +1,7 @@
 package com.galive.logic.network.socket.handler;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -9,13 +11,17 @@ import com.galive.common.protocol.CommandOut;
 import com.galive.logic.exception.LogicException;
 import com.galive.logic.helper.LoggerHelper;
 import com.galive.logic.model.Room;
+import com.galive.logic.model.Room.RoomType;
 import com.galive.logic.model.User;
+import com.galive.logic.network.model.RespQuestion;
 import com.galive.logic.network.model.RespRoom;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.UserOnlinePush;
 import com.galive.logic.service.LoggerService;
 import com.galive.logic.service.LoggerServiceImpl;
+import com.galive.logic.service.QuestionService;
+import com.galive.logic.service.QuestionServiceImpl;
 import com.galive.logic.service.RoomService;
 import com.galive.logic.service.RoomServiceImpl;
 import com.galive.logic.service.UserService;
@@ -28,6 +34,7 @@ public class UserOnlineHandler extends SocketBaseHandler {
 	
 	private UserService userService = new UserServiceImpl(logBuffer);
 	private RoomService roomService = new RoomServiceImpl(logBuffer);
+	private QuestionService questionService = new QuestionServiceImpl();
 	private LoggerService loggerService = new LoggerServiceImpl();
 	
 	@Override
@@ -73,8 +80,17 @@ public class UserOnlineHandler extends SocketBaseHandler {
 				RespUser invitor = new RespUser();
 				invitor.convert(userService.findUserBySid(inviteeRoom.getOwnerId()));
 				respRoom.invitor = invitor;
+				if (inviteeRoom.getType() == RoomType.Question) {
+					RespQuestion rq = new RespQuestion();
+					rq.convert(questionService.findBySid(inviteeRoom.getQuestionSid()));
+					respRoom.question = rq;
+				}
 				out.inviteeRoom = respRoom;
 			}
+			
+			out.tags.add("古文");
+			out.tags.add("英语");
+			out.tags.add("高数");
 			
 			String resp = out.socketResp();
 			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
@@ -112,6 +128,7 @@ public class UserOnlineHandler extends SocketBaseHandler {
 
 		public RespRoom room;
 		public RespRoom inviteeRoom;
+		public List<String> tags = new ArrayList<>();
 	}
 	
 	private String respFail(String message) {

@@ -9,6 +9,11 @@ public class Room {
 		Public,
 		Privacy
 	}
+	
+	public static enum RoomType {
+		Interactive, // 互动
+		Question // 问答
+	}
 
 	private String sid = "";
 	
@@ -22,6 +27,12 @@ public class Room {
 	
 	private Set<String> users = new HashSet<>();
 	
+	private RoomType type = RoomType.Interactive;
+	
+	/**
+	 * 仅当type为Question时有
+	 */
+	private String questionSid = "";
 	/**
 	 * 邀请人,仅当Privacy时候有
 	 */
@@ -85,6 +96,22 @@ public class Room {
 
 	public void setSid(String sid) {
 		this.sid = sid;
+	}
+
+	public RoomType getType() {
+		return type;
+	}
+
+	public void setType(RoomType type) {
+		this.type = type;
+	}
+
+	public String getQuestionSid() {
+		return questionSid;
+	}
+
+	public void setQuestionSid(String questionSid) {
+		this.questionSid = questionSid;
 	}
 
 

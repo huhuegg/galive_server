@@ -13,7 +13,7 @@ public interface RoomService {
 	
 	public List<Room> listByCreateTime(int index, int size);
 	
-	public Room create(String roomname, String UserSid, List<String> invitees, int maxUser) throws LogicException;
+	public Room create(String roomname, String userSid, String questionSid, List<String> invitees, int maxUser) throws LogicException;
 	
 	public Room enter(String roomSid, String userSid) throws LogicException;
 	

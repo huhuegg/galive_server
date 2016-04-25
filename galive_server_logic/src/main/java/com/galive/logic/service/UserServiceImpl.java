@@ -13,6 +13,7 @@ import com.galive.logic.exception.LogicException;
 import com.galive.logic.helper.LoggerHelper;
 import com.galive.logic.helper.LogicHelper;
 import com.galive.logic.model.User;
+import com.galive.logic.model.User.UserGender;
 import com.galive.logic.model.User.UserOnlineState;
 import com.galive.logic.network.socket.ChannelManager;
 
@@ -28,8 +29,8 @@ public class UserServiceImpl implements UserService {
 	private UserCache userCache = new UserCacheImpl();
 
 	@Override
-	public User register(String username, String password, String nickname, String avatar, String profile) throws LogicException {
-		User u = userDao.findUserByUsername(username);
+	public User register(String username, String password, String nickname, String avatar, UserGender gender, String profile) throws LogicException {
+		User u = userDao.findByUsername(username);
 		if (u != null) {
 			String error = "用户名" + username + "已存在。";
 			LoggerHelper.appendLog(error, logBuffer);
@@ -82,11 +83,12 @@ public class UserServiceImpl implements UserService {
 		}
 		LoggerHelper.appendLog("保存用户", logBuffer);
 		u.setUsername(username);
+		u.setGender(gender);
 		u.setPassword(password);
 		u.setNickname(nickname);
 		u.setAvatar(avatar);
 		u.setProfile(profile);
-		u = userDao.saveUser(u);
+		u = userDao.saveOrUpdate(u);
 		
 		LoggerHelper.appendLog("更新最后登录时间", logBuffer);
 		userCache.updateLatestLogin(u.getSid());
@@ -96,7 +98,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User login(String username, String password) throws LogicException {
-		User u = userDao.findUserByUsername(username);
+		User u = userDao.findByUsername(username);
 		if (u == null) {
 			String error = "用户不存在";
 			LoggerHelper.appendLog(error, logBuffer);
@@ -114,7 +116,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User findUserBySid(String userSid) throws LogicException {
-		User u = userDao.findUser(userSid);
+		User u = userDao.find(userSid);
 		if (u == null) {
 			String error = "用户不存在。";
 			LoggerHelper.appendLog(error, logBuffer);
@@ -128,7 +130,7 @@ public class UserServiceImpl implements UserService {
 		List<User> users = new ArrayList<>();
 		List<String> userSids = userCache.listByLatestLogin(index, index + size - 1);
 		for (String sid : userSids) {
-			User u = userDao.findUser(sid);
+			User u = userDao.find(sid);
 			if (u != null) {
 				users.add(u);
 			}
@@ -138,7 +140,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void updateDeviceToken(String userSid, String deviceToken) throws LogicException {
-		User u = userDao.findUser(userSid);
+		User u = userDao.find(userSid);
 		if (u == null) {
 			String error = "用户不存在";
 			LoggerHelper.appendLog(error, logBuffer);

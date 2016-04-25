@@ -16,14 +16,19 @@ import com.galive.logic.ApplicationMain.ApplicationMode;
 import com.galive.logic.exception.LogicException;
 import com.galive.logic.helper.APNSHelper;
 import com.galive.logic.helper.LoggerHelper;
+import com.galive.logic.model.Question;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
+import com.galive.logic.model.Room.RoomType;
+import com.galive.logic.network.model.RespQuestion;
 import com.galive.logic.network.model.RespRoom;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.RoomInviteePush;
 import com.galive.logic.service.LoggerService;
 import com.galive.logic.service.LoggerServiceImpl;
+import com.galive.logic.service.QuestionService;
+import com.galive.logic.service.QuestionServiceImpl;
 import com.galive.logic.service.RoomService;
 import com.galive.logic.service.RoomServiceImpl;
 import com.galive.logic.service.UserService;
@@ -36,6 +41,7 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 
 	private UserService userService = new UserServiceImpl(logBuffer);
 	private RoomService roomService = new RoomServiceImpl(logBuffer);
+	private QuestionService questionService = new QuestionServiceImpl();
 	private LoggerService loggerService = new LoggerServiceImpl();
 	
 	@Override
@@ -43,7 +49,7 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 		try {
 			LoggerHelper.appendLog("--创建房间--", logBuffer);
 			EnterRoomIn in = JSON.parseObject(reqData, EnterRoomIn.class);
-			Room room = roomService.create(in.name, userSid, in.invitees, in.maxUser);
+			Room room = roomService.create(in.name, userSid, in.questionSid, in.invitees, in.maxUser);
 			
 			Set<String> invitees = room.getInvitees();
 			if (!CollectionUtils.isEmpty(invitees)) {
@@ -51,6 +57,12 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 				
 				RoomInviteePush inviteePush = new RoomInviteePush();
 				RespRoom inviteeRoom = RespRoom.convert(room);
+				if (room.getType() == RoomType.Question) {
+					Question question = questionService.findBySid(room.getQuestionSid());
+					RespQuestion rq = new RespQuestion();
+					rq.convert(question);
+					inviteeRoom.question = rq;
+				}
 				RespUser respUser = new RespUser();
 				respUser.convert(invitor);
 				inviteeRoom.invitor = respUser;
@@ -115,6 +127,7 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 	}
 	
 	public static class EnterRoomIn {
+		public String questionSid = "";
 		public String name = "";
 		public int maxUser = 0;
 		public List<String> invitees = new ArrayList<>();

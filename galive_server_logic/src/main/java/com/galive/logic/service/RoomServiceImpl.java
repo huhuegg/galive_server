@@ -17,6 +17,7 @@ import com.galive.logic.model.Live;
 import com.galive.logic.model.Live.LiveState;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.Room.RoomPrivacy;
+import com.galive.logic.model.Room.RoomType;
 
 public class RoomServiceImpl implements RoomService {
 
@@ -59,11 +60,11 @@ public class RoomServiceImpl implements RoomService {
 	}
 
 	@Override
-	public Room create(String roomname, String userSid, List<String> invitees, int maxUser) throws LogicException {
+	public Room create(String roomname, String userSid, String questionSid, List<String> invitees, int maxUser) throws LogicException {
 		Room existRoom = roomCache.findRoomByUser(userSid);
 		if (existRoom != null) {
 			LoggerHelper.appendLog("用户" + userSid + "已在其他房间" + existRoom.desc() + "中", logBuffer);
-			throw new LogicException("已在其他房间中。");
+			throw new LogicException("该用户正忙。");
 		}
 		if (StringUtils.isBlank(roomname)) {
 			String error = "房间名不能为空。";
@@ -104,13 +105,12 @@ public class RoomServiceImpl implements RoomService {
 					LoggerHelper.appendLog("用户" + s + "可被邀请", logBuffer);
 					roomInvitees.add(s);
 				} else {
-					String error = "所邀请的用户正在其他房间中或已被邀请";
-					LoggerHelper.appendLog(error, logBuffer);
-					throw new LogicException(error);
+					LoggerHelper.appendLog("所邀请的用户正在其他房间中或已被邀请。", logBuffer);
+					throw new LogicException("所邀请的用户正忙。");
 				}
 				Live live = liveService.findLiveByUser(s);
 				if (live.getState() == LiveState.On) {
-					String error = "所邀请的用户正在直播";
+					String error = "所邀请的用户正在直播。";
 					LoggerHelper.appendLog(error, logBuffer);
 					throw new LogicException(error);
 				}
@@ -124,7 +124,12 @@ public class RoomServiceImpl implements RoomService {
 		Set<String> roomUsers = new HashSet<>();
 		roomUsers.add(userSid);
 		room.setUsers(roomUsers);
-
+		if (!StringUtils.isEmpty(questionSid)) {
+			room.setQuestionSid(questionSid);
+			room.setType(RoomType.Question);
+		} else {
+			room.setType(RoomType.Interactive);
+		}
 		// 保存房间信息
 		room = roomCache.saveRoom(room);
 		String roomSid = room.getSid();
@@ -153,7 +158,7 @@ public class RoomServiceImpl implements RoomService {
 	public Room enter(String roomSid, String userSid) throws LogicException {
 		Room room = roomCache.findRoom(roomSid);
 		if (room == null) {
-			String error = "房间不存在";
+			String error = "房间已过期。";
 			LoggerHelper.appendLog(error, logBuffer);
 			throw new LogicException(error);
 		}

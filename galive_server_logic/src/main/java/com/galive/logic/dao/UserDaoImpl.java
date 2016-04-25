@@ -10,40 +10,39 @@ import com.galive.logic.model.Sid.EntitySeq;
 
 public class UserDaoImpl implements UserDao {
 
+	private MongoDao<User> dao;
+
+	public UserDaoImpl() {
+		super();
+		dao = new MongoDao<User>(User.class, MongoManager.store);
+	}
+	
 	private User find(Query<User> q) {
-		MongoDao<User> dao = getDao();
 		return dao.findOne(q);
 	}
 
-	private static MongoDao<User> getDao() {
-		return new MongoDao<User>(User.class, MongoManager.store);
-	}
-	
 	@Override
-	public User findUser(String sid) {
-		Query<User> q = getDao().createQuery();
+	public User find(String sid) {
+		Query<User> q = dao.createQuery();
 		q.field("sid").equal(sid);
 		User user = find(q);
 		return user;
 	}
 
 	@Override
-	public User findUserByUsername(String username) {
-		Query<User> q = getDao().createQuery();
+	public User findByUsername(String username) {
+		Query<User> q = dao.createQuery();
 		q.field("username").equal(username);
 		User user = find(q);
 		return user;
 	}
-	
+
 	@Override
-	public User saveUser(User u) {
+	public User saveOrUpdate(User u) {
 		String sid = Sid.getNextSequence(EntitySeq.User) + "";
 		u.setSid(sid);
-		getDao().save(u);
+		dao.save(u);
 		return u;
 	}
-	
-	
 
-	
 }

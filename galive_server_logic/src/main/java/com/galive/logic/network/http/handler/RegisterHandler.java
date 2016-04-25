@@ -7,6 +7,7 @@ import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.exception.LogicException;
 import com.galive.logic.helper.LoggerHelper;
 import com.galive.logic.model.User;
+import com.galive.logic.model.User.UserGender;
 import com.galive.logic.network.http.HttpRequestHandler;
 import com.galive.logic.network.http.handler.LoginHandler.LoginOut;
 import com.galive.logic.network.model.RespLoginUser;
@@ -31,7 +32,7 @@ public class RegisterHandler extends HttpBaseHandler {
 		try {
 			LoggerHelper.appendLog("--用户注册--", logBuffer);
 			RegisterIn in = JSON.parseObject(reqData, RegisterIn.class);
-			User u = userService.register(in.username, in.password, in.nickname, in.avatar, in.profile);
+			User u = userService.register(in.username, in.password, in.nickname, in.avatar, in.gender, in.profile);
 			
 			RegisterOut out = new RegisterOut();
 			out.token = userService.createToken(u.getSid());
@@ -73,6 +74,7 @@ public class RegisterHandler extends HttpBaseHandler {
 		public String nickname;
 		public String avatar;
 		public String profile;
+		public UserGender gender;
 	}
 	
 	public static class RegisterOut extends LoginOut {

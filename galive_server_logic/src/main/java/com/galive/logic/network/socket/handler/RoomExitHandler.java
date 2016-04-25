@@ -12,9 +12,11 @@ import com.galive.common.protocol.CommandOut;
 import com.galive.logic.exception.LogicException;
 import com.galive.logic.helper.LoggerHelper;
 import com.galive.logic.model.Room;
+import com.galive.logic.model.Room.RoomType;
 import com.galive.logic.model.User;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.RoomExitPush;
+import com.galive.logic.network.socket.handler.push.RoomExitPush.RoomExitType;
 import com.galive.logic.service.LoggerService;
 import com.galive.logic.service.LoggerServiceImpl;
 import com.galive.logic.service.RoomService;
@@ -46,7 +48,12 @@ public class RoomExitHandler extends SocketBaseHandler  {
 				User invitor = userService.findUserBySid(room.getOwnerId());
 				RoomExitPush push = new RoomExitPush();
 				push.userSid = userSid;
-				push.refuseInvite = true;
+				
+				if (inviteeRoom.getType() == RoomType.Question) {
+					push.type = RoomExitType.RefuseQuestionInvite.ordinal();
+				} else {
+					push.type = RoomExitType.RefuseInvite.ordinal();
+				}
 				String pushMessage = push.socketResp();
 				LoggerHelper.appendLog(String.format("拒绝房间(%s)邀请,推送房主%s", inviteeRoom.getSid(), invitor.desc() + pushMessage), logBuffer);
 				pushMessage(invitor.getSid(), pushMessage);
@@ -55,6 +62,7 @@ public class RoomExitHandler extends SocketBaseHandler  {
 				if (room != null) {
 					// 推送
 					RoomExitPush push = new RoomExitPush();
+					push.type = RoomExitType.ExitRoom.ordinal();
 					push.userSid = userSid;
 					String pushMessage = push.socketResp();
 					LoggerHelper.appendLog("ROOM_EXIT_PUSH:" + pushMessage, logBuffer);

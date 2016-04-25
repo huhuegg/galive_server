@@ -4,9 +4,9 @@ import com.galive.logic.model.User;
 
 public interface UserDao {
 
-	public User findUser(String sid);
+	public User find(String sid);
 	
-	public User findUserByUsername(String username);
+	public User findByUsername(String username);
 	
-	public User saveUser(User u);
+	public User saveOrUpdate(User u);
 }

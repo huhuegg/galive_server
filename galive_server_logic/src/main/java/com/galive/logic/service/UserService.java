@@ -4,10 +4,11 @@ import java.util.List;
 
 import com.galive.logic.exception.LogicException;
 import com.galive.logic.model.User;
+import com.galive.logic.model.User.UserGender;
 
 public interface UserService {
 	
-	public User register(String username, String password, String nickname, String avatar, String profile) throws LogicException;
+	public User register(String username, String password, String nickname, String avatar, UserGender gender, String profile) throws LogicException;
 	
 	public User login(String username, String password) throws LogicException;
 	
