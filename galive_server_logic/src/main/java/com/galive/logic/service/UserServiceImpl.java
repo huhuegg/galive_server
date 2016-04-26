@@ -17,12 +17,16 @@ import com.galive.logic.model.User.UserGender;
 import com.galive.logic.model.User.UserOnlineState;
 import com.galive.logic.network.socket.ChannelManager;
 
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends BaseService implements UserService {
 
 	private StringBuffer logBuffer;
 	
 	public UserServiceImpl(StringBuffer logBuffer) {
 		this.logBuffer = logBuffer;	
+	}
+	
+	public UserServiceImpl() {
+		super();
 	}
 	
 	private UserDao userDao = new UserDaoImpl();
