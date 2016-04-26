@@ -22,7 +22,7 @@ public class JettyConfig {
 			Properties prop = new Properties(); LogicHelper.loadProperties();
 			prop.load(in);
 			config.port = NumberUtils.toInt(prop.getProperty("http.port"), 8080);
-			config.action = prop.getProperty("http.action.logic", "/logic");
+			config.action = prop.getProperty("http.action.logic", "/galive/logic");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

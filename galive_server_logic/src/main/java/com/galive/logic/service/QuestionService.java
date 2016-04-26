@@ -16,4 +16,10 @@ public interface QuestionService {
 	public Question findQuestionBySid(String questionSid) throws LogicException;
 	
 	public long countQuestion(String userSid) throws LogicException;
+	
+	public List<String> listQuestionTags() throws LogicException;
+	
+	public void addQuestionTag(String tag) throws LogicException;
+	
+	public void removeQuestionTag(String tag) throws LogicException;
 }

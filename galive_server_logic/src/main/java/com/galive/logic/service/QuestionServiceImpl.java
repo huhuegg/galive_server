@@ -5,6 +5,9 @@ import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
+import com.galive.logic.config.ApplicationConfig;
+import com.galive.logic.dao.QuestionCache;
+import com.galive.logic.dao.QuestionCacheImpl;
 import com.galive.logic.dao.QuestionDao;
 import com.galive.logic.dao.QuestionDaoImpl;
 import com.galive.logic.exception.LogicException;
@@ -15,6 +18,7 @@ import com.galive.logic.model.Question.QuestionState;
 public class QuestionServiceImpl extends BaseService implements QuestionService {
 
 	private QuestionDao questionDao = new QuestionDaoImpl();
+	private QuestionCache questionCache = new QuestionCacheImpl();
 	
 	public QuestionServiceImpl() {
 		super();
@@ -76,6 +80,25 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 		long count = questionDao.count(userSid);
 		appendLog("问题总数:" + count);
 		return count;
+	}
+
+	@Override
+	public List<String> listQuestionTags() throws LogicException {
+		List<String> tags = questionCache.listTags();
+		if (CollectionUtils.isEmpty(tags)) {
+			tags = ApplicationConfig.getInstance().getLogicConfig().getDefaultQuestionTags();
+		}
+		return tags;
+	}
+
+	@Override
+	public void addQuestionTag(String tag) throws LogicException {
+		questionCache.saveTag(tag);
+	}
+
+	@Override
+	public void removeQuestionTag(String tag) throws LogicException {
+		questionCache.deleteTag(tag);
 	}
 
 	

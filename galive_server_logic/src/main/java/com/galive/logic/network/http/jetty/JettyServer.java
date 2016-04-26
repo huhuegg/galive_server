@@ -10,6 +10,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.galive.logic.network.http.LogicServlet;
+import com.galive.logic.network.http.QuestionTagServlet;
 
 public class JettyServer {
 	
@@ -24,11 +25,14 @@ public class JettyServer {
 		server = new Server(port);
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		context.setContextPath("/");
-		String action = config.getAction();
+		String logicAction = config.getAction();
+		String tagAction = "/galive/tag";
 		
-		context.addServlet(new ServletHolder(new LogicServlet()), action);
+		context.addServlet(new ServletHolder(new LogicServlet()), logicAction);
+		context.addServlet(new ServletHolder(new QuestionTagServlet()), tagAction);
 		
-		context.addFilter(JettyEncodingFilter.class, action, EnumSet.of(DispatcherType.REQUEST));
+		context.addFilter(JettyEncodingFilter.class, logicAction, EnumSet.of(DispatcherType.REQUEST));
+		context.addFilter(JettyEncodingFilter.class, tagAction, EnumSet.of(DispatcherType.REQUEST));
 		
 		server.setHandler(context);
 		server.start();

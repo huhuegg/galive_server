@@ -87,11 +87,8 @@ public class UserOnlineHandler extends SocketBaseHandler {
 				}
 				out.inviteeRoom = respRoom;
 			}
-			
-			out.tags.add("古文");
-			out.tags.add("英语");
-			out.tags.add("高数");
-			
+			List<String> questionTags = questionService.listQuestionTags();
+			out.tags = questionTags;
 			String resp = out.socketResp();
 			LoggerHelper.appendLog("响应客户端|" + resp, logBuffer);
 			LoggerHelper.appendSplit(logBuffer);

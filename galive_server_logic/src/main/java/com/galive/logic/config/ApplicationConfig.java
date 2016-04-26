@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -87,6 +88,14 @@ public class ApplicationConfig {
 			short roomMaxUser = NumberUtils.toShort(roomMaxUserNode.getStringValue(), (short) 5);
 			logicConfig.setRoomMaxUser(roomMaxUser);
 			logger.info("roomMaxUser:" + roomMaxUser);
+			
+			Element defaultQuestionTagsNode = logicNode.element("DefaultQuestionTags");
+			String defaultQuestionTagsStr = defaultQuestionTagsNode.getStringValue();
+			List<String> questionTags = new ArrayList<>();
+			String defaultQuestionTags[] = defaultQuestionTagsStr.split(";");
+			CollectionUtils.addAll(questionTags, defaultQuestionTags);
+			logicConfig.setDefaultQuestionTags(questionTags);
+			logger.info("defaultQuestionTags:" + defaultQuestionTagsStr);
 			sc.setLogicConfig(logicConfig);
 
 			logger.info("--SocketConfig--");

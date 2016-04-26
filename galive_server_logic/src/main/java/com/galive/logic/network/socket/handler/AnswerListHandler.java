@@ -30,7 +30,7 @@ public class AnswerListHandler extends SocketBaseHandler  {
 	@Override
 	public String handle(String userSid, String reqData) {
 		try {
-			LoggerHelper.appendLog("--解答列表--", logBuffer);
+			LoggerHelper.appendLog("--问题列表--", logBuffer);
 			AnswerListIn in = JSON.parseObject(reqData, AnswerListIn.class);
 			List<Answer> answers = answerService.listAnserByQuestion(in.questionSid, in.index, in.size);
 			

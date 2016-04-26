@@ -49,5 +49,6 @@
 
 	<Logic>
 		<RoomMaxUser>5</RoomMaxUser>
+		<DefaultQuestionTags>语文;数学;外语</DefaultQuestionTags>
 	</Logic>
 </Config>
