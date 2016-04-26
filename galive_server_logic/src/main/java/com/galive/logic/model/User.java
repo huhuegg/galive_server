@@ -17,6 +17,15 @@ public class User extends BaseModel {
 		Male, 
 		Female, 
 		Unknown;
+		
+		public static UserGender convert(int i) {
+			for (UserGender g : UserGender.values()) {
+				if (g.ordinal() == i) {
+					return g;
+				}
+			}
+			return UserGender.Unknown;
+		}
 	}
 	
 	private String username = "";

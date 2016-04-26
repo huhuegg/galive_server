@@ -12,26 +12,22 @@ import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.dao.RoomCache;
 import com.galive.logic.dao.RoomCacheImpl;
 import com.galive.logic.exception.LogicException;
-import com.galive.logic.helper.LoggerHelper;
 import com.galive.logic.model.Live;
 import com.galive.logic.model.Live.LiveState;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.Room.RoomPrivacy;
 import com.galive.logic.model.Room.RoomType;
 
-public class RoomServiceImpl implements RoomService {
+public class RoomServiceImpl extends BaseService implements RoomService {
 
-	private StringBuffer logBuffer;
-	
-	private RoomCache roomCache;
-	private UserService userService;
-	private LiveService liveService;
+	private RoomCache roomCache = new RoomCacheImpl();
+	private UserService userService = new UserServiceImpl();
+	private LiveService liveService = new LiveServiceImpl();
 
-	public RoomServiceImpl(StringBuffer logBuffer) {
-		this.logBuffer = logBuffer;
-		roomCache = new RoomCacheImpl();
-		userService = new UserServiceImpl(logBuffer);
-		liveService = new LiveServiceImpl(logBuffer);
+
+	public RoomServiceImpl() {
+		super();
+		appendLog("RoomServiceImpl");
 	}
 
 	@Override
@@ -60,20 +56,21 @@ public class RoomServiceImpl implements RoomService {
 	}
 
 	@Override
-	public Room create(String roomname, String userSid, String questionSid, List<String> invitees, int maxUser) throws LogicException {
+	public Room create(String roomname, String userSid, String questionSid, List<String> invitees, int maxUser)
+			throws LogicException {
 		Room existRoom = roomCache.findRoomByUser(userSid);
 		if (existRoom != null) {
-			LoggerHelper.appendLog("用户" + userSid + "已在其他房间" + existRoom.desc() + "中", logBuffer);
+			appendLog("用户" + userSid + "已在其他房间" + existRoom.desc() + "中");
 			throw new LogicException("该用户正忙。");
 		}
 		if (StringUtils.isBlank(roomname)) {
 			String error = "房间名不能为空。";
-			LoggerHelper.appendLog(error, logBuffer);
+			appendLog(error);
 			throw new LogicException(error);
 		}
 		if (maxUser > ApplicationConfig.getInstance().getLogicConfig().getRoomMaxUser()) {
 			String error = "房间人数超过上限。";
-			LoggerHelper.appendLog(error, logBuffer);
+			appendLog(error);
 			throw new LogicException(error);
 		}
 
@@ -84,7 +81,7 @@ public class RoomServiceImpl implements RoomService {
 		// 处理被邀请人
 		Set<String> roomInvitees = new HashSet<>();
 		if (!CollectionUtils.isEmpty(invitees)) {
-			LoggerHelper.appendLog("处理邀请人", logBuffer);
+			appendLog("处理邀请人");
 			for (String s : invitees) {
 				boolean online = userService.isOnline(s);
 				Room inRoom = roomCache.findRoomByUser(s);
@@ -102,16 +99,16 @@ public class RoomServiceImpl implements RoomService {
 					}
 				}
 				if (canBeInvite) {
-					LoggerHelper.appendLog("用户" + s + "可被邀请", logBuffer);
+					appendLog("用户" + s + "可被邀请");
 					roomInvitees.add(s);
 				} else {
-					LoggerHelper.appendLog("所邀请的用户正在其他房间中或已被邀请。", logBuffer);
+					appendLog("所邀请的用户正在其他房间中或已被邀请。");
 					throw new LogicException("所邀请的用户正忙。");
 				}
 				Live live = liveService.findLiveByUser(s);
 				if (live.getState() == LiveState.On) {
 					String error = "所邀请的用户正在直播。";
-					LoggerHelper.appendLog(error, logBuffer);
+					appendLog(error);
 					throw new LogicException(error);
 				}
 			}
@@ -141,14 +138,14 @@ public class RoomServiceImpl implements RoomService {
 		// 更新房间过期时间
 		roomCache.updateRoomExpire(roomSid);
 		// 用户绑定房间
-		LoggerHelper.appendLog("用户" + userSid + "绑定房间" + room.desc(), logBuffer);
+		appendLog("用户" + userSid + "绑定房间" + room.desc());
 		roomCache.addRoomToUser(roomSid, userSid);
-		
-		LoggerHelper.appendLog("更新房间过期时间", logBuffer);
+
+		appendLog("更新房间过期时间");
 		roomCache.updateUserInRoomExpire(userSid);
 		// 插入列表
 		if (room.getPrivacy() == RoomPrivacy.Public) {
-			LoggerHelper.appendLog("插入房间列表", logBuffer);
+			appendLog("插入房间列表");
 			roomCache.insertToRoomListByCreateTime(roomSid);
 		}
 		return room;
@@ -159,7 +156,7 @@ public class RoomServiceImpl implements RoomService {
 		Room room = roomCache.findRoom(roomSid);
 		if (room == null) {
 			String error = "房间已过期。";
-			LoggerHelper.appendLog(error, logBuffer);
+			appendLog(error);
 			throw new LogicException(error);
 		}
 		Room existRoom = roomCache.findRoomByUser(userSid);
@@ -167,10 +164,10 @@ public class RoomServiceImpl implements RoomService {
 
 		// 进入被邀请的房间
 		if (inviteeRoom != null && inviteeRoom.getSid().equals(roomSid)) {
-			LoggerHelper.appendLog("进入被邀请房间 " + inviteeRoom.desc(), logBuffer);
+			appendLog("进入被邀请房间 " + inviteeRoom.desc());
 			if (existRoom != null) {
 				// 先退出原有的房间
-				LoggerHelper.appendLog("已在" + existRoom.desc() + "中，退出该房间", logBuffer);
+				appendLog("已在" + existRoom.desc() + "中，退出该房间");
 				exit(userSid);
 			}
 			// 将用户与邀请房间解绑
@@ -183,7 +180,7 @@ public class RoomServiceImpl implements RoomService {
 			if (existRoom != null) {
 				if (!existRoom.getSid().equals(roomSid)) {
 					String error = "已在" + existRoom.desc() + "中，退出该房间";
-					LoggerHelper.appendLog(error, logBuffer);
+					appendLog(error);
 					throw new LogicException(String.format("您已在其他房间%s中，请先退出该房间。", existRoom.desc()));
 				}
 			}
@@ -191,7 +188,7 @@ public class RoomServiceImpl implements RoomService {
 		Set<String> users = room.getUsers();
 		if (users.size() >= room.getMaxMemberCount() && !users.contains(userSid)) {
 			String error = "该房间已满员";
-			LoggerHelper.appendLog(error, logBuffer);
+			appendLog(error);
 			throw new LogicException(error);
 		}
 		users.add(userSid);
@@ -201,7 +198,7 @@ public class RoomServiceImpl implements RoomService {
 		roomCache.saveRoom(room);
 		// 房间已满员 移出列表
 		if (users.size() == room.getMaxMemberCount()) {
-			LoggerHelper.appendLog("房间已满员，从房间列表中移出。", logBuffer);
+			appendLog("房间已满员，从房间列表中移出。");
 			roomCache.removeFromListByCreateTime(roomSid);
 		}
 		// 更新过期时间
@@ -217,7 +214,7 @@ public class RoomServiceImpl implements RoomService {
 		Room room = roomCache.findRoomByUser(userSid);
 		if (room == null) {
 			// throw new LogicException("该房间不存在。");
-			LoggerHelper.appendLog("用户当前不在房间中。", logBuffer);
+			appendLog("用户当前不在房间中。");
 			return null;
 		}
 		Set<String> users = room.getUsers();
@@ -230,11 +227,11 @@ public class RoomServiceImpl implements RoomService {
 			Set<String> invitees = room.getInvitees();
 			for (String s : invitees) {
 				roomCache.removeRoomToInvitee(s);
-				LoggerHelper.appendLog("清除被邀请人" + s, logBuffer);
+				appendLog("清除被邀请人" + s);
 			}
 			for (String s : users) {
 				roomCache.removeRoomToUser(s);
-				LoggerHelper.appendLog("清除房间内成员" + s, logBuffer);
+				appendLog("清除房间内成员" + s);
 			}
 			roomCache.removeFromListByCreateTime(room.getSid());
 		} else {
@@ -242,7 +239,7 @@ public class RoomServiceImpl implements RoomService {
 			room = roomCache.saveRoom(room);
 			// 更新列表
 			if (room.getPrivacy() == RoomPrivacy.Public) {
-				LoggerHelper.appendLog("更新房间列表。", logBuffer);
+				appendLog("更新房间列表。");
 				roomCache.insertToRoomListByCreateTime(room.getSid());
 			}
 		}
@@ -258,11 +255,11 @@ public class RoomServiceImpl implements RoomService {
 			invitees.remove(inviteeRoom.getSid());
 			inviteeRoom.setInvitees(invitees);
 			inviteeRoom = roomCache.saveRoom(inviteeRoom);
-			LoggerHelper.appendLog("拒绝开房邀请" + inviteeRoom.desc(), logBuffer);
+			appendLog("拒绝开房邀请" + inviteeRoom.desc());
 		} else {
-			LoggerHelper.appendLog("拒绝开房邀请，该房间不存在。", logBuffer);
+			appendLog("拒绝开房邀请，该房间不存在。");
 		}
-		
+
 		return inviteeRoom;
 	}
 

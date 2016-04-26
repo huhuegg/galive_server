@@ -8,7 +8,6 @@ import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
 import com.galive.common.protocol.RetCode;
 import com.galive.logic.exception.LogicException;
-import com.galive.logic.helper.LoggerHelper;
 import com.galive.logic.service.UserService;
 import com.galive.logic.service.UserServiceImpl;
 
@@ -21,7 +20,8 @@ public abstract class HttpBaseHandler {
 	protected StringBuffer logBuffer = new StringBuffer();
 	
 	public String handle(CommandIn in) {
-		LoggerHelper.appendSplit(logBuffer);
+		appendSplit();
+		long start = System.currentTimeMillis();
 		String resp = null;
 		String command = in.getCommand();
 		String userSid = in.getUserSid();
@@ -34,7 +34,7 @@ public abstract class HttpBaseHandler {
 		appendLog("params:" + params);
 		try {
 			if ((!command.equals(Command.USR_LOGIN) && !command.equals(Command.USR_REGISTER))) {
-				UserService userService = new UserServiceImpl(logBuffer);
+				UserService userService = new UserServiceImpl();
 				if (!userService.verifyToken(userSid, token)) {
 					// 验证token
 					CommandOut out = CommandOut.failureOut(command, "登录已过期");
@@ -48,30 +48,27 @@ public abstract class HttpBaseHandler {
 				resp = handle(userSid, params);
 			}
 		} catch (LogicException logicException) {
+			logicException.printStackTrace();
 			String error = logicException.getMessage();
-			appendLog("catch logicException:" + error);
+			appendLog("逻辑错误:" + error);
 			resp = respFail(error, command);
 		} catch (Exception exception) {
+			exception.printStackTrace();
 			String error = exception.getMessage();
-			appendLog("catch exception:" + error);
+			appendLog("发生错误:" + error);
 			resp = respFail(error, command);
 		}
 		appendLog("响应:");
 		appendLog(resp);
+		appendLog("处理时间:" + (System.currentTimeMillis() - start) + " ms");
 		appendSplit();
+		logger.info(loggerString());
 		return resp;
 	}
 	
 	private String respFail(String message, String command) {
 		String resp = CommandOut.failureOut(command, message).httpResp();
 		return resp;
-	}
-
-	@Override
-	protected void finalize() throws Throwable {
-		appendSplit();
-		logger.info(loggerString());
-		super.finalize();
 	}
 	
 	protected void appendLog(String log) {

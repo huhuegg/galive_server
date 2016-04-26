@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
-import com.galive.logic.helper.LoggerHelper;
 import com.galive.logic.network.http.HttpRequestHandler;
 import com.galive.logic.service.UserServiceImpl;
 
@@ -19,7 +18,7 @@ public class UserInfoModifyHandler extends HttpBaseHandler {
 	
 	@Override
 	public String handle(String userSid, String reqData) throws Exception {
-		LoggerHelper.appendLog("--UserInfoModifyHandler(修改用户信息)--", logBuffer);
+		appendLog("--UserInfoModifyHandler(修改用户信息)--");
 		
 		UserInfoModifyIn req = JSON.parseObject(reqData, UserInfoModifyIn.class);
 		

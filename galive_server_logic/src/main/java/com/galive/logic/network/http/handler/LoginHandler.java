@@ -16,7 +16,7 @@ import com.galive.logic.service.UserServiceImpl;
 @HttpRequestHandler(desc = "用户登录", command = Command.USR_LOGIN)
 public class LoginHandler extends HttpBaseHandler {
 	
-	private UserService userService = new UserServiceImpl(logBuffer);
+	private UserService userService = new UserServiceImpl();
 	
 	@Override
 	public String handle(String userSid, String reqData) throws Exception {

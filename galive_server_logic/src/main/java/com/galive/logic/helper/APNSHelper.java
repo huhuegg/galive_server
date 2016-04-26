@@ -30,7 +30,7 @@ public class APNSHelper {
 	private boolean isDistribution;
 	private String password;
 	private APNSConfig config;
-	private UserService userService = new UserServiceImpl(null);
+	private UserService userService = new UserServiceImpl();
 	
 	public APNSHelper(boolean isDistribution) {
 		this.isDistribution = isDistribution;

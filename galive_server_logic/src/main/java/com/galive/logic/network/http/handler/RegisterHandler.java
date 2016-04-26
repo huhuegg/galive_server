@@ -26,7 +26,7 @@ public class RegisterHandler extends HttpBaseHandler {
 		String password = in.password;
 		String nickname = in.nickname;
 		String avatar = in.avatar;
-		UserGender gender = in.gender;
+		int gender = in.gender;
 		String profile = in.profile;
 		
 		appendLog("用户名:" + username);
@@ -36,8 +36,8 @@ public class RegisterHandler extends HttpBaseHandler {
 		appendLog("性别:" + gender);
 		appendLog("简述:" + profile);
 		
-		
-		User u = userService.register(in.username, in.password, in.nickname, in.avatar, in.gender, in.profile);
+		UserGender g = UserGender.convert(gender);
+		User u = userService.register(username, password, nickname, avatar, g, profile);
 		
 		RegisterOut out = new RegisterOut();
 		out.token = userService.createToken(u.getSid());
@@ -56,7 +56,7 @@ public class RegisterHandler extends HttpBaseHandler {
 		public String nickname;
 		public String avatar;
 		public String profile;
-		public UserGender gender;
+		public int gender;
 	}
 	
 	public static class RegisterOut extends LoginOut {
