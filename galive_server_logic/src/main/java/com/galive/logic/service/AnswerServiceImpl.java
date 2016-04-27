@@ -19,8 +19,8 @@ public class AnswerServiceImpl extends BaseService implements AnswerService {
 	}
 
 	@Override
-	public long countAnswer(String userSid) throws LogicException {
-		long count = answerDao.count(userSid);
+	public long countAnswer(String userSid, AnswerResult result) throws LogicException {
+		long count = answerDao.count(userSid, result);
 		appendLog("解答总数:" + count);
 		return count;
 	}
@@ -50,8 +50,14 @@ public class AnswerServiceImpl extends BaseService implements AnswerService {
 
 	@Override
 	public List<Answer> listAnserByQuestion(String questionSid, int index, int size) throws LogicException {
-		// TODO Auto-generated method stub
-		return null;
+		List<Answer> answers = null;
+		if (size < 0) {
+			answers = answerDao.listAllByQuestion(questionSid);
+		} else {
+			answers = answerDao.listByQuestion(questionSid, index, index + size - 1);
+		}
+		appendLog("查询解答数:" + answers.size());
+		return answers;
 	}
 
 }

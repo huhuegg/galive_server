@@ -22,10 +22,10 @@ public class UserInfoModifyHandler extends HttpBaseHandler {
 		
 		UserInfoModifyIn req = JSON.parseObject(reqData, UserInfoModifyIn.class);
 		
-		UserInfoModifyType type = req.type;
+		int type = req.type;
 		appendLog("type:" + type);
 		
-		if (type == UserInfoModifyType.DeviceToken) {
+		if (type == UserInfoModifyType.DeviceToken.ordinal()) {
 			// 更新deviceToken
 			userService.updateDeviceToken(userSid, req.deviceToken);
 		}
@@ -36,7 +36,7 @@ public class UserInfoModifyHandler extends HttpBaseHandler {
 	}
 
 	public static class UserInfoModifyIn extends CommandIn {
-		public UserInfoModifyType type;
+		public int type;
 		public String deviceToken;
 	}
 

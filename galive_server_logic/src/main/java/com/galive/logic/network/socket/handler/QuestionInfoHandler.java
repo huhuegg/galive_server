@@ -1,10 +1,16 @@
 package com.galive.logic.network.socket.handler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
+import com.galive.logic.model.Answer;
+import com.galive.logic.model.Answer.AnswerResult;
 import com.galive.logic.model.Question;
 import com.galive.logic.model.User;
+import com.galive.logic.network.model.RespAnswer;
 import com.galive.logic.network.model.RespQuestion;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.SocketRequestHandler;
@@ -43,9 +49,22 @@ public class QuestionInfoHandler extends SocketBaseHandler  {
 		questioner.convert(u);
 		out.questioner = questioner;
 		
-		out.answerCount = answerService.countAnswer(questionOwnerSid);
+		out.answerCount = answerService.countAnswer(questionOwnerSid, null);
 		out.questionCount  = questionService.countQuestion(questionOwnerSid);
+		out.questionSolvedCount = answerService.countAnswer(questionOwnerSid, AnswerResult.Resolved);
 		
+		List<Answer> answers = answerService.listAnserByQuestion(questionSid, 0, -1);
+		List<RespAnswer> ras = new ArrayList<>();
+		for (Answer a : answers) {
+			RespAnswer ra = new RespAnswer();
+			ra.convert(a);
+			User resolver = userService.findUserBySid(a.getUserSid());
+			RespUser ru = new RespUser();
+			ru.convert(resolver);
+			ra.resolver = ru;
+			ras.add(ra);
+		}
+		out.answers = ras;
 		String resp = out.socketResp();
 		return resp;
 	}
@@ -60,6 +79,8 @@ public class QuestionInfoHandler extends SocketBaseHandler  {
 		public RespUser questioner;
 		public long answerCount;
 		public long questionCount;
+		public long questionSolvedCount;
+		public List<RespAnswer> answers = new ArrayList<>();
 		
 		public QuestionInfoOut() {
 			super(Command.QUESTION_INFO);

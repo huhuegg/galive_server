@@ -10,7 +10,7 @@ public interface AnswerService {
 
 	public Answer createAnswer(String questionSid, String solverSid, AnswerResult result) throws LogicException;
 	
-	public long countAnswer(String userSid) throws LogicException;
+	public long countAnswer(String userSid, AnswerResult result) throws LogicException;
 	
 	public Answer resolveAnswer(String answerSid) throws LogicException;
 	

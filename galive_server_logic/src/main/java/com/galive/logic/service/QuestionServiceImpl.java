@@ -28,14 +28,14 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 	@Override
 	public Question createQuestion(String desc, List<String> imageUrls, String recordUrl, List<String> tags)
 			throws LogicException {
-		appendLog("-创建问题-");
+		appendLog("-创建提问-");
 		if (StringUtils.isBlank(desc) && CollectionUtils.isEmpty(imageUrls) && StringUtils.isBlank(recordUrl)) {
-			appendLog("问题描述不完整。");
-			throw new LogicException("问题描述不完整。");
+			appendLog("提问描述不完整。");
+			throw new LogicException("提问描述不完整。");
 		}
 		if (CollectionUtils.isEmpty(tags)) {
-			appendLog("未选择问题标签。");
-			throw new LogicException("未选择问题标签。");
+			appendLog("未选择提问标签。");
+			throw new LogicException("未选择提问标签。");
 		}
 		Question q = new Question();
 		q.setDesc(desc);
@@ -52,8 +52,8 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 	public void resolveQuestion(String questionSid) throws LogicException {
 		Question q = questionDao.find(questionSid);
 		if (q == null) {
-			appendLog("问题不存在。");
-			throw new LogicException("问题不存在。");
+			appendLog("提问不存在。");
+			throw new LogicException("提问不存在。");
 		}
 		q.setState(QuestionState.Resolved);
 		appendLog(q.desc() + "设置为已解决");
@@ -70,7 +70,7 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 	public Question findQuestionBySid(String questionSid) throws LogicException {
 		Question q = questionDao.find(questionSid);
 		if (q == null) {
-			throw new LogicException("问题不存在。");
+			throw new LogicException("提问不存在。");
 		}
 		return q;
 	}
@@ -78,7 +78,7 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 	@Override
 	public long countQuestion(String userSid) throws LogicException {
 		long count = questionDao.count(userSid);
-		appendLog("问题总数:" + count);
+		appendLog("提问总数:" + count);
 		return count;
 	}
 

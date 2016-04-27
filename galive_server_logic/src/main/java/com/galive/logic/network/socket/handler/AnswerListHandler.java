@@ -7,16 +7,21 @@ import com.galive.common.protocol.Command;
 import com.galive.common.protocol.PageCommandOut;
 import com.galive.common.protocol.PageParams;
 import com.galive.logic.model.Answer;
+import com.galive.logic.model.User;
 import com.galive.logic.network.model.RespAnswer;
+import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.service.AnswerService;
 import com.galive.logic.service.AnswerServiceImpl;
+import com.galive.logic.service.UserService;
+import com.galive.logic.service.UserServiceImpl;
 
 @SocketRequestHandler(desc = "解答列表", command = Command.ANSWER_LIST)
 public class AnswerListHandler extends SocketBaseHandler  {
 	
 
 	private AnswerService answerService = new AnswerServiceImpl();
+	private UserService userService = new UserServiceImpl();
 	
 	@Override
 	public String handle(String userSid, String reqData) throws Exception {
@@ -37,6 +42,10 @@ public class AnswerListHandler extends SocketBaseHandler  {
 		for (Answer a : answers) {
 			RespAnswer ra = new RespAnswer();
 			ra.convert(a);
+			User u = userService.findUserBySid(a.getUserSid());
+			RespUser resolver = new RespUser();
+			resolver.convert(u);
+			ra.resolver = resolver;
 			ras.add(ra);
 		}
 		out.setData(ras);

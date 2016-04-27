@@ -1,5 +1,7 @@
 package com.galive.logic.dao;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.mongodb.morphia.query.Query;
 
@@ -7,6 +9,7 @@ import com.galive.logic.dao.db.MongoDao;
 import com.galive.logic.dao.db.MongoManager;
 import com.galive.logic.model.Answer;
 import com.galive.logic.model.Sid;
+import com.galive.logic.model.Answer.AnswerResult;
 import com.galive.logic.model.Sid.EntitySeq;
 
 public class AnswerDaoImpl implements AnswerDao {
@@ -46,10 +49,32 @@ public class AnswerDaoImpl implements AnswerDao {
 	}
 	
 	@Override
-	public long count(String userSid) {
+	public long count(String userSid, AnswerResult result) {
 		Query<Answer> q = dao.createQuery();
 		q.field("userSid").equal(userSid);
+		if (result != null) {
+			q.field("result").equal(result);
+		}
 		return dao.count(q);
+	}
+
+	@Override
+	public List<Answer> listByQuestion(String questionSid, int start, int end) {
+		Query<Answer> q = dao.createQuery();
+		int size = Math.max(end - start + 1, 1);
+		q.limit(size);
+		q.offset(start);
+		q.order("-createAt");
+		List<Answer> answers = dao.find(q).asList();
+		return answers;
+	}
+
+	@Override
+	public List<Answer> listAllByQuestion(String questionSid) {
+		Query<Answer> q = dao.createQuery();
+		q.order("-createAt");
+		List<Answer> answers = dao.find(q).asList();
+		return answers;
 	}
 
 	
