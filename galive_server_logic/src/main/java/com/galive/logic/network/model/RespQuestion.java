@@ -6,6 +6,8 @@ import java.util.List;
 import com.galive.logic.model.Question;
 
 public class RespQuestion {
+	
+	public String sid = "";
 
 	public String userSid = "";
 
@@ -20,6 +22,7 @@ public class RespQuestion {
 	public List<String> tags = new ArrayList<>();
 	
 	public void convert(Question q) {
+		sid = q.getSid();
 		userSid = q.getUserSid();
 		state = q.getState().ordinal();
 		desc = q.getDesc();

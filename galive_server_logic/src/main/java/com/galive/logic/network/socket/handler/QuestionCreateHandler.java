@@ -41,7 +41,7 @@ public class QuestionCreateHandler extends SocketBaseHandler  {
 			}	
 		}
 		
-		Question q = questionService.createQuestion(desc, imageUrls, recordUrl, tags);
+		Question q = questionService.createQuestion(userSid, desc, imageUrls, recordUrl, tags);
 		
 		QuestionCreateOut out = new QuestionCreateOut();
 		RespQuestion rq = new RespQuestion();

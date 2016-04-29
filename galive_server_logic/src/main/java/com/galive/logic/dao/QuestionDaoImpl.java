@@ -56,6 +56,18 @@ public class QuestionDaoImpl implements QuestionDao {
 		List<Question> questions = dao.find(q).asList();
 		return questions;
 	}
+	
+	@Override
+	public List<Question> listByUser(String userSid, int start, int end) {
+		Query<Question> q = dao.createQuery();
+		int size = Math.max(end - start + 1, 1);
+		q.field("userSid").equal(userSid);
+		q.limit(size);
+		q.offset(start);
+		q.order("-createAt");
+		List<Question> questions = dao.find(q).asList();
+		return questions;
+	}
 
 	@Override
 	public long count(String userSid) {
@@ -63,7 +75,5 @@ public class QuestionDaoImpl implements QuestionDao {
 		q.field("userSid").equal(userSid);
 		return dao.count(q);
 	}
-
-	
 
 }

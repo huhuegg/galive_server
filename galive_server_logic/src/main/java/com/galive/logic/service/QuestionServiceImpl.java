@@ -26,7 +26,7 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 	}
 	
 	@Override
-	public Question createQuestion(String desc, List<String> imageUrls, String recordUrl, List<String> tags)
+	public Question createQuestion(String userSid, String desc, List<String> imageUrls, String recordUrl, List<String> tags)
 			throws LogicException {
 		appendLog("-创建提问-");
 		if (StringUtils.isBlank(desc) && CollectionUtils.isEmpty(imageUrls) && StringUtils.isBlank(recordUrl)) {
@@ -38,6 +38,7 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 			throw new LogicException("未选择提问标签。");
 		}
 		Question q = new Question();
+		q.setUserSid(userSid);
 		q.setDesc(desc);
 		q.setImageUrls(imageUrls);
 		q.setRecordUrl(recordUrl);
@@ -63,6 +64,12 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 	@Override
 	public List<Question> listQuestionByCreateTime(int index, int size) throws LogicException {
 		List<Question> questions = questionDao.listByCreateTime(index, index + size - 1);
+		return questions;
+	}
+	
+	@Override
+	public List<Question> listQuestionByUser(String userSid, int index, int size) throws LogicException {
+		List<Question> questions = questionDao.listByUser(userSid, index, index + size - 1);
 		return questions;
 	}
 
@@ -100,9 +107,4 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 	public void removeQuestionTag(String tag) throws LogicException {
 		questionCache.deleteTag(tag);
 	}
-
-	
-
-	
-
 }

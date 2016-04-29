@@ -106,7 +106,7 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 					throw new LogicException("所邀请的用户正忙。");
 				}
 				Live live = liveService.findLiveByUser(s);
-				if (live.getState() == LiveState.On) {
+				if (live != null && live.getState() == LiveState.On) {
 					String error = "所邀请的用户正在直播。";
 					appendLog(error);
 					throw new LogicException(error);

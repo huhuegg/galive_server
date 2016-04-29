@@ -7,11 +7,13 @@ import com.galive.logic.model.Question;
 
 public interface QuestionService {
 
-	public Question createQuestion(String desc, List<String> imageUrls, String recordUrl, List<String> tags) throws LogicException;
+	public Question createQuestion(String userSid, String desc, List<String> imageUrls, String recordUrl, List<String> tags) throws LogicException;
 	
 	public void resolveQuestion(String questionSid) throws LogicException;
 	
 	public List<Question> listQuestionByCreateTime(int index, int size) throws LogicException;
+	
+	public List<Question> listQuestionByUser(String userSid, int index, int size) throws LogicException;
 	
 	public Question findQuestionBySid(String questionSid) throws LogicException;
 	

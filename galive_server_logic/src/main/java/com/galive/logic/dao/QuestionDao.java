@@ -12,6 +12,8 @@ public interface QuestionDao {
 	
 	public List<Question> listByCreateTime(int start, int end);
 	
+	public List<Question> listByUser(String userSid, int start, int end);
+	
 	public long count(String userSid);
 	
 }

@@ -16,7 +16,8 @@ import com.galive.logic.service.QuestionServiceImpl;
 public class QuestionListHandler extends SocketBaseHandler  {
 
 	public static enum QuestionListBy {
-		CreateTime;
+		CreateTime,
+		User;
 		
 		public static QuestionListBy convert(int i) {
 			for (QuestionListBy by : QuestionListBy.values()) {
@@ -45,6 +46,10 @@ public class QuestionListHandler extends SocketBaseHandler  {
 		List<Question> questions = new ArrayList<>();
 		if (by == QuestionListBy.CreateTime) {
 			questions = questionService.listQuestionByCreateTime(index, size);
+		} else if (by == QuestionListBy.User) {
+			String reqUserSid = in.userSid;
+			appendLog("查询用户id(reqUserSid):" + index);
+			questions = questionService.listQuestionByUser(reqUserSid, index, size);
 		}
 		
 		PageCommandOut<RespQuestion> out = new PageCommandOut<>(Command.QUESTION_LIST, in);
@@ -61,5 +66,6 @@ public class QuestionListHandler extends SocketBaseHandler  {
 	
 	public static class QuestionListIn extends PageParams {
 		public int listBy;
+		public String userSid;
 	}
 }
