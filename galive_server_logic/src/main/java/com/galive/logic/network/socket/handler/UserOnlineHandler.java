@@ -29,7 +29,7 @@ public class UserOnlineHandler extends SocketBaseHandler {
 	private QuestionService questionService = new QuestionServiceImpl();
 	
 	@Override
-	public String handle(String userSid, String reqData) throws Exception {
+	public CommandOut handle(String userSid, String reqData) throws Exception {
 		appendLog("--UserOnlineHandler(用户上线)--");
 		
 		UserOnlineOut out = new UserOnlineOut();
@@ -80,8 +80,7 @@ public class UserOnlineHandler extends SocketBaseHandler {
 		}
 		List<String> questionTags = questionService.listQuestionTags();
 		out.tags = questionTags;
-		String resp = out.socketResp();
-		return resp;
+		return out;
 	}
 	
 	public static class UserOnlineOut extends CommandOut {

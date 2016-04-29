@@ -14,7 +14,7 @@ public class LiveStartHandler extends SocketBaseHandler {
 	private LiveService liveService = new LiveServiceImpl();
 	
 	@Override
-	public String handle(String userSid, String reqData) throws Exception {
+	public CommandOut handle(String userSid, String reqData) throws Exception {
 		appendLog("--LiveStartHandler(开始直播)--");
 		Live live = liveService.startLive(userSid);
 		
@@ -22,8 +22,7 @@ public class LiveStartHandler extends SocketBaseHandler {
 		RespLive respLive = new RespLive();
 		respLive.convert(live);
 		out.live = respLive;
-		String resp = out.socketResp();
-		return resp;
+		return out;
 		
 	}
 	

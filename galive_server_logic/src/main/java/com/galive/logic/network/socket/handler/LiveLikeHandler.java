@@ -21,7 +21,7 @@ public class LiveLikeHandler extends SocketBaseHandler {
 	private UserService userService = new UserServiceImpl();
 	
 	@Override
-	public String handle(String userSid, String reqData) throws Exception {
+	public CommandOut handle(String userSid, String reqData) throws Exception {
 		appendLog("--LiveLikeHandler(直播点赞)--");
 
 		Live live = liveService.findLiveByAudience(userSid);
@@ -46,7 +46,6 @@ public class LiveLikeHandler extends SocketBaseHandler {
 			}
 		}
 		CommandOut out = new CommandOut(Command.LIVE_LIKE);
-		String resp = out.socketResp();
-		return resp;
+		return out;
 	}
 }

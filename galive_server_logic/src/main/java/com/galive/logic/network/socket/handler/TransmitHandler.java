@@ -10,7 +10,7 @@ import com.galive.logic.network.socket.handler.push.TransmitPush;
 public class TransmitHandler extends SocketBaseHandler {
 	
 	@Override
-	public String handle(String userSid, String reqData) throws Exception {
+	public CommandOut handle(String userSid, String reqData) throws Exception {
 		ClientTransmitIn in = JSON.parseObject(reqData, ClientTransmitIn.class);
 
 		TransmitPush push = new TransmitPush();
@@ -20,8 +20,7 @@ public class TransmitHandler extends SocketBaseHandler {
 		pushMessage(in.to, transmitContent);
 		
 		CommandOut out = new CommandOut(Command.TRANSMIT);
-		String resp = out.socketResp();
-		return resp;
+		return out;
 	}
 	
 	public static class ClientTransmitIn {

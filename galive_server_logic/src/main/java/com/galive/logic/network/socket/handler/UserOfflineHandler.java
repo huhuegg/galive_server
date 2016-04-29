@@ -3,6 +3,7 @@ package com.galive.logic.network.socket.handler;
 import java.util.List;
 
 import com.galive.common.protocol.Command;
+import com.galive.common.protocol.CommandOut;
 import com.galive.logic.model.Live;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
@@ -28,7 +29,7 @@ public class UserOfflineHandler extends SocketBaseHandler {
 	private LiveService liveService = new LiveServiceImpl();
 	
 	@Override
-	public String handle(String userSid, String reqData) throws Exception {
+	public CommandOut handle(String userSid, String reqData) throws Exception {
 		appendLog("--UserOfflineHandler(客户端下线)--");
 		
 		User u = userService.findUserBySid(userSid);

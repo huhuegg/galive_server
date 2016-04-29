@@ -36,7 +36,7 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 	private QuestionService questionService = new QuestionServiceImpl();
 	
 	@Override
-	public String handle(String userSid, String reqData) throws Exception {
+	public CommandOut handle(String userSid, String reqData) throws Exception {
 		appendLog("--RoomCreateHandler(创建房间)--");
 		EnterRoomIn in = JSON.parseObject(reqData, EnterRoomIn.class);
 		
@@ -104,8 +104,7 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 		
 		RoomCreateOut out = new RoomCreateOut();
 		out.room = RespRoom.convert(room);
-		String resp = out.socketResp();
-		return resp;
+		return out;
 	}
 	
 	public static class EnterRoomIn {

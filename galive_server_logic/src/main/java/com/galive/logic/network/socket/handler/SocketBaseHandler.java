@@ -26,11 +26,13 @@ public abstract class SocketBaseHandler {
 		String command = in.getCommand();
 		String userSid = in.getUserSid();
 		String token = in.getToken();
+		String c1 = in.getC1();
 		String params = in.getParams();
 		appendLog("请求参数");
 		appendLog("command:" + command);
 		appendLog("userSid:" + userSid);
 		appendLog("token:" + token);
+		appendLog("c1:" + c1);
 		appendLog("params:" + params);
 		
 		try {
@@ -57,12 +59,14 @@ public abstract class SocketBaseHandler {
 			appendLog("发生错误:" + error);
 			out = respFail(error, command);
 		}
+		out.setC1(c1);
+		String resp = out.socketResp();
 		appendLog("响应:");
-		appendLog(out);
+		appendLog(resp);
 		appendLog("处理时间:" + (System.currentTimeMillis() - start) + " ms");
 		appendSplit();
 		logger.info(loggerString());
-		ChannelManager.getInstance().sendMessage(userSid, out);
+		ChannelManager.getInstance().sendMessage(userSid, resp);
 	}
 	
 	protected void pushMessage(String userSid, String message) {

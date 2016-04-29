@@ -17,7 +17,7 @@ public class AnswerResolveHandler extends SocketBaseHandler  {
 	private QuestionService questionService = new QuestionServiceImpl();
 	
 	@Override
-	public String handle(String userSid, String reqData) throws Exception {
+	public CommandOut handle(String userSid, String reqData) throws Exception {
 		appendLog("--AnswerResolveHandler(修改解答结果)--");
 		AnswerResolveIn in = JSON.parseObject(reqData, AnswerResolveIn.class);
 		String answerSid = in.answerSid;
@@ -27,8 +27,7 @@ public class AnswerResolveHandler extends SocketBaseHandler  {
 		questionService.resolveQuestion(a.getQuestionSid());
 		
 		CommandOut out = new CommandOut(Command.ANSWER_RESOLVE);
-		String resp = out.socketResp();
-		return resp;
+		return out;
 	}
 	
 	public static class AnswerResolveIn {

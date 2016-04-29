@@ -24,7 +24,7 @@ public class RoomExitHandler extends SocketBaseHandler  {
 	private RoomService roomService = new RoomServiceImpl();
 	
 	@Override
-	public String handle(String userSid, String reqData) throws Exception {
+	public CommandOut handle(String userSid, String reqData) throws Exception {
 		appendLog("--RoomExitHandler(退出房间)--");
 		RoomExitIn in = JSON.parseObject(reqData, RoomExitIn.class);
 		String roomSid = in.roomSid;
@@ -72,8 +72,7 @@ public class RoomExitHandler extends SocketBaseHandler  {
 			}
 		}
 		CommandOut out = new CommandOut(Command.ROOM_EXIT);
-		String resp = out.socketResp();
-		return resp;
+		return out;
 	}
 	
 	public static class RoomExitIn extends CommandIn {

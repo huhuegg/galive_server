@@ -20,7 +20,7 @@ public class LiveStopHandler extends SocketBaseHandler  {
 	private LiveService liveService = new LiveServiceImpl();
 	
 	@Override
-	public String handle(String userSid, String reqData) throws Exception {
+	public CommandOut handle(String userSid, String reqData) throws Exception {
 		appendLog("--LiveStopHandler(结束直播)--");
 		Live live = liveService.stopLive(userSid);
 		if (live != null) {
@@ -43,8 +43,7 @@ public class LiveStopHandler extends SocketBaseHandler  {
 		}
 		
 		CommandOut out = new CommandOut(Command.LIVE_STOP);
-		String resp = out.socketResp();
-		return resp;
+		return out;
 	}
 	
 	

@@ -23,7 +23,7 @@ public class LiveJoinHandler extends SocketBaseHandler  {
 	private UserService userService = new UserServiceImpl();
 	
 	@Override
-	public String handle(String userSid, String reqData) throws Exception {
+	public CommandOut handle(String userSid, String reqData) throws Exception {
 		appendLog("--LiveJoinHandler(进入观看直播)--");
 		LiveJoinIn in = JSON.parseObject(reqData, LiveJoinIn.class);
 		String liveSid = in.liveSid;
@@ -59,8 +59,7 @@ public class LiveJoinHandler extends SocketBaseHandler  {
 		RespUser presenter = new RespUser();
 		presenter.convert(userService.findUserBySid(live.getOwnerSid()));
 		out.presenter = presenter;
-		String resp = out.socketResp();
-		return resp;
+		return out;
 		
 	}
 	

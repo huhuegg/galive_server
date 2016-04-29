@@ -10,6 +10,8 @@ public class CommandOut {
 	
 	private String ret_msg = "";
 	
+	private String c1 = "";
+	
 	private int ret_code = RetCode.SUCCESS;
 	
 	public CommandOut(String command) {
@@ -58,6 +60,14 @@ public class CommandOut {
 
 	public void setCommand(String command) {
 		this.command = command;
+	}
+
+	public String getC1() {
+		return c1;
+	}
+
+	public void setC1(String c1) {
+		this.c1 = c1;
 	}
 
 }

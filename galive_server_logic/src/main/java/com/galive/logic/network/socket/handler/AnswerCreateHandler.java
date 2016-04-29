@@ -14,7 +14,7 @@ public class AnswerCreateHandler extends SocketBaseHandler  {
 	private AnswerService answerService = new AnswerServiceImpl();
 	
 	@Override
-	public String handle(String userSid, String reqData) throws Exception {
+	public CommandOut handle(String userSid, String reqData) throws Exception {
 		appendLog("--AnswerCreateHandler(创建解答)--");
 		AnswerCreateIn in = JSON.parseObject(reqData, AnswerCreateIn.class);
 		String questionSid = in.questionSid;
@@ -28,8 +28,7 @@ public class AnswerCreateHandler extends SocketBaseHandler  {
 		
 		
 		CommandOut out = new CommandOut(Command.ANSWER_CREATE);
-		String resp = out.socketResp();
-		return resp;
+		return out;
 	}
 	
 	public static class AnswerCreateIn {

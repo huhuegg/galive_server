@@ -19,7 +19,7 @@ public class UserInfoHandler extends SocketBaseHandler {
 	private RoomService roomService = new RoomServiceImpl();
 	
 	@Override
-	public String handle(String userSid, String reqData) throws Exception {
+	public CommandOut handle(String userSid, String reqData) throws Exception {
 		appendLog("--UserInfoHandler(获取用户信息)--");
 		UserInfoIn in = JSON.parseObject(reqData, UserInfoIn.class);
 		String uid = in.userSid;
@@ -35,8 +35,7 @@ public class UserInfoHandler extends SocketBaseHandler {
 			ru.roomSid = room.getSid();
 		}
 		out.user = ru;
-		String resp = out.socketResp();
-		return resp;
+		return out;
 	}
 
 	public static class UserInfoIn {

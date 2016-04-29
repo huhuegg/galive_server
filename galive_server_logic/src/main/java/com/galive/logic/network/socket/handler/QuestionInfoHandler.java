@@ -29,7 +29,7 @@ public class QuestionInfoHandler extends SocketBaseHandler  {
 	private UserService userService = new UserServiceImpl();
 	
 	@Override
-	public String handle(String userSid, String reqData) throws Exception {
+	public CommandOut handle(String userSid, String reqData) throws Exception {
 		appendLog("--QuestionInfoHandler(问题详情)--");
 		QuestionInfoIn in = JSON.parseObject(reqData, QuestionInfoIn.class);
 		
@@ -65,8 +65,7 @@ public class QuestionInfoHandler extends SocketBaseHandler  {
 			ras.add(ra);
 		}
 		out.answers = ras;
-		String resp = out.socketResp();
-		return resp;
+		return out;
 	}
 	
 	public static class QuestionInfoIn {

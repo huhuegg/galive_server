@@ -1,6 +1,6 @@
 package com.galive.common.protocol;
 
-public class PageParams {
+public class PageCommandIn {
 
 	public int index = 0;
 	

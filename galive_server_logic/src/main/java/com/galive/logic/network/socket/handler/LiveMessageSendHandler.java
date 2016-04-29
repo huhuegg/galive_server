@@ -23,7 +23,7 @@ public class LiveMessageSendHandler extends SocketBaseHandler {
 	private LiveService liveService = new LiveServiceImpl();
 
 	@Override
-	public String handle(String userSid, String reqData) throws Exception {
+	public CommandOut handle(String userSid, String reqData) throws Exception {
 		appendLog("--LiveMessageSendHandler(发送直播消息)--");
 		
 		LiveMessageSendIn in = JSON.parseObject(reqData, LiveMessageSendIn.class);
@@ -62,8 +62,7 @@ public class LiveMessageSendHandler extends SocketBaseHandler {
 		}
 		
 		CommandOut out = new CommandOut(Command.LIVE_MESSAGE_SEND);
-		String resp = out.socketResp();
-		return resp;
+		return out;
 
 	}
 

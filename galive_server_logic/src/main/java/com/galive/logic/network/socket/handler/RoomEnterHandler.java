@@ -23,7 +23,7 @@ public class RoomEnterHandler extends SocketBaseHandler {
 	private RoomService roomService = new RoomServiceImpl();
 	
 	@Override
-	public String handle(String userSid, String reqData) throws Exception {
+	public CommandOut handle(String userSid, String reqData) throws Exception {
 		appendLog("--RoomEnterHandler(进入房间)--");
 		RoomEnterIn in = JSON.parseObject(reqData, RoomEnterIn.class);
 		String roomSid = in.roomSid;
@@ -57,8 +57,7 @@ public class RoomEnterHandler extends SocketBaseHandler {
 		
 		RoomEnterOut out = new RoomEnterOut();
 		out.room = respRoom;
-		String resp = out.socketResp();
-		return resp;
+		return out;
 	}
 	
 	public static class RoomEnterIn {

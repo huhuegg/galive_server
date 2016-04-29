@@ -21,7 +21,7 @@ public class LiveLeaveHandler extends SocketBaseHandler  {
 	private UserService userService = new UserServiceImpl();
 	
 	@Override
-	public String handle(String userSid, String reqData) throws Exception {
+	public CommandOut handle(String userSid, String reqData) throws Exception {
 		appendLog("--LiveLeaveHandler(退出观看直播)--");
 		Live live = liveService.leaveLive(userSid);
 		if (live != null) {
@@ -44,8 +44,6 @@ public class LiveLeaveHandler extends SocketBaseHandler  {
 			}
 		}
 		CommandOut out = new CommandOut(Command.LIVE_LEAVE);
-		String resp = out.socketResp();
-
-		return resp;
+		return out;
 	}
 }

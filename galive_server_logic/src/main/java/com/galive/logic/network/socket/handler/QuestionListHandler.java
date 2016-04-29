@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
+import com.galive.common.protocol.CommandOut;
 import com.galive.common.protocol.PageCommandOut;
-import com.galive.common.protocol.PageParams;
+import com.galive.common.protocol.PageCommandIn;
 import com.galive.logic.model.Question;
 import com.galive.logic.network.model.RespQuestion;
 import com.galive.logic.network.socket.SocketRequestHandler;
@@ -31,7 +32,7 @@ public class QuestionListHandler extends SocketBaseHandler  {
 	private QuestionService questionService = new QuestionServiceImpl();
 	
 	@Override
-	public String handle(String userSid, String reqData) throws Exception {
+	public CommandOut handle(String userSid, String reqData) throws Exception {
 		appendLog("--QuestionListHandler(问题列表)--");
 		QuestionListIn in = JSON.parseObject(reqData, QuestionListIn.class);
 		
@@ -60,11 +61,10 @@ public class QuestionListHandler extends SocketBaseHandler  {
 			rqs.add(rq);
 		}
 		out.setData(rqs);
-		String resp = out.socketResp();
-		return resp;	
+		return out;	
 	}
 	
-	public static class QuestionListIn extends PageParams {
+	public static class QuestionListIn extends PageCommandIn {
 		public int listBy;
 		public String userSid;
 	}

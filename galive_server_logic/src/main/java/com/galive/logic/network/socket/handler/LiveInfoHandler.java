@@ -20,7 +20,7 @@ public class LiveInfoHandler extends SocketBaseHandler  {
 	private UserService userService = new UserServiceImpl();
 	
 	@Override
-	public String handle(String userSid, String reqData) throws Exception {
+	public CommandOut handle(String userSid, String reqData) throws Exception {
 		appendLog("--LiveInfoHandler(获取直播信息)--");
 		LiveInfoIn in = JSON.parseObject(reqData, LiveInfoIn.class);
 		String liveSid = in.liveSid;
@@ -40,8 +40,7 @@ public class LiveInfoHandler extends SocketBaseHandler  {
 		respUser.convert(user);
 		info.presenter = respUser;
 		out.live = info;
-		String resp = out.socketResp();
-		return resp;
+		return out;
 		
 	}
 	

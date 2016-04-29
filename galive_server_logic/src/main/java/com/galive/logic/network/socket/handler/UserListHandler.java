@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
-import com.galive.common.protocol.PageParams;
+import com.galive.common.protocol.CommandOut;
+import com.galive.common.protocol.PageCommandIn;
 import com.galive.common.protocol.PageCommandOut;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
@@ -26,7 +27,7 @@ public class UserListHandler extends SocketBaseHandler  {
 	private RoomService roomService = new RoomServiceImpl();
 	
 	@Override
-	public String handle(String userSid, String reqData) throws Exception {
+	public CommandOut handle(String userSid, String reqData) throws Exception {
 		appendLog("--UserListHandler(获取用户列表)--");
 		UserListParams in = JSON.parseObject(reqData, UserListParams.class);
 		
@@ -61,11 +62,10 @@ public class UserListHandler extends SocketBaseHandler  {
 		}
 		PageCommandOut<RespUser> out = new PageCommandOut<>(Command.USR_LIST, in);
 		out.setData(respUsers);
-		String resp = out.socketResp();
-		return resp;
+		return out;
 	}
 	
-	public static class UserListParams extends PageParams {
+	public static class UserListParams extends PageCommandIn {
 		public int type;
 	}
 }

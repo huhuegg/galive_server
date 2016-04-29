@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
-import com.galive.common.protocol.PageParams;
+import com.galive.common.protocol.CommandOut;
+import com.galive.common.protocol.PageCommandIn;
 import com.galive.common.protocol.PageCommandOut;
 import com.galive.logic.model.Live;
 import com.galive.logic.network.model.RespLive;
@@ -18,9 +19,9 @@ public class LiveListHandler extends SocketBaseHandler  {
 	private LiveService liveService = new LiveServiceImpl();
 	
 	@Override
-	public String handle(String userSid, String reqData) {
+	public CommandOut handle(String userSid, String reqData) {
 		appendLog("--LiveListHandler(获取直播列表)--");
-		PageParams in = JSON.parseObject(reqData, PageParams.class);
+		PageCommandIn in = JSON.parseObject(reqData, PageCommandIn.class);
 		
 		int index = in.index;
 		int size = in.size; 
@@ -36,8 +37,7 @@ public class LiveListHandler extends SocketBaseHandler  {
 		}
 		PageCommandOut<RespLive> out = new PageCommandOut<>(Command.LIVE_LIST, in);
 		out.setData(respLives);
-		String resp = out.socketResp();
-		return resp;
+		return out;
 	}
 	
 }
