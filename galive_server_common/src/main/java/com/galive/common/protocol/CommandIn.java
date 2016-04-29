@@ -29,12 +29,15 @@ public class CommandIn {
 	 */
 	private String token = "";
 	
-	private String c1 = "";
-	
 	/**
 	 * 请求参数 URL编码 json格式
 	 */
 	private String params = "";
+	
+	/**
+	 * 客户端自定义参数
+	 */
+	private String c1 = "";
 	
 	/**
 	 * 从socket接收的消息组装对象 
@@ -43,8 +46,8 @@ public class CommandIn {
 	 */
 	public static CommandIn fromSocketReq(String req, String paramsDelimiter) {
 		try {
-			String s[] = StringUtils.split(req, paramsDelimiter, 4);
-			if (s.length < 4) {
+			String s[] = StringUtils.split(req, paramsDelimiter, 5);
+			if (s.length < 5) {
 				return null;
 			}
 			String command = s[0];
@@ -53,11 +56,13 @@ public class CommandIn {
 			}
 			String userSid = s[1];
 			String token = s[2];
-			String params = URLDecoder.decode(s[3], StandardCharsets.UTF_8.name());
+			String c1 = s[3];
+			String params = URLDecoder.decode(s[4], StandardCharsets.UTF_8.name());
 			CommandIn in = new CommandIn();
 			in.setCommand(command);
 			in.setUserSid(userSid);
 			in.setToken(token);
+			in.setC1(c1);
 			in.setParams(params);
 			return in;
 		} catch (UnsupportedEncodingException e) {
@@ -133,7 +138,5 @@ public class CommandIn {
 
 	public void setC1(String c1) {
 		this.c1 = c1;
-	}
-	
-	
+	}	
 }

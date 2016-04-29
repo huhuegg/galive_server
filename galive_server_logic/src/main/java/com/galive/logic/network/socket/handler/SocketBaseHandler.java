@@ -15,14 +15,14 @@ public abstract class SocketBaseHandler {
 	
 	private static Logger logger = LoggerFactory.getLogger(SocketBaseHandler.class);
 	
-	public abstract String handle(String userSid, String reqData) throws Exception;
+	public abstract CommandOut handle(String userSid, String reqData) throws Exception;
 
 	protected StringBuffer logBuffer = new StringBuffer();
 	
 	public void handle(CommandIn in, ChannelHandlerContext channel) {
 		appendSplit();
 		long start = System.currentTimeMillis();
-		String out = null;
+		CommandOut out = null;
 		String command = in.getCommand();
 		String userSid = in.getUserSid();
 		String token = in.getToken();
@@ -69,9 +69,9 @@ public abstract class SocketBaseHandler {
 		ChannelManager.getInstance().sendMessage(userSid, message);
 	}
 	
-	private String respFail(String message, String command) {
-		String resp = CommandOut.failureOut(command, message).httpResp();
-		return resp;
+	private CommandOut respFail(String message, String command) {
+		CommandOut out = CommandOut.failureOut(command, message);
+		return out;
 	}
 	
 	protected void appendLog(String log) {
