@@ -70,7 +70,7 @@ public abstract class SocketBaseHandler {
 	}
 	
 	private String respFail(String message, String command) {
-		String resp = CommandOut.failureOut(command, message).httpResp();
+		String resp = CommandOut.failureOut(command, message).socketResp();
 		return resp;
 	}
 	
