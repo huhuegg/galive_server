@@ -29,6 +29,8 @@ public class CommandIn {
 	 */
 	private String token = "";
 	
+	private String c1 = "";
+	
 	/**
 	 * 请求参数 URL编码 json格式
 	 */
@@ -123,6 +125,14 @@ public class CommandIn {
 
 	public void setParams(String params) {
 		this.params = params;
+	}
+
+	public String getC1() {
+		return c1;
+	}
+
+	public void setC1(String c1) {
+		this.c1 = c1;
 	}
 	
 	
