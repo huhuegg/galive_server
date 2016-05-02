@@ -58,10 +58,10 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 	@Override
 	public Room create(String roomname, String userSid, String questionSid, List<String> invitees, int maxUser)
 			throws LogicException {
-		Room existRoom = roomCache.findRoomByUser(userSid);
+		Room existRoom = findRoomByUser(userSid);
 		if (existRoom != null) {
 			appendLog("用户" + userSid + "已在其他房间" + existRoom.desc() + "中");
-			throw new LogicException("该用户正忙。");
+			throw new LogicException("已在其他房间中。");
 		}
 		if (StringUtils.isBlank(roomname)) {
 			String error = "房间名不能为空。";
@@ -211,18 +211,18 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 
 	@Override
 	public Room exit(String userSid) throws LogicException {
-		Room room = roomCache.findRoomByUser(userSid);
+		Room room = findRoomByUser(userSid);
 		if (room == null) {
 			// throw new LogicException("该房间不存在。");
 			appendLog("用户当前不在房间中。");
 			return null;
 		}
+		roomCache.removeRoomToUser(userSid);
 		Set<String> users = room.getUsers();
 		users.remove(userSid);
 		if (users.isEmpty() || userSid.equals(room.getOwnerId())) {
 			// 销毁房间
 			roomCache.deleteRoom(room);
-			roomCache.removeRoomToUser(userSid);
 			// 清除邀请的人
 			Set<String> invitees = room.getInvitees();
 			for (String s : invitees) {
