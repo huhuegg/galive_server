@@ -25,10 +25,10 @@ public class Sid {
 	private long seq = 10000;
 
 	public enum EntitySeq {
-		Test("Test", 0),
+		Test("Test", 1),
 		User("User", 10000),
-		Answer("Answer", 0),
-		Question("Question", 0);
+		Answer("Answer", 1),
+		Question("Question", 1);
 		
 		public String seqName;
 		public long seqStart;
