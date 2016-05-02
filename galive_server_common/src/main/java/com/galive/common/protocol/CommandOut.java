@@ -17,6 +17,7 @@ public class CommandOut {
 	public CommandOut(String command) {
 		this.command = command;
 		this.ret_code = RetCode.SUCCESS;
+		this.c1 = "";
 	}
 	
 	public static CommandOut failureOut(String command, String message) {
