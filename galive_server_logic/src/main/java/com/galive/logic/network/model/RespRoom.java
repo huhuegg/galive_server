@@ -20,15 +20,12 @@ public class RespRoom {
 	
 	public int type;
 	
-	public RespQuestion question;
-	
 	public static RespRoom convert(Room room) {
 		RespRoom rr = new RespRoom();
 		rr.sid = room.getSid();
 		rr.ownerId = room.getOwnerId();
 		rr.name = room.getName();
 		rr.maxUser = room.getMaxMemberCount();
-		rr.type = room.getType().ordinal();
 		return rr;
 	}
 }

@@ -7,15 +7,11 @@ import java.util.Set;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.model.Room;
-import com.galive.logic.model.Room.RoomType;
 import com.galive.logic.model.User;
-import com.galive.logic.network.model.RespQuestion;
 import com.galive.logic.network.model.RespRoom;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.UserOnlinePush;
-import com.galive.logic.service.QuestionService;
-import com.galive.logic.service.QuestionServiceImpl;
 import com.galive.logic.service.RoomService;
 import com.galive.logic.service.RoomServiceImpl;
 import com.galive.logic.service.UserService;
@@ -26,7 +22,6 @@ public class UserOnlineHandler extends SocketBaseHandler {
 
 	private UserService userService = new UserServiceImpl();
 	private RoomService roomService = new RoomServiceImpl();
-	private QuestionService questionService = new QuestionServiceImpl();
 	
 	@Override
 	public CommandOut handle(String userSid, String reqData) throws Exception {
@@ -71,15 +66,8 @@ public class UserOnlineHandler extends SocketBaseHandler {
 			RespUser invitor = new RespUser();
 			invitor.convert(userService.findUserBySid(inviteeRoom.getOwnerId()));
 			respRoom.invitor = invitor;
-			if (inviteeRoom.getType() == RoomType.Question) {
-				RespQuestion rq = new RespQuestion();
-				rq.convert(questionService.findQuestionBySid(inviteeRoom.getQuestionSid()));
-				respRoom.question = rq;
-			}
 			out.inviteeRoom = respRoom;
 		}
-		List<String> questionTags = questionService.listQuestionTags();
-		out.tags = questionTags;
 		return out;
 	}
 	

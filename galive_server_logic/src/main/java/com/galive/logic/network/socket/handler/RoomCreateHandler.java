@@ -12,17 +12,12 @@ import com.galive.common.protocol.CommandOut;
 import com.galive.logic.ApplicationMain;
 import com.galive.logic.ApplicationMain.ApplicationMode;
 import com.galive.logic.helper.APNSHelper;
-import com.galive.logic.model.Question;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
-import com.galive.logic.model.Room.RoomType;
-import com.galive.logic.network.model.RespQuestion;
 import com.galive.logic.network.model.RespRoom;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.RoomInviteePush;
-import com.galive.logic.service.QuestionService;
-import com.galive.logic.service.QuestionServiceImpl;
 import com.galive.logic.service.RoomService;
 import com.galive.logic.service.RoomServiceImpl;
 import com.galive.logic.service.UserService;
@@ -33,7 +28,6 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 
 	private UserService userService = new UserServiceImpl();
 	private RoomService roomService = new RoomServiceImpl();
-	private QuestionService questionService = new QuestionServiceImpl();
 	
 	@Override
 	public CommandOut handle(String userSid, String reqData) throws Exception {
@@ -63,12 +57,7 @@ public class RoomCreateHandler extends SocketBaseHandler  {
 			
 			RoomInviteePush inviteePush = new RoomInviteePush();
 			RespRoom inviteeRoom = RespRoom.convert(room);
-			if (room.getType() == RoomType.Question) {
-				Question question = questionService.findQuestionBySid(room.getQuestionSid());
-				RespQuestion rq = new RespQuestion();
-				rq.convert(question);
-				inviteeRoom.question = rq;
-			}
+		
 			RespUser respUser = new RespUser();
 			respUser.convert(invitor);
 			inviteeRoom.invitor = respUser;

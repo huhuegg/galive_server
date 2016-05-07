@@ -12,17 +12,13 @@ import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.dao.RoomCache;
 import com.galive.logic.dao.RoomCacheImpl;
 import com.galive.logic.exception.LogicException;
-import com.galive.logic.model.Live;
-import com.galive.logic.model.Live.LiveState;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.Room.RoomPrivacy;
-import com.galive.logic.model.Room.RoomType;
 
 public class RoomServiceImpl extends BaseService implements RoomService {
 
 	private RoomCache roomCache = new RoomCacheImpl();
 	private UserService userService = new UserServiceImpl();
-	private LiveService liveService = new LiveServiceImpl();
 
 
 	public RoomServiceImpl() {
@@ -105,12 +101,6 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 					appendLog("所邀请的用户正在其他房间中或已被邀请。");
 					throw new LogicException("所邀请的用户正忙。");
 				}
-				Live live = liveService.findLiveByUser(s);
-				if (live != null && live.getState() == LiveState.On) {
-					String error = "所邀请的用户正在直播。";
-					appendLog(error);
-					throw new LogicException(error);
-				}
 			}
 			room.setPrivacy(RoomPrivacy.Privacy);
 		} else {
@@ -121,12 +111,6 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 		Set<String> roomUsers = new HashSet<>();
 		roomUsers.add(userSid);
 		room.setUsers(roomUsers);
-		if (!StringUtils.isEmpty(questionSid)) {
-			room.setQuestionSid(questionSid);
-			room.setType(RoomType.Question);
-		} else {
-			room.setType(RoomType.Interactive);
-		}
 		// 保存房间信息
 		room = roomCache.saveRoom(room);
 		String roomSid = room.getSid();

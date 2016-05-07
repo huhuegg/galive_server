@@ -8,13 +8,8 @@ import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.RTCConfig;
 import com.galive.logic.config.SocketConfig;
 import com.galive.logic.model.User;
-import com.galive.logic.model.Answer.AnswerResult;
 import com.galive.logic.network.http.HttpRequestHandler;
 import com.galive.logic.network.model.RespLoginUser;
-import com.galive.logic.service.AnswerService;
-import com.galive.logic.service.AnswerServiceImpl;
-import com.galive.logic.service.QuestionService;
-import com.galive.logic.service.QuestionServiceImpl;
 import com.galive.logic.service.UserService;
 import com.galive.logic.service.UserServiceImpl;
 
@@ -22,8 +17,6 @@ import com.galive.logic.service.UserServiceImpl;
 public class LoginHandler extends HttpBaseHandler {
 	
 	private UserService userService = new UserServiceImpl();
-	private QuestionService questionService = new QuestionServiceImpl();
-	private AnswerService answerService = new AnswerServiceImpl();
 	
 	@Override
 	public String handle(String userSid, String reqData) throws Exception {
@@ -47,9 +40,7 @@ public class LoginHandler extends HttpBaseHandler {
 		out.expire = ApplicationConfig.getInstance().getTokenExpire();
 		out.user = respUser;
 		out.socket_config = ApplicationConfig.getInstance().getSocketConfig();
-		out.answerCount = answerService.countAnswer(uid, null);
-		out.questionCount  = questionService.countQuestion(uid);
-		out.questionSolvedCount = answerService.countAnswer(uid, AnswerResult.Resolved);
+
 		String resp = out.httpResp();
 		return resp;
 	}
@@ -72,9 +63,7 @@ public class LoginHandler extends HttpBaseHandler {
 		public int expire;
 		public RTCConfig rtc_config;
 		public SocketConfig socket_config;
-		public long answerCount;
-		public long questionCount;
-		public long questionSolvedCount;
+
 	}
 	
 }

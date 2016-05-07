@@ -7,7 +7,6 @@ import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.model.Room;
-import com.galive.logic.model.Room.RoomType;
 import com.galive.logic.model.User;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.RoomExitPush;
@@ -39,12 +38,6 @@ public class RoomExitHandler extends SocketBaseHandler  {
 			User invitor = userService.findUserBySid(room.getOwnerId());
 			RoomExitPush push = new RoomExitPush();
 			push.userSid = userSid;
-			
-			if (inviteeRoom.getType() == RoomType.Question) {
-				push.type = RoomExitType.RefuseQuestionInvite.ordinal();
-			} else {
-				push.type = RoomExitType.RefuseInvite.ordinal();
-			}
 			String pushMessage = push.socketResp();
 			appendLog(String.format("拒绝房间(%s)邀请,推送房主%s", inviteeRoom.getSid(), invitor.desc() + pushMessage));
 			pushMessage(invitor.getSid(), pushMessage);
