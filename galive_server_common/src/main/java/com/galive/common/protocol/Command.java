@@ -6,6 +6,8 @@ public class Command {
 	public static final String USR_REGISTER = "USR_REGISTER";
 	// 用户登录
 	public static final String USR_LOGIN = "USR_LOGIN";
+	// 三方登录
+	public static final String USR_LOGIN_PLATFORM = "USR_LOGIN_PLATFORM";
 	// 获取用户信息
 	public static final String USR_INFO = "USR_INFO";
 	// 修改用户信息

@@ -27,4 +27,5 @@ public interface UserService {
 	public String createToken(String userSid) throws LogicException;
 	
 	public boolean isOnline(String userSid);
+	
 }

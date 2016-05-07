@@ -27,6 +27,7 @@ public class Sid {
 	public enum EntitySeq {
 		Test("Test", 1),
 		User("User", 10000),
+		PlatformUser("PlatformUser", 10000),
 		Answer("Answer", 1),
 		Question("Question", 1);
 		

@@ -39,11 +39,12 @@
 	
 	<Platform>
 		<QQ>
-			<AppId>123</AppId>
+			<AppId>1104695617</AppId>
+			<AppKey>z8sAyBATHrw4BCSU</AppKey>
 		</QQ>
 		<Wechat>
-			<AppId>123</AppId>
-			<AppSecret>123</AppSecret>
+			<AppId>wx20ec458b2c5ab93b</AppId>
+			<AppSecret>37577c39c302bd95a5544a7c390cedfd</AppSecret>
 		</Wechat>
 	</Platform>
 
