@@ -1,7 +1,11 @@
 package com.galive.logic.service;
 
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 
+import com.galive.logic.dao.PlatformUserCache;
+import com.galive.logic.dao.PlatformUserCacheImpl;
 import com.galive.logic.dao.PlatformUserDao;
 import com.galive.logic.dao.PlatformUserDaoImpl;
 import com.galive.logic.exception.LogicException;
@@ -15,7 +19,8 @@ import com.galive.logic.model.PlatformUser.UserPlatform;
 public class PlatformServiceImpl extends BaseService implements PlatformService {
 
 	private PlatformUserDao platformUserDao = new PlatformUserDaoImpl();
-
+	private PlatformUserCache platformUserCache = new PlatformUserCacheImpl();
+	
 	public PlatformServiceImpl() {
 		super();
 		appendLog("PlatformServiceImpl");
@@ -23,7 +28,7 @@ public class PlatformServiceImpl extends BaseService implements PlatformService 
 	
 	
 	@Override
-	public WeChatUser loginWeChat(String udid, String code) throws LogicException {
+	public WeChatUser loginWeChat(String deviceid, String udid, String code) throws LogicException {
 		//获取access_token 
 		WXAccessTokenResp tokenResp = WeChatRequest.requestAccessToken(code);
 		if (tokenResp == null || !StringUtils.isBlank(tokenResp.errcode)) {
@@ -41,7 +46,7 @@ public class PlatformServiceImpl extends BaseService implements PlatformService 
 		}
 		appendLog("获取微信用户信息:" + userInfoResp.toString());
 		String unionid = userInfoResp.getUnionid();
-		WeChatUser user = (WeChatUser) platformUserDao.find(unionid, UserPlatform.WeChat);
+		WeChatUser user = (WeChatUser) platformUserDao.find(deviceid, UserPlatform.WeChat);
 		if (user == null) {
 			user = new WeChatUser();
 		}
@@ -52,7 +57,9 @@ public class PlatformServiceImpl extends BaseService implements PlatformService 
 		user.setNickname(userInfoResp.getNickname());
 		user.setAvatar(avatarThumbnail);
 		user.setUdid(udid);
+		user.setDeviceid(deviceid);
 		user.setUnionid(unionid);
+		user.setPlatform(UserPlatform.WeChat);
 		platformUserDao.saveOrUpdate(user);
 
 		appendLog("微信登录成功:" + user.toString());
@@ -61,14 +68,40 @@ public class PlatformServiceImpl extends BaseService implements PlatformService 
 	}
 
 	@Override
-	public PlatformUser findUser(String udid, UserPlatform platform) throws LogicException {
-		PlatformUser u = platformUserDao.find(udid, platform);
+	public PlatformUser findUser(String deviceId, UserPlatform platform) throws LogicException {
+		PlatformUser u = platformUserDao.find(deviceId, platform);
 		if (u == null) {
 			appendLog("用户不存在");
 			throw new LogicException("用户不存在");
 		}
 		return u;
 	}
+	
+	@Override
+	public PlatformUser findUserByUdid(String udid, UserPlatform platform) throws LogicException {
+		PlatformUser u = platformUserDao.findByUdid(udid, platform);
+		return u;
+	}
+
+
+	@Override
+	public void saveSharedUdid(String deviceid, String sharedUdid) {
+		platformUserCache.saveSharedDeviceid(deviceid, sharedUdid);
+	}
+
+
+	@Override
+	public void beContact(String deviceid, String udid, UserPlatform platform) {
+		Set<String> deviceids = platformUserCache.listSharedDeviceids(udid);
+		for (String contact : deviceids) {
+			platformUserCache.saveContact(deviceid, contact);
+			platformUserCache.saveContact(contact, deviceid);
+			platformUserCache.removeSharedDeviceid(contact, udid);
+		}
+	}
+
+
+	
 
 	
 

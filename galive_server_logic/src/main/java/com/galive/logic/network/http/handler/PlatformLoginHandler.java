@@ -30,23 +30,28 @@ public class PlatformLoginHandler extends HttpBaseHandler {
 		PlatformLoginIn in = JSON.parseObject(reqData, PlatformLoginIn.class);
 
 		String udid = in.udid;
-		int platform = in.platform;
+		String deviceid = in.deviceid;
+		int pt = in.platform;
+		
+		appendLog("udid:" + udid);
+		appendLog("deviceid:" + deviceid);
+		appendLog("platform:" + pt);
 		
 		RespLoginUser respUser = new RespLoginUser();
-		
-		if (platform == UserPlatform.WeChat.ordinal()) {
+		UserPlatform platform = UserPlatform.convert(pt);
+		if (platform == UserPlatform.WeChat) {
 			String code = in.wx_code;
 			appendLog("微信登录");
 			WeChatUser weChatUser;
 			if (!StringUtils.isBlank(code)) {
 				appendLog("code:" + code);
-				weChatUser = platformService.loginWeChat(udid, code);
+				weChatUser = platformService.loginWeChat(deviceid, udid, code);
 			} else {
-				weChatUser = (WeChatUser) platformService.findUser(udid, UserPlatform.WeChat);
+				weChatUser = (WeChatUser) platformService.findUser(deviceid, UserPlatform.WeChat);
 			}
 			respUser.convert(weChatUser);
 		}
-		
+		platformService.beContact(deviceid, udid, platform);
 		
 		
 		PlatformLoginOut out = new PlatformLoginOut();
@@ -61,6 +66,7 @@ public class PlatformLoginHandler extends HttpBaseHandler {
 	}
 
 	public static class PlatformLoginIn extends CommandIn {
+		public String deviceid = "";
 		public String udid;
 		public int platform;
 		public String wx_code = "";

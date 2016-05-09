@@ -25,12 +25,12 @@ public class JettyServer {
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		context.setContextPath("/");
 		String logicAction = config.getAction();
-		String tagAction = "/galive/tag";
+		String shareAction = "/galive/share";
 		
 		context.addServlet(new ServletHolder(new LogicServlet()), logicAction);
 		
 		context.addFilter(JettyEncodingFilter.class, logicAction, EnumSet.of(DispatcherType.REQUEST));
-		context.addFilter(JettyEncodingFilter.class, tagAction, EnumSet.of(DispatcherType.REQUEST));
+		context.addFilter(JettyEncodingFilter.class, shareAction, EnumSet.of(DispatcherType.REQUEST));
 		
 		server.setHandler(context);
 		server.start();

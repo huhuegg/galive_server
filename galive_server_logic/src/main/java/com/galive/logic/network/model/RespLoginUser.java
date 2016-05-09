@@ -25,7 +25,7 @@ public class RespLoginUser extends RespUser {
 		platform = u.getPlatform().ordinal();
 		if (platform == UserPlatform.WeChat.ordinal()) {
 			WeChatUser user = (WeChatUser)u;
-			wx_unionid = user.getUdid();
+			wx_unionid = user.getUnionid();
 		}
 	}
 }

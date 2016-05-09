@@ -8,10 +8,21 @@ public abstract class PlatformUser extends BaseModel {
 	public static enum UserPlatform {
 		WeChat,
 		QQ,
-		SinaWeibo
+		SinaWeibo;
+		
+		public static UserPlatform convert(int code) {
+			for (UserPlatform p : UserPlatform.values()) {
+				if (p.ordinal() == code) {
+					return p;
+				}
+			}
+			return UserPlatform.WeChat;
+		}
 	}
 
 	protected String udid;
+	
+	protected String deviceid;
 	
 	protected UserPlatform platform;
 	
@@ -49,6 +60,14 @@ public abstract class PlatformUser extends BaseModel {
 
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
+	}
+
+	public String getDeviceid() {
+		return deviceid;
+	}
+
+	public void setDeviceid(String deviceid) {
+		this.deviceid = deviceid;
 	}
 	
 	

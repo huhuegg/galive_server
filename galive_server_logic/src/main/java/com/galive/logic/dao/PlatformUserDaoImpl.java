@@ -24,7 +24,16 @@ public class PlatformUserDaoImpl implements PlatformUserDao {
 	}
 	
 	@Override
-	public PlatformUser find(String udid, UserPlatform platform) {
+	public PlatformUser find(String deviceid, UserPlatform platform) {
+		Query<PlatformUser> q = dao.createQuery();
+		q.field("deviceid").equal(deviceid);
+		q.field("platform").equal(platform);
+		PlatformUser user = find(q);
+		return user;
+	}
+	
+	@Override
+	public PlatformUser findByUdid(String udid, UserPlatform platform) {
 		Query<PlatformUser> q = dao.createQuery();
 		q.field("udid").equal(udid);
 		q.field("platform").equal(platform);
@@ -46,5 +55,7 @@ public class PlatformUserDaoImpl implements PlatformUserDao {
 		dao.save(u);
 		return u;
 	}
+
+	
 	
 }

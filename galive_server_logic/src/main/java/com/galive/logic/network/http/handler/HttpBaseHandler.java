@@ -33,7 +33,7 @@ public abstract class HttpBaseHandler {
 		appendLog("token:" + token);
 		appendLog("params:" + params);
 		try {
-			if ((!command.equals(Command.USR_LOGIN) && !command.equals(Command.USR_REGISTER))) {
+			if (!command.equals(Command.USR_LOGIN) && !command.equals(Command.USR_REGISTER) && !command.equals(Command.USR_LOGIN_PLATFORM)) {
 				UserService userService = new UserServiceImpl();
 				if (!userService.verifyToken(userSid, token)) {
 					// 验证token
