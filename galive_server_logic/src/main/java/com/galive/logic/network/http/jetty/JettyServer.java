@@ -10,6 +10,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.galive.logic.network.http.LogicServlet;
+import com.galive.logic.network.http.ShareServlet;
 
 public class JettyServer {
 	
@@ -28,6 +29,7 @@ public class JettyServer {
 		String shareAction = "/galive/share";
 		
 		context.addServlet(new ServletHolder(new LogicServlet()), logicAction);
+		context.addServlet(new ServletHolder(new ShareServlet()), shareAction);
 		
 		context.addFilter(JettyEncodingFilter.class, logicAction, EnumSet.of(DispatcherType.REQUEST));
 		context.addFilter(JettyEncodingFilter.class, shareAction, EnumSet.of(DispatcherType.REQUEST));

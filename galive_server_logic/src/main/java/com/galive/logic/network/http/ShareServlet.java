@@ -26,6 +26,9 @@ public class ShareServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		try {
+			resp.setHeader("Access-Control-Allow-Origin", "*");
+			resp.setHeader("Access-Control-Allow-Methods", "POST");
+			resp.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
 			String udid = req.getParameter("udid");
 			String inviteeDeviceid = req.getParameter("invitee");
 			String pt = req.getParameter("platform");
