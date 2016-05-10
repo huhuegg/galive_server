@@ -17,37 +17,14 @@ public class PlatformUserCacheImpl implements PlatformUserCache {
 		super.finalize();
 	}
 	
-	private String sharedUdidKey(String udid) {
-		return RedisManager.getInstance().keyPrefix() + "platform:shared_udid:" + udid;
-	}
-	
 	private String recentContactKey(String deviceid) {
 		return RedisManager.getInstance().keyPrefix() + "platform:recent_contact:" + deviceid;
-	}
-
-	@Override
-	public void saveSharedDeviceid(String deviceid, String udid) {
-		String key = sharedUdidKey(udid);
-		jedis.sadd(key, deviceid);
-	}
-
-	@Override
-	public void removeSharedDeviceid(String deviceid, String udid) {
-		String key = sharedUdidKey(udid);
-		jedis.srem(key, deviceid);
 	}
 
 	@Override
 	public void saveContact(String deviceid, String contactDeviceid) {
 		String key = recentContactKey(deviceid);
 		jedis.zadd(key, System.currentTimeMillis(), contactDeviceid);
-	}
-
-	@Override
-	public Set<String> listSharedDeviceids(String udid) {
-		String key = sharedUdidKey(udid);
-		Set<String> result = jedis.smembers(key);
-		return result;
 	}
 
 	@Override

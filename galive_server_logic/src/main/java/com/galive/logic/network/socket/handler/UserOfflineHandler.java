@@ -4,7 +4,6 @@ import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.model.PlatformUser;
 import com.galive.logic.model.Room;
-import com.galive.logic.model.User;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.ChannelManager;
 import com.galive.logic.network.socket.SocketRequestHandler;

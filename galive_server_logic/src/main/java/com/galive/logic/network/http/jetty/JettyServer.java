@@ -1,16 +1,13 @@
 package com.galive.logic.network.http.jetty;
 
 import java.util.EnumSet;
-
 import javax.servlet.DispatcherType;
-
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.galive.logic.network.http.LogicServlet;
-import com.galive.logic.network.http.ShareServlet;
 
 public class JettyServer {
 	
@@ -26,13 +23,10 @@ public class JettyServer {
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		context.setContextPath("/");
 		String logicAction = config.getAction();
-		String shareAction = "/galive/share";
 		
 		context.addServlet(new ServletHolder(new LogicServlet()), logicAction);
-		context.addServlet(new ServletHolder(new ShareServlet()), shareAction);
 		
 		context.addFilter(JettyEncodingFilter.class, logicAction, EnumSet.of(DispatcherType.REQUEST));
-		context.addFilter(JettyEncodingFilter.class, shareAction, EnumSet.of(DispatcherType.REQUEST));
 		
 		server.setHandler(context);
 		server.start();

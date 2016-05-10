@@ -9,17 +9,13 @@ import com.galive.logic.model.WeChatUser;
 
 public interface PlatformService {
 	
-	public WeChatUser loginWeChat(String deviceid, String udid, String code) throws LogicException;
+	public WeChatUser loginWeChat(String deviceid, String code) throws LogicException;
 	
 	public PlatformUser findUser(String userSid) throws LogicException;
 	
 	public PlatformUser findUserByDeviceid(String deviceid, UserPlatform platform) throws LogicException;
 	
-	public PlatformUser findUserByUdid(String udid, UserPlatform platform) throws LogicException;
-	
-	public void beContact(String deviceid, String udid, UserPlatform platform);
-	
-	public void saveSharedUdid(String deviceid, String sharedUdid);
+	public void beContact(String deviceid, UserPlatform platform);
 	
 	public List<PlatformUser> listRecentContacts(String userSid, int index, int size) throws LogicException;
 }

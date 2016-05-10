@@ -46,14 +46,13 @@ public class PlatformLoginHandler extends HttpBaseHandler {
 			WeChatUser weChatUser;
 			if (!StringUtils.isBlank(code)) {
 				appendLog("code:" + code);
-				weChatUser = platformService.loginWeChat(deviceid, udid, code);
+				weChatUser = platformService.loginWeChat(deviceid, code);
 			} else {
 				weChatUser = (WeChatUser) platformService.findUserByDeviceid(deviceid, UserPlatform.WeChat);
 			}
 			respUser.convert(weChatUser);
 			sid = weChatUser.getSid();
 		}
-		platformService.beContact(deviceid, udid, platform);
 		
 		
 		PlatformLoginOut out = new PlatformLoginOut();

@@ -2,10 +2,7 @@ package com.galive.logic.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
 import org.apache.commons.lang.StringUtils;
-
 import com.galive.logic.dao.PlatformUserCache;
 import com.galive.logic.dao.PlatformUserCacheImpl;
 import com.galive.logic.dao.PlatformUserDao;
@@ -30,7 +27,7 @@ public class PlatformServiceImpl extends BaseService implements PlatformService 
 	
 	
 	@Override
-	public WeChatUser loginWeChat(String deviceid, String udid, String code) throws LogicException {
+	public WeChatUser loginWeChat(String deviceid, String code) throws LogicException {
 		//获取access_token 
 		WXAccessTokenResp tokenResp = WeChatRequest.requestAccessToken(code);
 		if (tokenResp == null || !StringUtils.isBlank(tokenResp.errcode)) {
@@ -58,7 +55,6 @@ public class PlatformServiceImpl extends BaseService implements PlatformService 
 
 		user.setNickname(userInfoResp.getNickname());
 		user.setAvatar(avatarThumbnail);
-		user.setUdid(udid);
 		user.setDeviceid(deviceid);
 		user.setUnionid(unionid);
 		user.setPlatform(UserPlatform.WeChat);
@@ -78,28 +74,13 @@ public class PlatformServiceImpl extends BaseService implements PlatformService 
 		}
 		return u;
 	}
-	
-	@Override
-	public PlatformUser findUserByUdid(String udid, UserPlatform platform) throws LogicException {
-		PlatformUser u = platformUserDao.findByUdid(udid, platform);
-		return u;
-	}
-
 
 	@Override
-	public void saveSharedUdid(String deviceid, String sharedUdid) {
-		platformUserCache.saveSharedDeviceid(deviceid, sharedUdid);
-	}
-
-
-	@Override
-	public void beContact(String deviceid, String udid, UserPlatform platform) {
-		Set<String> deviceids = platformUserCache.listSharedDeviceids(udid);
-		for (String contact : deviceids) {
-			platformUserCache.saveContact(deviceid, contact);
-			platformUserCache.saveContact(contact, deviceid);
-			platformUserCache.removeSharedDeviceid(contact, udid);
-		}
+	public void beContact(String deviceid, UserPlatform platform) {
+//		Set<String> deviceids = platformUserCache.listSharedDeviceids(udid);
+//		for (String contact : deviceids) {
+//			
+//		}
 	}
 
 

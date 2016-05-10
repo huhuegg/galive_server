@@ -19,8 +19,6 @@ public abstract class PlatformUser extends BaseModel {
 			return UserPlatform.WeChat;
 		}
 	}
-
-	protected String udid;
 	
 	protected String deviceid;
 	
@@ -29,14 +27,6 @@ public abstract class PlatformUser extends BaseModel {
 	protected String avatar;
 	
 	protected String nickname;
-
-	public String getUdid() {
-		return udid;
-	}
-
-	public void setUdid(String udid) {
-		this.udid = udid;
-	}
 
 	public UserPlatform getPlatform() {
 		return platform;
