@@ -1,5 +1,8 @@
 package com.galive.logic.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.mongodb.morphia.query.Query;
 
@@ -24,7 +27,7 @@ public class PlatformUserDaoImpl implements PlatformUserDao {
 	}
 	
 	@Override
-	public PlatformUser find(String deviceid, UserPlatform platform) {
+	public PlatformUser findByDeviceid(String deviceid, UserPlatform platform) {
 		Query<PlatformUser> q = dao.createQuery();
 		q.field("deviceid").equal(deviceid);
 		q.field("platform").equal(platform);
@@ -47,13 +50,30 @@ public class PlatformUserDaoImpl implements PlatformUserDao {
 			String sid = Sid.getNextSequence(EntitySeq.PlatformUser) + "";
 			u.setSid(sid);
 		} else {
-			PlatformUser existU = find(u.getUdid(), u.getPlatform());
+			PlatformUser existU = findByDeviceid(u.getDeviceid(), u.getPlatform());
 			if (existU != null) {
 				u.setId(existU.getId());
 			}
 		}
 		dao.save(u);
 		return u;
+	}
+
+	@Override
+	public List<PlatformUser> listByDeviceid(String deviceid) {
+		List<PlatformUser> platformUsers = new ArrayList<>();
+		Query<PlatformUser> q = dao.createQuery();
+		q.field("deviceid").equal(deviceid);
+		platformUsers = dao.find().asList();
+		return platformUsers;
+	}
+
+	@Override
+	public PlatformUser find(String userSid) {
+		Query<PlatformUser> q = dao.createQuery();
+		q.field("sid").equal(userSid);
+		PlatformUser user = find(q);
+		return user;
 	}
 
 	

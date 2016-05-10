@@ -1,10 +1,11 @@
 var kServletUrl = "http://192.168.213.177:8080/galive/share";
 
-$(document).ready(function() {
+$(function() {
+	$("#tips").addClass('hide');
 	if (!isSafari()) {
-		alert("111");
+		$("#tips").removeClass('hide');
 	} else {
-		alert("3333");
+		$("#tips").addClass('hide');
 		var fp = new Fingerprint2();
 		fp.get(function(result) {
 			var udid = result;
@@ -18,7 +19,7 @@ $(document).ready(function() {
 				"platform" : platform
 			}, function(data) {
 				if (data == "0") {
-					jump();
+					jump(invite);
 				}
 			});
 		});
@@ -33,27 +34,23 @@ function getQueryString(name) {
 	return null;
 };
 
-function jump() {
+function jump(invite) {
 	var iOS = (navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true : false);
-	var weblink = "http://www.baidu.com";
-	var appUrlScheme = "wx20ec458b2c5ab93b://";
+	var downloadUrl = "http://222.73.60.153/galive.html";
+	var schemeUrl = "galive://invite=" + invite;
 
 	if (iOS) {
-		var loadedAt = +new Date;
+		location.href = schemeUrl;
 		setTimeout(function() {
-			if (+new Date - loadedAt < 2000) {
-				window.location = weblink;
-			}
-		}, 25);
-		location.href = appUrlScheme;
+			location.href = downloadUrl;
+		}, 5000);
 	} else {
-		location.href = weblink;
+		location.href = downloadUrl;
 	}
 }
 
 function isSafari() {
 	var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
-	alert(userAgent);
 	if (userAgent.indexOf("Safari") > -1) {
 		return true;
 	}

@@ -39,6 +39,7 @@ public class PlatformLoginHandler extends HttpBaseHandler {
 		
 		RespLoginUser respUser = new RespLoginUser();
 		UserPlatform platform = UserPlatform.convert(pt);
+		String sid = "";
 		if (platform == UserPlatform.WeChat) {
 			String code = in.wx_code;
 			appendLog("微信登录");
@@ -47,16 +48,17 @@ public class PlatformLoginHandler extends HttpBaseHandler {
 				appendLog("code:" + code);
 				weChatUser = platformService.loginWeChat(deviceid, udid, code);
 			} else {
-				weChatUser = (WeChatUser) platformService.findUser(deviceid, UserPlatform.WeChat);
+				weChatUser = (WeChatUser) platformService.findUserByDeviceid(deviceid, UserPlatform.WeChat);
 			}
 			respUser.convert(weChatUser);
+			sid = weChatUser.getSid();
 		}
 		platformService.beContact(deviceid, udid, platform);
 		
 		
 		PlatformLoginOut out = new PlatformLoginOut();
 		
-		out.token =  userService.createToken(udid);
+		out.token =  userService.createToken(sid);
 		out.expire = ApplicationConfig.getInstance().getTokenExpire();
 		out.user = respUser;
 		out.socket_config = ApplicationConfig.getInstance().getSocketConfig();

@@ -39,7 +39,9 @@ public class ShareServlet extends HttpServlet {
 			PlatformUser user = platformService.findUserByUdid(udid, platform);
 			
 			if (user != null) {
-				platformService.beContact(user.getDeviceid(), udid, platform);
+				if (!inviteeDeviceid.equals(user.getDeviceid())) {
+					platformService.beContact(user.getDeviceid(), udid, platform);
+				}
 			} else {
 				platformService.saveSharedUdid(inviteeDeviceid, udid);
 			}
@@ -48,6 +50,4 @@ public class ShareServlet extends HttpServlet {
 			resp.getWriter().write("1");
 		}
 	}
-	
-
 }

@@ -139,17 +139,18 @@ public class UserServiceImpl extends BaseService implements UserService {
 
 	@Override
 	public void updateDeviceToken(String userSid, String deviceToken) throws LogicException {
-		User u = userDao.find(userSid);
-		if (u == null) {
-			String error = "用户不存在";
-			appendLog(error);
-			throw new LogicException(error);
-		}
-		if (StringUtils.isBlank(deviceToken)) {
-			String error = "无效的deviceToken";
-			appendLog(error);
-			throw new LogicException(error);
-		}
+		// TODO 新逻辑
+//		User u = userDao.find(userSid);
+//		if (u == null) {
+//			String error = "用户不存在";
+//			appendLog(error);
+//			throw new LogicException(error);
+//		}
+//		if (StringUtils.isBlank(deviceToken)) {
+//			String error = "无效的deviceToken";
+//			appendLog(error);
+//			throw new LogicException(error);
+//		}
 		userCache.saveDeviceToken(userSid, deviceToken);
 	}
 	

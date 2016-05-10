@@ -42,8 +42,8 @@
 			<AppId>123</AppId>
 		</QQ>
 		<Wechat>
-			<AppId>123</AppId>
-			<AppSecret>123</AppSecret>
+			<AppId>wx136ef68ffc5d67df</AppId>
+			<AppSecret>e68e8d2644bbfecfe0af411f58532744</AppSecret>
 		</Wechat>
 	</Platform>
 

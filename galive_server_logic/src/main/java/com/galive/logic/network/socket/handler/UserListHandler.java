@@ -7,10 +7,13 @@ import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.common.protocol.PageCommandIn;
 import com.galive.common.protocol.PageCommandOut;
+import com.galive.logic.model.PlatformUser;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.SocketRequestHandler;
+import com.galive.logic.service.PlatformService;
+import com.galive.logic.service.PlatformServiceImpl;
 import com.galive.logic.service.RoomService;
 import com.galive.logic.service.RoomServiceImpl;
 import com.galive.logic.service.UserService;
@@ -20,46 +23,62 @@ import com.galive.logic.service.UserServiceImpl;
 public class UserListHandler extends SocketBaseHandler  {
 
 	enum UserListType {
-		LatestLogin
+		LatestLogin,
+		RecentContact
 	}
 	
 	private UserService userService = new UserServiceImpl();
 	private RoomService roomService = new RoomServiceImpl();
+	private PlatformService platformService = new PlatformServiceImpl();
 	
 	@Override
 	public CommandOut handle(String userSid, String reqData) throws Exception {
 		appendLog("--UserListHandler(获取用户列表)--");
 		UserListParams in = JSON.parseObject(reqData, UserListParams.class);
 		
+		int type = in.type;
 		int index = in.index;
 		int size = in.size; 
 		appendLog("起始游标(index):" + index);
 		appendLog("分页数量(size):" + size);
-		
-		List<User> users = new ArrayList<>();
-		if (in.type == UserListType.LatestLogin.ordinal()) {
-			users = userService.listByLatestLogin(index, size);
-		}
-
+		appendLog("列表类型(type):" + type);
 		List<RespUser> respUsers = new ArrayList<>();
-		for (User u : users) {
-			if (u.getSid().equals(userSid)) {
-				// 过滤自己
-				continue;
+		if (type == UserListType.LatestLogin.ordinal()) {
+			List<User> users = new ArrayList<>();
+			if (in.type == UserListType.LatestLogin.ordinal()) {
+				users = userService.listByLatestLogin(index, size);
 			}
-			RespUser ru = new RespUser();
-			ru.convert(u);
-			Room room = roomService.findRoomByUser(u.getSid());
-			if (room != null) {
-				ru.roomSid = room.getSid();
-				ru.invite = false;
+			for (User u : users) {
+				if (u.getSid().equals(userSid)) {
+					// 过滤自己
+					continue;
+				}
+				RespUser ru = new RespUser();
+				ru.convert(u);
+				Room room = roomService.findRoomByUser(u.getSid());
+				if (room != null) {
+					ru.roomSid = room.getSid();
+					ru.invite = false;
+				}
+				Room inviteeRoom = roomService.findRoomByInvitee(u.getSid());
+				if (inviteeRoom != null) {
+					ru.invite = false;
+				}
+				respUsers.add(ru);
 			}
-			Room inviteeRoom = roomService.findRoomByInvitee(u.getSid());
-			if (inviteeRoom != null) {
-				ru.invite = false;
+		} else if (type == UserListType.RecentContact.ordinal()) {
+			List<PlatformUser> users = platformService.listRecentContacts(userSid, index, size);
+			for (PlatformUser u : users) {
+				if (u.getSid().equals(userSid)) {
+					// 过滤自己
+					continue;
+				}
+				RespUser ru = new RespUser();
+				ru.convert(u);
+				respUsers.add(ru);
 			}
-			respUsers.add(ru);
 		}
+		
 		PageCommandOut<RespUser> out = new PageCommandOut<>(Command.USR_LIST, in);
 		out.setData(respUsers);
 		return out;

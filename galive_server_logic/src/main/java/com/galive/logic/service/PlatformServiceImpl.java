@@ -1,5 +1,7 @@
 package com.galive.logic.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -46,7 +48,7 @@ public class PlatformServiceImpl extends BaseService implements PlatformService 
 		}
 		appendLog("获取微信用户信息:" + userInfoResp.toString());
 		String unionid = userInfoResp.getUnionid();
-		WeChatUser user = (WeChatUser) platformUserDao.find(deviceid, UserPlatform.WeChat);
+		WeChatUser user = (WeChatUser) platformUserDao.findByDeviceid(deviceid, UserPlatform.WeChat);
 		if (user == null) {
 			user = new WeChatUser();
 		}
@@ -68,8 +70,8 @@ public class PlatformServiceImpl extends BaseService implements PlatformService 
 	}
 
 	@Override
-	public PlatformUser findUser(String deviceId, UserPlatform platform) throws LogicException {
-		PlatformUser u = platformUserDao.find(deviceId, platform);
+	public PlatformUser findUserByDeviceid(String deviceid, UserPlatform platform) throws LogicException {
+		PlatformUser u = platformUserDao.findByDeviceid(deviceid, platform);
 		if (u == null) {
 			appendLog("用户不存在");
 			throw new LogicException("用户不存在");
@@ -101,7 +103,33 @@ public class PlatformServiceImpl extends BaseService implements PlatformService 
 	}
 
 
-	
+	@Override
+	public List<PlatformUser> listRecentContacts(String userSid, int index, int size) throws LogicException {
+		PlatformUser self = platformUserDao.find(userSid);
+		if (self == null) {
+			throw new LogicException("用户不存在");
+		}
+		List<PlatformUser> users = new ArrayList<PlatformUser>();
+		List<String> deviceids = platformUserCache.listContacts(self.getDeviceid(), index, size < 0 ? -1 : index + size - 1);
+		for (String id : deviceids) {
+			List<PlatformUser> platformUsers = platformUserDao.listByDeviceid(id);
+			users.addAll(platformUsers);
+		}
+		appendLog("最近联系人数:" + users.size());
+		return users;
+	}
+
+
+	@Override
+	public PlatformUser findUser(String userSid) throws LogicException {
+		PlatformUser u = platformUserDao.find(userSid);
+		if (u == null) {
+			throw new LogicException("用户不存在");
+		}
+		return u;
+	}
+
+
 
 	
 
