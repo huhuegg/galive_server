@@ -8,6 +8,7 @@ $(function() {
 		$("#tips").addClass('hide');
 		var fp = new Fingerprint2();
 		fp.get(function(result) {
+			alert(result);
 			var udid = result;
 			var invite = getQueryString("invite");
 			var platform = getQueryString("platform");
