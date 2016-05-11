@@ -9,4 +9,6 @@ public interface UserDao {
 	public User findByUsername(String username);
 	
 	public User saveOrUpdate(User u);
+	
+	public User findWXUserByUnionid(String unionid);
 }

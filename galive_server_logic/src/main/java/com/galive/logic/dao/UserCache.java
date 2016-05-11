@@ -19,4 +19,8 @@ public interface UserCache {
 	public String findUserToken(String userSid);
 	
 	public void saveUserToken(String userSid, String token);
+	
+	public void saveContact(String userSid, String targetSid);
+	
+	public List<String> listContacts(String userSid, int start, int end);
 }

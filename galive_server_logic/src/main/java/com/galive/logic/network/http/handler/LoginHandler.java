@@ -48,6 +48,8 @@ public class LoginHandler extends HttpBaseHandler {
 	public static class LoginIn extends CommandIn {
 		public String username;
 		public String password;
+		// TODO 三方登录
+		public String wx_code;
 	}
 	
 	public static class LoginOut extends CommandOut {

@@ -34,6 +34,10 @@ public class UserCacheImpl implements UserCache {
 	private String deviceTokenForUserKey() {
 		return RedisManager.getInstance().keyPrefix() + "user:device_token:user";
 	}
+	
+	private String contactKey(String userSid) {
+		return RedisManager.getInstance().keyPrefix() + "user:contact:" + userSid;
+	}
 
 	@Override
 	public void updateLatestLogin(String userSid) {
@@ -100,6 +104,23 @@ public class UserCacheImpl implements UserCache {
 		String key = userTokenKey(userSid);
 		jedis.set(key, token);
 		jedis.expire(key, ApplicationConfig.getInstance().getTokenExpire());
+	}
+
+	@Override
+	public void saveContact(String userSid, String targetSid) {
+		String key = contactKey(userSid);
+		jedis.zadd(key, System.currentTimeMillis(), targetSid);
+	}
+
+	@Override
+	public List<String> listContacts(String userSid, int start, int end) {
+		String key = contactKey(userSid);
+		List<String> result = new ArrayList<>();
+		Set<String> sets = jedis.zrevrange(key, start, end);
+		for (String contact : sets) {
+			result.add(contact);
+		}
+		return result;
 	}
 
 	

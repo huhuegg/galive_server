@@ -3,7 +3,6 @@ package com.galive.logic.service;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
-
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.dao.UserCache;
 import com.galive.logic.dao.UserCacheImpl;
@@ -14,21 +13,26 @@ import com.galive.logic.helper.LogicHelper;
 import com.galive.logic.model.User;
 import com.galive.logic.model.User.UserGender;
 import com.galive.logic.model.User.UserOnlineState;
+import com.galive.logic.model.User.UserPlatform;
+import com.galive.logic.model.UserExtraDataWeChat;
 import com.galive.logic.network.socket.ChannelManager;
+import com.galive.logic.platform.wechat.WXAccessTokenResp;
+import com.galive.logic.platform.wechat.WXUserInfoResp;
+import com.galive.logic.platform.wechat.WeChatRequest;
 
 public class UserServiceImpl extends BaseService implements UserService {
 
-	
 	public UserServiceImpl() {
 		super();
 		appendLog("UserServiceImpl");
 	}
-	
+
 	private UserDao userDao = new UserDaoImpl();
 	private UserCache userCache = new UserCacheImpl();
 
 	@Override
-	public User register(String username, String password, String nickname, String avatar, UserGender gender, String profile) throws LogicException {
+	public User register(String username, String password, String nickname, String avatar, UserGender gender,
+			String profile) throws LogicException {
 		User u = userDao.findByUsername(username);
 		if (u != null) {
 			String error = "用户名" + username + "已存在。";
@@ -88,10 +92,10 @@ public class UserServiceImpl extends BaseService implements UserService {
 		u.setAvatar(avatar);
 		u.setProfile(profile);
 		u = userDao.saveOrUpdate(u);
-		
+
 		appendLog("更新最后登录时间");
 		userCache.updateLatestLogin(u.getSid());
-		
+
 		return u;
 	}
 
@@ -139,26 +143,25 @@ public class UserServiceImpl extends BaseService implements UserService {
 
 	@Override
 	public void updateDeviceToken(String userSid, String deviceToken) throws LogicException {
-		// TODO 新逻辑
-//		User u = userDao.find(userSid);
-//		if (u == null) {
-//			String error = "用户不存在";
-//			appendLog(error);
-//			throw new LogicException(error);
-//		}
-//		if (StringUtils.isBlank(deviceToken)) {
-//			String error = "无效的deviceToken";
-//			appendLog(error);
-//			throw new LogicException(error);
-//		}
+		 User u = userDao.find(userSid);
+		 if (u == null) {
+		 String error = "用户不存在";
+		 appendLog(error);
+		 throw new LogicException(error);
+		 }
+		 if (StringUtils.isBlank(deviceToken)) {
+		 String error = "无效的deviceToken";
+		 appendLog(error);
+		 throw new LogicException(error);
+		 }
 		userCache.saveDeviceToken(userSid, deviceToken);
 	}
-	
+
 	@Override
 	public void deleteDeviceToken(String deviceToken) {
 		userCache.deleteDeviceToken(deviceToken);
 	}
-	
+
 	@Override
 	public String findDeviceToken(String userSid) {
 		return userCache.findDeviceToken(userSid);
@@ -190,8 +193,65 @@ public class UserServiceImpl extends BaseService implements UserService {
 		return online;
 	}
 
-	
+	@Override
+	public User loginWeChat(String code) throws LogicException {
+		// 获取access_token
+		WXAccessTokenResp tokenResp = WeChatRequest.requestAccessToken(code);
+		if (tokenResp == null || !StringUtils.isBlank(tokenResp.errcode)) {
+			String error = tokenResp.getErrmsg();
+			appendLog("微信获取access_token:" + tokenResp.getErrcode() + " " + error);
+			throw new LogicException("微信登录失败," + error);
+		}
+		appendLog("获取access_token:" + tokenResp.toString());
 
-	
+		WXUserInfoResp userInfoResp = WeChatRequest.requestUserInfo(tokenResp.getAccess_token(), tokenResp.getOpenid());
+		if (userInfoResp == null || !StringUtils.isBlank(userInfoResp.errcode)) {
+			String error = tokenResp.getErrmsg();
+			appendLog("微信获取用户信息失败:" + tokenResp.getErrcode() + " " + error);
+			throw new LogicException("微信获取用户信息失败:," + error);
+		}
+		appendLog("获取微信用户信息:" + userInfoResp.toString());
+		String unionid = userInfoResp.getUnionid();
+		User user = userDao.findWXUserByUnionid(unionid);
+		if (user == null) {
+			user = new User();
+		}
+		// http://wx.qlogo.cn/mmopen/ajNVdqHZLLCqBRT4kbibEibQVaAbuJZcmXNHNYEjZH4b1WtRDIPibafqKEJIYDKyticzvpwkpsLibjNol09OlqdIbmA/0
+		String avatar = userInfoResp.getHeadimgurl();
+//		String avatarThumbnail = avatar.substring(0, avatar.length() - 1) + "132";
+
+		user.setNickname(userInfoResp.getNickname());
+		user.setAvatar(avatar);
+
+		UserExtraDataWeChat extra = new UserExtraDataWeChat();
+		extra.setPlatform(UserPlatform.WeChat);
+		extra.setOpenid(userInfoResp.getOpenid());
+		extra.setUnionid(userInfoResp.getUnionid());
+		user.setExtraData(extra);
+		
+		userDao.saveOrUpdate(user);
+
+		appendLog("微信登录成功:" + user.toString());
+		return null;
+	}
+
+	@Override
+	public void beContact(String userSid, String targetSid) {
+		userCache.saveContact(userSid, targetSid);
+	}
+
+	@Override
+	public List<User> listContacts(String userSid, int index, int size) {
+		List<User> users = new ArrayList<>();
+		List<String> userSids = userCache.listContacts(userSid, index, size < 0 ? -1 : (index + size - 1));
+		for (String sid : userSids) {
+			User u = userDao.find(sid);
+			if (u != null) {
+				users.add(u);
+			}
+		}
+		return users;
+		
+	}
 
 }

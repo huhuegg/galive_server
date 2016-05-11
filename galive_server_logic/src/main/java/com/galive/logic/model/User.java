@@ -1,12 +1,22 @@
 package com.galive.logic.model;
 
+import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
 
+
 @Entity(value="user", noClassnameStored = true)
 @Indexes({@Index("username")})
 public class User extends BaseModel {
+	
+	public static enum UserPlatform {
+		App,
+		WeChat,
+		QQ,
+		SinaWeibo
+	}
+
 	
 	public static enum UserOnlineState {
 		Online,
@@ -39,6 +49,9 @@ public class User extends BaseModel {
 	private String profile = "";
 	
 	private UserGender gender = UserGender.Unknown;
+	
+	@Embedded
+	private UserExtraData extraData;
 	
 	public String desc() {
 		return String.format(" %s(%s) ", nickname, sid);
@@ -91,6 +104,14 @@ public class User extends BaseModel {
 
 	public void setProfile(String profile) {
 		this.profile = profile;
+	}
+
+	public UserExtraData getExtraData() {
+		return extraData;
+	}
+
+	public void setExtraData(UserExtraData extraData) {
+		this.extraData = extraData;
 	}
 	
 	

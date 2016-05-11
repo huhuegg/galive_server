@@ -1,9 +1,6 @@
 package com.galive.logic.network.model;
 
-import com.galive.logic.model.PlatformUser;
-import com.galive.logic.model.PlatformUser.UserPlatform;
 import com.galive.logic.model.User;
-import com.galive.logic.model.WeChatUser;
 
 public class RespLoginUser extends RespUser {
 
@@ -20,12 +17,5 @@ public class RespLoginUser extends RespUser {
 		profile = u.getProfile();
 	}
 	
-	public void convert(PlatformUser u) {
-		super.convert(u);
-		platform = u.getPlatform().ordinal();
-		if (platform == UserPlatform.WeChat.ordinal()) {
-			WeChatUser user = (WeChatUser)u;
-			wx_unionid = user.getUnionid();
-		}
-	}
+
 }

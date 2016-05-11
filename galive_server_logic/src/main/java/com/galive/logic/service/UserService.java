@@ -28,4 +28,10 @@ public interface UserService {
 	
 	public boolean isOnline(String userSid);
 	
+	public User loginWeChat(String code) throws LogicException;
+	
+	public void beContact(String userSid, String targetSid);
+	
+	public List<User> listContacts(String userSid, int index, int size);
+	
 }

@@ -7,6 +7,7 @@ import com.galive.logic.dao.db.MongoDao;
 import com.galive.logic.dao.db.MongoManager;
 import com.galive.logic.model.Sid;
 import com.galive.logic.model.User;
+import com.galive.logic.model.User.UserPlatform;
 import com.galive.logic.model.Sid.EntitySeq;
 
 public class UserDaoImpl implements UserDao {
@@ -51,6 +52,15 @@ public class UserDaoImpl implements UserDao {
 		}
 		dao.save(u);
 		return u;
+	}
+	
+	public User findWXUserByUnionid(String unionid) {
+		Query<User> q = dao.createQuery();
+		q.disableValidation();
+		q.field("extraData.platform").equal(UserPlatform.WeChat);
+		q.field("extraData.unionid").equal(unionid);
+		User user = find(q);
+		return user;
 	}
 
 }

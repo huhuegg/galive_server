@@ -2,14 +2,12 @@ package com.galive.logic.network.socket.handler;
 
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
-import com.galive.logic.model.PlatformUser;
 import com.galive.logic.model.Room;
+import com.galive.logic.model.User;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.ChannelManager;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.UserOfflinePush;
-import com.galive.logic.service.PlatformService;
-import com.galive.logic.service.PlatformServiceImpl;
 import com.galive.logic.service.RoomService;
 import com.galive.logic.service.RoomServiceImpl;
 import com.galive.logic.service.UserService;
@@ -20,14 +18,12 @@ public class UserOfflineHandler extends SocketBaseHandler {
 
 	private UserService userService = new UserServiceImpl();
 	private RoomService roomService = new RoomServiceImpl();
-	private PlatformService platformService = new PlatformServiceImpl();
 	
 	@Override
 	public CommandOut handle(String userSid, String reqData) throws Exception {
 		appendLog("--UserOfflineHandler(客户端下线)--");
 		
-//		User u = userService.findUserBySid(userSid);
-		PlatformUser u = platformService.findUser(userSid);
+		User u = userService.findUserBySid(userSid);
 		
 //		appendLog("用户:" + u.desc());
 		Room room = roomService.findRoomByUser(userSid);
