@@ -1,5 +1,8 @@
 package com.galive.logic.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Index;
@@ -14,7 +17,16 @@ public class User extends BaseModel {
 		App,
 		WeChat,
 		QQ,
-		SinaWeibo
+		SinaWeibo;
+		
+		public static UserPlatform convert(int code) {
+			for (UserPlatform platform : UserPlatform.values()) {
+				if (platform.ordinal() == code) {
+					return platform;
+				}
+			}
+			return UserPlatform.App;
+		}
 	}
 
 	
@@ -51,7 +63,7 @@ public class User extends BaseModel {
 	private UserGender gender = UserGender.Unknown;
 	
 	@Embedded
-	private UserExtraData extraData;
+	private Map<UserPlatform, UserExtraData> extraDatas = new HashMap<>();
 	
 	public String desc() {
 		return String.format(" %s(%s) ", nickname, sid);
@@ -106,14 +118,14 @@ public class User extends BaseModel {
 		this.profile = profile;
 	}
 
-	public UserExtraData getExtraData() {
-		return extraData;
+	public Map<UserPlatform, UserExtraData> getExtraDatas() {
+		return extraDatas;
 	}
 
-	public void setExtraData(UserExtraData extraData) {
-		this.extraData = extraData;
+	public void setExtraDatas(Map<UserPlatform, UserExtraData> extraDatas) {
+		this.extraDatas = extraDatas;
 	}
-	
+
 	
 	
 }

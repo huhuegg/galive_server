@@ -27,7 +27,6 @@ public class UserInfoModifyHandler extends HttpBaseHandler {
 		
 		if (type == UserInfoModifyType.DeviceToken.ordinal()) {
 			// 更新deviceToken
-			// TODO 新逻辑
 			userService.updateDeviceToken(userSid, req.deviceToken);
 		}
 		CommandOut out = new CommandOut(Command.USR_INFO_MODIFY);

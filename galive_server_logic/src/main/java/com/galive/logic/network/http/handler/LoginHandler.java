@@ -8,6 +8,7 @@ import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.RTCConfig;
 import com.galive.logic.config.SocketConfig;
 import com.galive.logic.model.User;
+import com.galive.logic.model.User.UserPlatform;
 import com.galive.logic.network.http.HttpRequestHandler;
 import com.galive.logic.network.model.RespLoginUser;
 import com.galive.logic.service.UserService;
@@ -23,13 +24,26 @@ public class LoginHandler extends HttpBaseHandler {
 		appendLog("--LoginHandler(用户登录)--");
 		LoginIn in = JSON.parseObject(reqData, LoginIn.class);
 
-		String username = in.username;
-		String password = in.password;
+		int pf = in.platform;
+		appendLog("登录平台:" + pf);
 		
-		appendLog("用户名:" + username);
-		appendLog("密码:" + password);
+		User u = null;
+		UserPlatform platform = UserPlatform.convert(pf);
+		if (platform == UserPlatform.App) {
+			String username = in.username;
+			String password = in.password;
+			appendLog("用户名:" + username);
+			appendLog("密码:" + password);
+			
+			u = userService.login(username, password);
+		} else if (platform == UserPlatform.WeChat) {
+			String code = in.wx_code;
+			String uid = in.uid;
+			appendLog("微信登录code:" + code);
+			appendLog("userSid:" + userSid);
+			u = userService.loginWeChat(code, uid);
+		}
 		
-		User u = userService.login(username, password);
 		String uid = u.getSid();
 		
 		LoginOut out = new LoginOut();
@@ -46,10 +60,14 @@ public class LoginHandler extends HttpBaseHandler {
 	}
 
 	public static class LoginIn extends CommandIn {
+		
+		public int platform = 0;
+		
 		public String username;
 		public String password;
-		// TODO 三方登录
+		
 		public String wx_code;
+		public String uid;
 	}
 	
 	public static class LoginOut extends CommandOut {

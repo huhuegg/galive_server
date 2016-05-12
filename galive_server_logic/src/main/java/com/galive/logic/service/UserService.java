@@ -28,7 +28,7 @@ public interface UserService {
 	
 	public boolean isOnline(String userSid);
 	
-	public User loginWeChat(String code) throws LogicException;
+	public User loginWeChat(String code, String uid) throws LogicException;
 	
 	public void beContact(String userSid, String targetSid);
 	

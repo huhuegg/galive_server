@@ -194,7 +194,15 @@ public class UserServiceImpl extends BaseService implements UserService {
 	}
 
 	@Override
-	public User loginWeChat(String code) throws LogicException {
+	public User loginWeChat(String code, String uid) throws LogicException {
+		User u = null;
+		if (StringUtils.isBlank(code)) {
+			u = userDao.find(uid);
+			if (u == null) {
+				throw new LogicException("用户不存在。");
+			}
+			return u;
+		}
 		// 获取access_token
 		WXAccessTokenResp tokenResp = WeChatRequest.requestAccessToken(code);
 		if (tokenResp == null || !StringUtils.isBlank(tokenResp.errcode)) {
@@ -212,27 +220,27 @@ public class UserServiceImpl extends BaseService implements UserService {
 		}
 		appendLog("获取微信用户信息:" + userInfoResp.toString());
 		String unionid = userInfoResp.getUnionid();
-		User user = userDao.findWXUserByUnionid(unionid);
-		if (user == null) {
-			user = new User();
+		u = userDao.findWXUserByUnionid(unionid);
+		if (u == null) {
+			u = new User();
 		}
 		// http://wx.qlogo.cn/mmopen/ajNVdqHZLLCqBRT4kbibEibQVaAbuJZcmXNHNYEjZH4b1WtRDIPibafqKEJIYDKyticzvpwkpsLibjNol09OlqdIbmA/0
 		String avatar = userInfoResp.getHeadimgurl();
 //		String avatarThumbnail = avatar.substring(0, avatar.length() - 1) + "132";
 
-		user.setNickname(userInfoResp.getNickname());
-		user.setAvatar(avatar);
+		u.setNickname(userInfoResp.getNickname());
+		u.setAvatar(avatar);
 
 		UserExtraDataWeChat extra = new UserExtraDataWeChat();
 		extra.setPlatform(UserPlatform.WeChat);
 		extra.setOpenid(userInfoResp.getOpenid());
 		extra.setUnionid(userInfoResp.getUnionid());
-		user.setExtraData(extra);
+		u.getExtraDatas().put(UserPlatform.WeChat, extra);
 		
-		userDao.saveOrUpdate(user);
+		userDao.saveOrUpdate(u);
 
-		appendLog("微信登录成功:" + user.toString());
-		return null;
+		appendLog("微信登录成功:" + u.toString());
+		return u;
 	}
 
 	@Override
