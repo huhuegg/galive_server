@@ -1,30 +1,30 @@
 var kServletUrl = "http://192.168.213.177:8080/galive/share";
 
 $(function() {
-	$("#tips").addClass('hide');
-	if (!isSafari()) {
-		$("#tips").removeClass('hide');
-	} else {
-		$("#tips").addClass('hide');
-		var fp = new Fingerprint2();
-		fp.get(function(result) {
-			alert(result);
-			var udid = result;
-			var invite = getQueryString("invite");
-			var platform = getQueryString("platform");
-			//alert(udid + ";" + invite + ";" + platform);
-
-			$.post(kServletUrl, {
-				"udid" : udid,
-				"invitee" : invite,
-				"platform" : platform
-			}, function(data) {
-				if (data == "0") {
-					jump(invite);
-				}
-			});
-		});
-	}
+//	$("#tips").addClass('hide');
+//	if (!isSafari()) {
+//		$("#tips").removeClass('hide');
+//	} else {
+//		$("#tips").addClass('hide');
+//		var fp = new Fingerprint2();
+//		fp.get(function(result) {
+//			alert(result);
+//			var udid = result;
+//			var invite = getQueryString("invite");
+//			var platform = getQueryString("platform");
+//			//alert(udid + ";" + invite + ";" + platform);
+//
+//			$.post(kServletUrl, {
+//				"udid" : udid,
+//				"invitee" : invite,
+//				"platform" : platform
+//			}, function(data) {
+//				if (data == "0") {
+//					jump(invite);
+//				}
+//			});
+//		});
+//	}
 });
 
 function getQueryString(name) {

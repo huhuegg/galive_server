@@ -235,7 +235,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 		extra.setPlatform(UserPlatform.WeChat);
 		extra.setOpenid(userInfoResp.getOpenid());
 		extra.setUnionid(userInfoResp.getUnionid());
-		u.getExtraDatas().put(UserPlatform.WeChat, extra);
+		u.setExtraData(extra);
 		
 		userDao.saveOrUpdate(u);
 

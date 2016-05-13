@@ -1,8 +1,5 @@
 package com.galive.logic.model;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Index;
@@ -63,7 +60,7 @@ public class User extends BaseModel {
 	private UserGender gender = UserGender.Unknown;
 	
 	@Embedded
-	private Map<UserPlatform, UserExtraData> extraDatas = new HashMap<>();
+	private UserExtraData extraData;
 	
 	public String desc() {
 		return String.format(" %s(%s) ", nickname, sid);
@@ -118,12 +115,12 @@ public class User extends BaseModel {
 		this.profile = profile;
 	}
 
-	public Map<UserPlatform, UserExtraData> getExtraDatas() {
-		return extraDatas;
+	public UserExtraData getExtraData() {
+		return extraData;
 	}
 
-	public void setExtraDatas(Map<UserPlatform, UserExtraData> extraDatas) {
-		this.extraDatas = extraDatas;
+	public void setExtraData(UserExtraData extraData) {
+		this.extraData = extraData;
 	}
 
 	

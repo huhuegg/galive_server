@@ -27,7 +27,8 @@ public class NettyConfig {
 		InputStream in = null;
 		try {
 			in = LogicHelper.loadProperties();
-			Properties prop = new Properties(); LogicHelper.loadProperties();
+			Properties prop = new Properties(); 
+			LogicHelper.loadProperties();
 			prop.load(in);
 			config.port = ApplicationConfig.getInstance().getSocketConfig().getPort();
 			
