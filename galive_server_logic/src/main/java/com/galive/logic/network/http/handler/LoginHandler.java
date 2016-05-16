@@ -24,8 +24,10 @@ public class LoginHandler extends HttpBaseHandler {
 		appendLog("--LoginHandler(用户登录)--");
 		LoginIn in = JSON.parseObject(reqData, LoginIn.class);
 
+		String deviceid = in.deviceid;
 		int pf = in.platform;
 		appendLog("登录平台:" + pf);
+		appendLog("设备id:" + deviceid);
 		
 		User u = null;
 		UserPlatform platform = UserPlatform.convert(pf);
@@ -40,8 +42,8 @@ public class LoginHandler extends HttpBaseHandler {
 			String code = in.wx_code;
 			String uid = in.uid;
 			appendLog("微信登录code:" + code);
-			appendLog("userSid:" + userSid);
-			u = userService.loginWeChat(code, uid);
+			appendLog("uid:" + uid);
+			u = userService.loginWeChat(deviceid, code, uid);
 		}
 		
 		String uid = u.getSid();
@@ -61,6 +63,7 @@ public class LoginHandler extends HttpBaseHandler {
 
 	public static class LoginIn extends CommandIn {
 		
+		public String deviceid = "";
 		public int platform = 0;
 		
 		public String username;

@@ -1,6 +1,11 @@
 var kServletUrl = "http://192.168.213.177:8080/galive/share";
 
 $(function() {
+	$("#jump").click(function() {
+			location.href = "https://b.ieggs.info/invite/aaa";
+	});
+	
+	
 //	$("#tips").addClass('hide');
 //	if (!isSafari()) {
 //		$("#tips").removeClass('hide');

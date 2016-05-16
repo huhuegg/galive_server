@@ -8,7 +8,7 @@ import com.galive.logic.model.User.UserGender;
 
 public interface UserService {
 	
-	public User register(String username, String password, String nickname, String avatar, UserGender gender, String profile) throws LogicException;
+	public User register(String deviceid, String username, String password, String nickname, String avatar, UserGender gender, String profile) throws LogicException;
 	
 	public User login(String username, String password) throws LogicException;
 	
@@ -28,7 +28,7 @@ public interface UserService {
 	
 	public boolean isOnline(String userSid);
 	
-	public User loginWeChat(String code, String uid) throws LogicException;
+	public User loginWeChat(String deviceid, String code, String uid) throws LogicException;
 	
 	public void beContact(String userSid, String targetSid);
 	

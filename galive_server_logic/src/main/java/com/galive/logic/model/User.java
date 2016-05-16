@@ -47,72 +47,13 @@ public class User extends BaseModel {
 		}
 	}
 	
-	private String username = "";
-
-	private String password = "";
-
-	private String nickname = "";
-
-	private String avatar = "";
-	
-	private String profile = "";
-	
-	private UserGender gender = UserGender.Unknown;
+	private String deviceid = "";
 	
 	@Embedded
-	private UserExtraData extraData;
+	private UserExtraData extraData = new UserExtraData();
 	
 	public String desc() {
-		return String.format(" %s(%s) ", nickname, sid);
-	}
-	
-	/* ======================= Getter Setter ======================= */
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getNickname() {
-		return nickname;
-	}
-
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
-	}
-
-	public String getAvatar() {
-		return avatar;
-	}
-
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
-	}
-
-	public UserGender getGender() {
-		return gender;
-	}
-
-	public void setGender(UserGender gender) {
-		this.gender = gender;
-	}
-
-	public String getProfile() {
-		return profile;
-	}
-
-	public void setProfile(String profile) {
-		this.profile = profile;
+		return String.format(" %s(%s) ", extraData.getNickname(), sid);
 	}
 
 	public UserExtraData getExtraData() {
@@ -121,6 +62,14 @@ public class User extends BaseModel {
 
 	public void setExtraData(UserExtraData extraData) {
 		this.extraData = extraData;
+	}
+
+	public String getDeviceid() {
+		return deviceid;
+	}
+
+	public void setDeviceid(String deviceid) {
+		this.deviceid = deviceid;
 	}
 
 	

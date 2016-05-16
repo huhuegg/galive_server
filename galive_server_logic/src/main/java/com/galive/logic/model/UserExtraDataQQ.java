@@ -2,6 +2,8 @@ package com.galive.logic.model;
 
 import org.mongodb.morphia.annotations.Embedded;
 
+import com.galive.logic.model.User.UserPlatform;
+
 
 @Embedded
 public class UserExtraDataQQ extends UserExtraData {
@@ -11,6 +13,11 @@ public class UserExtraDataQQ extends UserExtraData {
 	 */
 	private String openid = "";
 
+	public UserExtraDataQQ() {
+		super();
+		setPlatform(UserPlatform.QQ);
+	}
+	
 	public String getOpenid() {
 		return openid;
 	}

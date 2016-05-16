@@ -2,6 +2,8 @@ package com.galive.logic.service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.dao.UserCache;
@@ -14,6 +16,8 @@ import com.galive.logic.model.User;
 import com.galive.logic.model.User.UserGender;
 import com.galive.logic.model.User.UserOnlineState;
 import com.galive.logic.model.User.UserPlatform;
+import com.galive.logic.model.UserExtraData;
+import com.galive.logic.model.UserExtraDataApp;
 import com.galive.logic.model.UserExtraDataWeChat;
 import com.galive.logic.network.socket.ChannelManager;
 import com.galive.logic.platform.wechat.WXAccessTokenResp;
@@ -31,15 +35,20 @@ public class UserServiceImpl extends BaseService implements UserService {
 	private UserCache userCache = new UserCacheImpl();
 
 	@Override
-	public User register(String username, String password, String nickname, String avatar, UserGender gender,
+	public User register(String deviceid, String username, String password, String nickname, String avatar, UserGender gender,
 			String profile) throws LogicException {
-		User u = userDao.findByUsername(username);
-		if (u != null) {
+		User user = userDao.findByUsername(username);
+		if (StringUtils.isBlank(deviceid)) {
+			String error = "deviceid校验失败。";
+			appendLog(error);
+			throw new LogicException(error);
+		}
+		if (user != null) {
 			String error = "用户名" + username + "已存在。";
 			appendLog(error);
 			throw new LogicException(error);
 		}
-		u = new User();
+		user = new User();
 		if (StringUtils.isBlank(username)) {
 			String error = "用户名不能为空。";
 			appendLog(error);
@@ -85,18 +94,22 @@ public class UserServiceImpl extends BaseService implements UserService {
 			throw new LogicException(error);
 		}
 		appendLog("保存用户");
-		u.setUsername(username);
-		u.setGender(gender);
-		u.setPassword(password);
-		u.setNickname(nickname);
-		u.setAvatar(avatar);
-		u.setProfile(profile);
-		u = userDao.saveOrUpdate(u);
-
+		UserExtraDataApp data = new UserExtraDataApp();
+		
+		
+		data.setUsername(username);
+		data.setGender(gender);
+		data.setPassword(password);
+		data.setNickname(nickname);
+		data.setAvatar(avatar);
+		data.setProfile(profile);
+		user.setExtraData(data);
+		user.setDeviceid(deviceid);
+		user = userDao.saveOrUpdate(user);
+	
 		appendLog("更新最后登录时间");
-		userCache.updateLatestLogin(u.getSid());
-
-		return u;
+		userCache.updateLatestLogin(user.getSid());
+		return user;
 	}
 
 	@Override
@@ -107,7 +120,8 @@ public class UserServiceImpl extends BaseService implements UserService {
 			appendLog(error);
 			throw new LogicException(error);
 		} else {
-			if (!u.getPassword().equals(password)) {
+			UserExtraDataApp data = (UserExtraDataApp) u.getExtraData();
+			if (!data.getPassword().equals(password)) {
 				String error = "密码错误";
 				appendLog(error);
 				throw new LogicException(error);
@@ -194,7 +208,10 @@ public class UserServiceImpl extends BaseService implements UserService {
 	}
 
 	@Override
-	public User loginWeChat(String code, String uid) throws LogicException {
+	public User loginWeChat(String deviceid, String code, String uid) throws LogicException {
+		if (StringUtils.isBlank(deviceid)) {
+			throw new LogicException("deviceid验证失败。");
+		}
 		User u = null;
 		if (StringUtils.isBlank(code)) {
 			u = userDao.find(uid);

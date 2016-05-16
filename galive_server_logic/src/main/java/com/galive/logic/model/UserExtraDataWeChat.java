@@ -2,6 +2,8 @@ package com.galive.logic.model;
 
 import org.mongodb.morphia.annotations.Embedded;
 
+import com.galive.logic.model.User.UserPlatform;
+
 
 @Embedded
 public class UserExtraDataWeChat extends UserExtraData {
@@ -16,6 +18,11 @@ public class UserExtraDataWeChat extends UserExtraData {
 	 */
 	private String unionid = "";
 
+	public UserExtraDataWeChat() {
+		super();
+		setPlatform(UserPlatform.WeChat);
+	}
+	
 	public String getOpenid() {
 		return openid;
 	}

@@ -1,5 +1,7 @@
 package com.galive.logic.dao;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.mongodb.morphia.query.Query;
 
@@ -61,6 +63,14 @@ public class UserDaoImpl implements UserDao {
 		q.field("extraData.unionid").equal(unionid);
 		User user = find(q);
 		return user;
+	}
+
+	@Override
+	public List<User> findUserByDeviceid(String deviceid) {
+		Query<User> q = dao.createQuery();
+		q.field("deviceid").equal(deviceid);
+		List<User> users = dao.find(q).asList();
+		return users;
 	}
 
 }
