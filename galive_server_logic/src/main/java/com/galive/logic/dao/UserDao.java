@@ -8,8 +8,6 @@ public interface UserDao {
 
 	public User find(String sid);
 	
-	public User findByDeviceid(String deviceid);
-	
 	public User findByUsername(String username);
 	
 	public User saveOrUpdate(User u);

@@ -3,7 +3,6 @@ package com.galive.logic.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.dao.UserCache;
@@ -15,8 +14,6 @@ import com.galive.logic.helper.LogicHelper;
 import com.galive.logic.model.User;
 import com.galive.logic.model.User.UserGender;
 import com.galive.logic.model.User.UserOnlineState;
-import com.galive.logic.model.User.UserPlatform;
-import com.galive.logic.model.UserExtraData;
 import com.galive.logic.model.UserExtraDataApp;
 import com.galive.logic.model.UserExtraDataWeChat;
 import com.galive.logic.network.socket.ChannelManager;
@@ -35,14 +32,9 @@ public class UserServiceImpl extends BaseService implements UserService {
 	private UserCache userCache = new UserCacheImpl();
 
 	@Override
-	public User register(String deviceid, String username, String password, String nickname, String avatar, UserGender gender,
+	public User register(String username, String password, String nickname, String avatar, UserGender gender,
 			String profile) throws LogicException {
 		User user = userDao.findByUsername(username);
-		if (StringUtils.isBlank(deviceid)) {
-			String error = "deviceid校验失败。";
-			appendLog(error);
-			throw new LogicException(error);
-		}
 		if (user != null) {
 			String error = "用户名" + username + "已存在。";
 			appendLog(error);
@@ -95,16 +87,13 @@ public class UserServiceImpl extends BaseService implements UserService {
 		}
 		appendLog("保存用户");
 		UserExtraDataApp data = new UserExtraDataApp();
-		
-		
-		data.setUsername(username);
-		data.setGender(gender);
-		data.setPassword(password);
-		data.setNickname(nickname);
-		data.setAvatar(avatar);
 		data.setProfile(profile);
+		
 		user.setExtraData(data);
-		user.setDeviceid(deviceid);
+		user.setUsername(username);
+		user.setPassword(password);
+		user.setNickname(nickname);
+		user.setAvatar(avatar);
 		user = userDao.saveOrUpdate(user);
 	
 		appendLog("更新最后登录时间");
@@ -120,8 +109,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 			appendLog(error);
 			throw new LogicException(error);
 		} else {
-			UserExtraDataApp data = (UserExtraDataApp) u.getExtraData();
-			if (!data.getPassword().equals(password)) {
+			if (!u.getPassword().equals(password)) {
 				String error = "密码错误";
 				appendLog(error);
 				throw new LogicException(error);
@@ -208,15 +196,14 @@ public class UserServiceImpl extends BaseService implements UserService {
 	}
 
 	@Override
-	public User loginWeChat(String deviceid, String code, String uid) throws LogicException {
-		if (StringUtils.isBlank(deviceid)) {
-			throw new LogicException("deviceid验证失败。");
-		}
+	public User loginWeChat(String code, String userSid) throws LogicException {
 		User u = null;
 		if (StringUtils.isBlank(code)) {
-			u = userDao.find(uid);
+			u = userDao.find(userSid);
 			if (u == null) {
-				throw new LogicException("用户不存在。");
+				String error = "用户不存在。";
+				appendLog(error);
+				throw new LogicException(error);
 			}
 			return u;
 		}
@@ -236,24 +223,26 @@ public class UserServiceImpl extends BaseService implements UserService {
 			throw new LogicException("微信获取用户信息失败:," + error);
 		}
 		appendLog("获取微信用户信息:" + userInfoResp.toString());
-		String unionid = userInfoResp.getUnionid();
-		u = userDao.findWXUserByUnionid(unionid);
-		if (u == null) {
+		
+		if (!StringUtils.isBlank(userSid)) {
+			u = userDao.find(userSid);
+		} else {
 			u = new User();
 		}
+
 		// http://wx.qlogo.cn/mmopen/ajNVdqHZLLCqBRT4kbibEibQVaAbuJZcmXNHNYEjZH4b1WtRDIPibafqKEJIYDKyticzvpwkpsLibjNol09OlqdIbmA/0
 		String avatar = userInfoResp.getHeadimgurl();
 //		String avatarThumbnail = avatar.substring(0, avatar.length() - 1) + "132";
 
+		UserExtraDataWeChat data = new UserExtraDataWeChat();
+		
+		data.setOpenid(userInfoResp.getOpenid());
+		data.setUnionid(userInfoResp.getUnionid());
+
+		u.setExtraData(data);
 		u.setNickname(userInfoResp.getNickname());
 		u.setAvatar(avatar);
-
-		UserExtraDataWeChat extra = new UserExtraDataWeChat();
-		extra.setPlatform(UserPlatform.WeChat);
-		extra.setOpenid(userInfoResp.getOpenid());
-		extra.setUnionid(userInfoResp.getUnionid());
-		u.setExtraData(extra);
-		
+		u.setGender(userInfoResp.getSex() == 1 ? UserGender.Male : UserGender.Female);
 		userDao.saveOrUpdate(u);
 
 		appendLog("微信登录成功:" + u.toString());
@@ -263,6 +252,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 	@Override
 	public void beContact(String userSid, String targetSid) {
 		userCache.saveContact(userSid, targetSid);
+		userCache.saveContact(targetSid, userSid);
 	}
 
 	@Override

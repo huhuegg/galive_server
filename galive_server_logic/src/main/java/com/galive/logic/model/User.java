@@ -47,13 +47,23 @@ public class User extends BaseModel {
 		}
 	}
 	
-	private String deviceid = "";
+	private UserPlatform platform = UserPlatform.App;
+
+	private String nickname = "";
+
+	private String avatar = "";
+	
+	private String username = "";
+
+	private String password = "";
+	
+	private UserGender gender = UserGender.Unknown;
 	
 	@Embedded
-	private UserExtraData extraData = new UserExtraData();
+	private UserExtraData extraData;
 	
 	public String desc() {
-		return String.format(" %s(%s) ", extraData.getNickname(), sid);
+		return String.format(" %s(%s) ", getNickname(), sid);
 	}
 
 	public UserExtraData getExtraData() {
@@ -64,14 +74,55 @@ public class User extends BaseModel {
 		this.extraData = extraData;
 	}
 
-	public String getDeviceid() {
-		return deviceid;
+	public UserPlatform getPlatform() {
+		return platform;
 	}
 
-	public void setDeviceid(String deviceid) {
-		this.deviceid = deviceid;
+	public void setPlatform(UserPlatform platform) {
+		this.platform = platform;
 	}
 
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public UserGender getGender() {
+		return gender;
+	}
+
+	public void setGender(UserGender gender) {
+		this.gender = gender;
+	}
+
+	
 	
 	
 }

@@ -79,6 +79,9 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 		if (!CollectionUtils.isEmpty(invitees)) {
 			appendLog("处理邀请人");
 			for (String s : invitees) {
+				
+				userService.beContact(userSid, s);
+				
 				boolean online = userService.isOnline(s);
 				Room inRoom = roomCache.findRoomByUser(s);
 				Room inviteeRoom = roomCache.findRoomByInvitee(s);
