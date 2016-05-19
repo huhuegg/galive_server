@@ -101,8 +101,9 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 					appendLog("用户" + s + "可被邀请");
 					roomInvitees.add(s);
 				} else {
-					appendLog("所邀请的用户正在其他房间中或已被邀请。");
-					throw new LogicException("所邀请的用户正忙。");
+					String error = "所邀请的用户正在其他房间中或已被邀请。";
+					appendLog(error);
+					throw new LogicException(error);
 				}
 			}
 			room.setPrivacy(RoomPrivacy.Privacy);
@@ -204,11 +205,13 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 			appendLog("用户当前不在房间中。");
 			return null;
 		}
+		appendLog("清除用户所在房间。");
 		roomCache.removeRoomToUser(userSid);
 		Set<String> users = room.getUsers();
 		users.remove(userSid);
 		if (users.isEmpty() || userSid.equals(room.getOwnerId())) {
 			// 销毁房间
+			appendLog("销毁房间。");
 			roomCache.deleteRoom(room);
 			// 清除邀请的人
 			Set<String> invitees = room.getInvitees();

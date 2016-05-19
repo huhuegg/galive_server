@@ -163,7 +163,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 	public void deleteDeviceToken(String deviceToken) {
 		userCache.deleteDeviceToken(deviceToken);
 	}
-
+	
 	@Override
 	public String findDeviceToken(String userSid) {
 		return userCache.findDeviceToken(userSid);
@@ -201,7 +201,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 		if (StringUtils.isBlank(code)) {
 			u = userDao.find(userSid);
 			if (u == null) {
-				String error = "用户不存在。";
+				String error = "微信授权已过期，请重新授权。";
 				appendLog(error);
 				throw new LogicException(error);
 			}
@@ -223,24 +223,38 @@ public class UserServiceImpl extends BaseService implements UserService {
 			throw new LogicException("微信获取用户信息失败:," + error);
 		}
 		appendLog("获取微信用户信息:" + userInfoResp.toString());
-		
+		String unionid = userInfoResp.getUnionid();
 		if (!StringUtils.isBlank(userSid)) {
 			u = userDao.find(userSid);
+			if (u == null) {
+				u = new User();
+			}
 		} else {
-			u = new User();
+			u = userDao.findWXUserByUnionid(unionid);
+			if (u == null) {
+				u = new User();
+			}
 		}
 
 		// http://wx.qlogo.cn/mmopen/ajNVdqHZLLCqBRT4kbibEibQVaAbuJZcmXNHNYEjZH4b1WtRDIPibafqKEJIYDKyticzvpwkpsLibjNol09OlqdIbmA/0
 		String avatar = userInfoResp.getHeadimgurl();
+		String nickname = userInfoResp.getNickname();
+		String openid = userInfoResp.getOpenid();
+		appendLog("微信头像:" + avatar);
+		appendLog("微信昵称:" + nickname);
+		appendLog("openid:" + openid);
+		appendLog("unionid:" + unionid);
+		
+		
 //		String avatarThumbnail = avatar.substring(0, avatar.length() - 1) + "132";
 
 		UserExtraDataWeChat data = new UserExtraDataWeChat();
 		
-		data.setOpenid(userInfoResp.getOpenid());
-		data.setUnionid(userInfoResp.getUnionid());
+		data.setOpenid(openid);
+		data.setUnionid(unionid);
 
 		u.setExtraData(data);
-		u.setNickname(userInfoResp.getNickname());
+		u.setNickname(nickname);
 		u.setAvatar(avatar);
 		u.setGender(userInfoResp.getSex() == 1 ? UserGender.Male : UserGender.Female);
 		userDao.saveOrUpdate(u);
