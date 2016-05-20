@@ -32,6 +32,7 @@ public class ChannelHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
     	printLog("channelRegistered", ctx);
+    	super.channelRegistered(ctx);
     }
 
     @Override
@@ -45,16 +46,19 @@ public class ChannelHandler extends ChannelInboundHandlerAdapter {
 			SocketBaseHandler handler = AnnotationManager.createSocketHandlerInstance(in.getCommand());
 			handler.handle(in, ctx);
 		}
+		super.channelUnregistered(ctx);
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
     	printLog("channelActive", ctx);
+    	super.channelActive(ctx);
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
     	printLog("channelInactive", ctx);
+    	super.channelInactive(ctx);
     }
 
     @Override
@@ -62,10 +66,11 @@ public class ChannelHandler extends ChannelInboundHandlerAdapter {
     	printLog("channelRead", ctx);
     	String reqData = (String) msg;
     	// 心跳
+    	logger.debug(reqData);
     	if (keepAlive(reqData, ctx)) {
+    		super.channelRead(ctx, msg);
     		return;
     	}
-    	logger.debug(reqData);
 		CommandIn in = CommandIn.fromSocketReq(reqData, ApplicationConfig.getInstance().getSocketConfig().getParamsDelimiter());
 		if (in != null) {
 			SocketBaseHandler handler = AnnotationManager.createSocketHandlerInstance(in.getCommand());
@@ -79,11 +84,13 @@ public class ChannelHandler extends ChannelInboundHandlerAdapter {
 			logger.error("channelRead 消息错误:" + reqData);
 			closeAndRemoveChannel(ctx);
 		}
+		super.channelRead(ctx, msg);
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
     	printLog("channelReadComplete", ctx);
+    	super.channelReadComplete(ctx);
     }
 
     @Override
@@ -99,11 +106,13 @@ public class ChannelHandler extends ChannelInboundHandlerAdapter {
             	closeAndRemoveChannel(ctx);
             }
         }
+        super.userEventTriggered(ctx, evt);
     }
 
     @Override
     public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
     	printLog("channelWritabilityChanged", ctx);
+    	super.channelWritabilityChanged(ctx);
     }
 
     @Override
@@ -112,6 +121,7 @@ public class ChannelHandler extends ChannelInboundHandlerAdapter {
 //    	logger.debug("exceptionCaught");
 //    	logger.error(cause.getMessage());
 //    	closeChannel(ctx);
+    	super.exceptionCaught(ctx, cause);
     }
     
     private boolean keepAlive(String message, ChannelHandlerContext ctx) {
