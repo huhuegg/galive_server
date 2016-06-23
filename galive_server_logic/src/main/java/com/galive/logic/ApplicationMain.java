@@ -152,8 +152,7 @@ public class ApplicationMain implements Daemon {
 		logger.info("===============================================");
 	}
 
-	public void stop() throws Exception {
-		
+	public void stop() throws Exception {		
 		stopServer();
 	}
 
