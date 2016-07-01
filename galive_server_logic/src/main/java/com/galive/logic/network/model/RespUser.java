@@ -14,6 +14,8 @@ public class RespUser {
 	
 	public String roomSid = "";
 	
+	public String liveSid = "";
+	
 	public int onlineState;
 	
 	public boolean invite = true;

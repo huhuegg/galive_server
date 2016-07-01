@@ -7,10 +7,13 @@ import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.common.protocol.PageCommandIn;
 import com.galive.common.protocol.PageCommandOut;
+import com.galive.logic.model.Live;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.User;
 import com.galive.logic.network.model.RespUser;
 import com.galive.logic.network.socket.SocketRequestHandler;
+import com.galive.logic.service.LiveService;
+import com.galive.logic.service.LiveServiceImpl;
 import com.galive.logic.service.RoomService;
 import com.galive.logic.service.RoomServiceImpl;
 import com.galive.logic.service.UserService;
@@ -26,6 +29,7 @@ public class UserListHandler extends SocketBaseHandler  {
 	
 	private UserService userService = new UserServiceImpl();
 	private RoomService roomService = new RoomServiceImpl();
+	private LiveService liveService = new LiveServiceImpl();
 	
 	@Override
 	public CommandOut handle(String userSid, String reqData) throws Exception {
@@ -51,6 +55,10 @@ public class UserListHandler extends SocketBaseHandler  {
 				}
 				RespUser ru = new RespUser();
 				ru.convert(u);
+				Live live = liveService.findLiveByUser(u.getSid());
+				if (live != null) {
+					ru.liveSid = live.getSid();
+				}
 				Room room = roomService.findRoomByUser(u.getSid());
 				if (room != null) {
 					ru.roomSid = room.getSid();
@@ -70,6 +78,11 @@ public class UserListHandler extends SocketBaseHandler  {
 					continue;
 				}
 				RespUser ru = new RespUser();
+				Live live = liveService.findLiveByUser(u.getSid());
+				if (live != null) {
+					ru.liveSid = live.getSid();
+				}
+			
 				ru.convert(u);
 				respUsers.add(ru);
 			}
