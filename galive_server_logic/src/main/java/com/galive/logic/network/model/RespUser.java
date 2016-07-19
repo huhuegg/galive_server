@@ -16,6 +16,8 @@ public class RespUser {
 	
 	public String liveSid = "";
 	
+	public String actionRecordUrl = "";
+	
 	public int onlineState;
 	
 	public boolean invite = true;

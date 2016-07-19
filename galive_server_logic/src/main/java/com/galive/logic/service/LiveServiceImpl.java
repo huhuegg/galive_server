@@ -74,11 +74,12 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 	}
 	
 	@Override
-	public Live stopLive(String userSid) throws LogicException {
+	public Live stopLive(String userSid, String actionRecordUrl) throws LogicException {
 		Live live = liveCache.findLiveByOwnerSid(userSid);
 		if (live == null) {
 			return null;
 		}
+		live.setActionRecordUrl(actionRecordUrl);
 		live.setState(LiveState.Off);
 		live.setLatestLiveAt(0);
 		liveCache.saveLive(live);

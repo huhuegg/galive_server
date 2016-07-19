@@ -15,7 +15,7 @@ public interface LiveService {
 	
 	public Live startLive(String userSid) throws LogicException;
 	
-	public Live stopLive(String userSid) throws LogicException;
+	public Live stopLive(String userSid, String actionRecordUrl) throws LogicException;
 	
 	public List<Live> listByLatestLiveTime(int index, int size);
 	

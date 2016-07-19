@@ -23,11 +23,14 @@ public class RespLive {
 	
 	public String ownerSid;
 	
+	public String actionRecordUrl;
+	
 	public void convert(Live live) {
 		this.name = live.getName();
 		this.sid = live.getSid();
 		this.ownerSid = live.getOwnerSid();
 		this.createAt = live.getCreateAt();
+		this.actionRecordUrl = live.getActionRecordUrl();
 		this.latestLiveAt = live.getLatestLiveAt();
 		this.thumbnail = "http://img1.imgtn.bdimg.com/it/u=1990110392,1863050465&fm=21&gp=0.jpg";
 		this.rtmpUrl = ApplicationConfig.getInstance().getLiveConfig().getRtmpUrl() + "/" + sid;

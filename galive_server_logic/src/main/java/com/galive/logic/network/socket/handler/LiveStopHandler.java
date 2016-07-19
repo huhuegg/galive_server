@@ -2,6 +2,7 @@ package com.galive.logic.network.socket.handler;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.model.Live;
@@ -14,15 +15,16 @@ import com.galive.logic.service.UserService;
 import com.galive.logic.service.UserServiceImpl;
 
 @SocketRequestHandler(desc = "结束直播", command = Command.LIVE_STOP)
-public class LiveStopHandler extends SocketBaseHandler  {
+public class LiveStopHandler extends SocketBaseHandler {
 
 	private UserService userService = new UserServiceImpl();
 	private LiveService liveService = new LiveServiceImpl();
-	
+
 	@Override
 	public CommandOut handle(String userSid, String reqData) throws Exception {
 		appendLog("--LiveStopHandler(结束直播)--");
-		Live live = liveService.stopLive(userSid);
+		LiveStopIn in = JSON.parseObject(reqData, LiveStopIn.class);
+		Live live = liveService.stopLive(userSid, in.actionRecordUrl);
 		if (live != null) {
 			// 推送
 			List<String> audienceSids = liveService.listAllAudiences(live.getSid());
@@ -41,10 +43,13 @@ public class LiveStopHandler extends SocketBaseHandler  {
 				}
 			}
 		}
-		
+
 		CommandOut out = new CommandOut(Command.LIVE_STOP);
 		return out;
 	}
-	
-	
+
+	public static class LiveStopIn {
+		public String actionRecordUrl;
+	}
+
 }

@@ -19,6 +19,8 @@ public class Live {
 	
 	private LiveState state = LiveState.Off;
 	
+	private String actionRecordUrl = "";
+	
 	public String desc() {
 		return " " + name + "(" + sid + ") ";
 	}
@@ -69,6 +71,14 @@ public class Live {
 
 	public void setState(LiveState state) {
 		this.state = state;
+	}
+
+	public String getActionRecordUrl() {
+		return actionRecordUrl;
+	}
+
+	public void setActionRecordUrl(String actionRecordUrl) {
+		this.actionRecordUrl = actionRecordUrl;
 	}
 	
 	

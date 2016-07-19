@@ -57,6 +57,7 @@ public class UserListHandler extends SocketBaseHandler  {
 				ru.convert(u);
 				Live live = liveService.findLiveByUser(u.getSid());
 				if (live != null) {
+					ru.actionRecordUrl = live.getActionRecordUrl();
 					ru.liveSid = live.getSid();
 				}
 				Room room = roomService.findRoomByUser(u.getSid());
@@ -80,6 +81,7 @@ public class UserListHandler extends SocketBaseHandler  {
 				RespUser ru = new RespUser();
 				Live live = liveService.findLiveByUser(u.getSid());
 				if (live != null) {
+					ru.actionRecordUrl = live.getActionRecordUrl();
 					ru.liveSid = live.getSid();
 				}
 			
