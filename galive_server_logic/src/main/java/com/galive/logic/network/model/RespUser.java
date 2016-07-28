@@ -20,6 +20,8 @@ public class RespUser {
 	
 	public int onlineState;
 	
+	public int liveState;
+	
 	public boolean invite = true;
 	
 	public int gender = UserGender.Unknown.ordinal();

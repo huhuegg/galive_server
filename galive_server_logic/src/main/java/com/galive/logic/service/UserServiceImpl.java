@@ -259,6 +259,10 @@ public class UserServiceImpl extends BaseService implements UserService {
 		u.setGender(userInfoResp.getSex() == 1 ? UserGender.Male : UserGender.Female);
 		userDao.saveOrUpdate(u);
 
+		// 加入用户列表
+		userCache.updateLatestLogin(u.getSid());
+		
+		
 		appendLog("微信登录成功:" + u.toString());
 		return u;
 	}
