@@ -1,5 +1,6 @@
 package com.galive.logic.network.model;
 
+import com.galive.logic.model.Live.LiveState;
 import com.galive.logic.model.User;
 import com.galive.logic.model.User.UserGender;
 import com.galive.logic.network.socket.ChannelManager;
@@ -20,7 +21,7 @@ public class RespUser {
 	
 	public int onlineState;
 	
-	public int liveState;
+	public int liveState = LiveState.Off.ordinal();
 	
 	public boolean invite = true;
 	
