@@ -109,6 +109,12 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 //			if (live.getState() == LiveState.Off) {
 //				throw new LogicException("该用户当前不在直播。");
 //			}
+			List<String> audienceSids = liveCache.listAudiences(liveSid, 0, -1);
+			if (audienceSids.size() >= Live.MAX_AUDIENCE) {
+				appendLog("超过房间上限。");
+				throw new LogicException("直播间人数已满。");
+			}
+			
 			liveCache.saveAudience(liveSid, userSid, false);
 			return live;
 		}
@@ -123,8 +129,9 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 			return null;
 		}
 		if (live.getOwnerSid().equals(userSid)) {
-			appendLog("主播不能离开之间。");
-			throw new LogicException("主播不能离开之间。");
+			appendLog("主播不能离开直播间。");
+			//throw new LogicException("主播不能离开直播间。");
+			return null;
 		}
 		liveCache.removeAudience(userSid);
 		return live;

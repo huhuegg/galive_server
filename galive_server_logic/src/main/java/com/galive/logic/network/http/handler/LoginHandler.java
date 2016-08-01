@@ -7,10 +7,13 @@ import com.galive.common.protocol.CommandOut;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.RTCConfig;
 import com.galive.logic.config.SocketConfig;
+import com.galive.logic.model.Live;
 import com.galive.logic.model.User;
 import com.galive.logic.model.User.UserPlatform;
 import com.galive.logic.network.http.HttpRequestHandler;
 import com.galive.logic.network.model.RespLoginUser;
+import com.galive.logic.service.LiveService;
+import com.galive.logic.service.LiveServiceImpl;
 import com.galive.logic.service.UserService;
 import com.galive.logic.service.UserServiceImpl;
 
@@ -18,6 +21,7 @@ import com.galive.logic.service.UserServiceImpl;
 public class LoginHandler extends HttpBaseHandler {
 	
 	private UserService userService = new UserServiceImpl();
+	private LiveService liveService = new LiveServiceImpl();
 	
 	@Override
 	public String handle(String userSid, String reqData) throws Exception {
@@ -43,9 +47,13 @@ public class LoginHandler extends HttpBaseHandler {
 			appendLog("uid:" + uid);
 			u = userService.loginWeChat(code, uid);
 		}
-		
 		String uid = u.getSid();
-		
+		Live live = liveService.findLiveByUser(uid);
+		if (live != null) {
+			liveService.stopLive(uid, live.getActionRecordUrl());
+		}
+		liveService.leaveLive(uid);
+	
 		LoginOut out = new LoginOut();
 		RespLoginUser respUser = new RespLoginUser();
 		respUser.convert(u);

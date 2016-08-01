@@ -13,7 +13,7 @@
 	<TokenExpire>7200</TokenExpire>
 
 	<Socket>
-		<Host>10.0.0.2</Host>
+		<Host>192.168.216.172</Host>
 		<Port>52195</Port>
 		<LiveReq>ga</LiveReq>
 		<LiveResp>live</LiveResp>
