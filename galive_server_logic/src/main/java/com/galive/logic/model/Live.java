@@ -7,7 +7,7 @@ public class Live {
 		Off;
 	}
 	
-	public static final int MAX_AUDIENCE = 5;
+	public static final int MAX_AUDIENCE = 3;
 	
 	private String sid = "";
 	

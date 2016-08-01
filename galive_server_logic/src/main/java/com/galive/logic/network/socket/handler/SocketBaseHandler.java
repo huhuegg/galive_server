@@ -59,14 +59,17 @@ public abstract class SocketBaseHandler {
 			appendLog("发生错误:" + error);
 			out = respFail(error, command);
 		}
-		out.setC1(c1);
-		String resp = out.socketResp();
-		appendLog("响应:");
-		appendLog(resp);
-		appendLog("处理时间:" + (System.currentTimeMillis() - start) + " ms");
-		appendSplit();
-		logger.info(loggerString());
-		ChannelManager.getInstance().sendMessage(userSid, resp);
+		if (out != null) {
+			out.setC1(c1);
+			String resp = out.socketResp();
+			appendLog("响应:");
+			appendLog(resp);
+			appendLog("处理时间:" + (System.currentTimeMillis() - start) + " ms");
+			appendSplit();
+			logger.info(loggerString());
+			ChannelManager.getInstance().sendMessage(userSid, resp);
+		}
+		
 	}
 	
 	protected void pushMessage(String userSid, String message) {
