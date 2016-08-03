@@ -15,6 +15,8 @@ public class SocketConfig {
 	private int port = 52194;
 	
 	private int heartBeatInterval = 20;
+	
+	private int tokenExpire = 7200;
 
 	public String getLiveReq() {
 		return liveReq;
@@ -70,6 +72,14 @@ public class SocketConfig {
 
 	public void setHeartBeatInterval(int heartBeatInterval) {
 		this.heartBeatInterval = heartBeatInterval;
+	}
+
+	public int getTokenExpire() {
+		return tokenExpire;
+	}
+
+	public void setTokenExpire(int tokenExpire) {
+		this.tokenExpire = tokenExpire;
 	}
 	
 }

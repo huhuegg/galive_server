@@ -2,18 +2,12 @@ package com.galive.logic.config;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.galive.logic.config.RTCConfig.IceServer;
 import com.galive.logic.helper.LogicHelper;
 
 public class ApplicationConfig {
@@ -22,13 +16,8 @@ public class ApplicationConfig {
 
 	private static ApplicationConfig instance = null;
 
-	private RTCConfig rtcConfig;
-	private int tokenExpire = 7200;
 	private SocketConfig socketConfig;
 	private LogicConfig logicConfig;
-	private APNSConfig apnsConfig;
-	private PlatformConfig platformConfig;
-	private LiveConfig liveConfig;
 
 	public final static ApplicationConfig getInstance() {
 		if (instance == null) {
@@ -55,47 +44,10 @@ public class ApplicationConfig {
 			Document doc = reader.read(in);
 			Element node = doc.getRootElement();
 
-			Element tokenExpireNode = node.element("TokenExpire");
-			String tokenExpire = tokenExpireNode.getStringValue();
-			sc.setTokenExpire(NumberUtils.toInt(tokenExpire, 7200));
-			logger.info("TokenExpire:" + tokenExpire);
-
-			logger.info("--RtcConfig--");
-			RTCConfig rtcConfig = new RTCConfig();
-			Element rtcNode = node.element("WebRTC");
-			List<IceServer> iceServers = new ArrayList<>();
-			Element iceNode = rtcNode.element("IceServer");
-			List<?> iceNodes = iceNode.elements();
-			for (Object e : iceNodes) {
-				IceServer ice = new IceServer();
-				Element urlNode = (Element) e;
-				String url = urlNode.getText();
-				ice.url = url;
-				iceServers.add(ice);
-				logger.info("------IceServer------" + url);
-			}
-			rtcConfig.setIceServers(iceServers);
-			Element turnUrlNode = rtcNode.element("TurnUrl");
-			String turnUrl = turnUrlNode.getText();
-			rtcConfig.setTurnUrl(turnUrl);
-			logger.info("----TurnUrl----" + turnUrl);
-			sc.setRtcConfig(rtcConfig);
-
 			logger.info("--LogicConfig--");
 			LogicConfig logicConfig = new LogicConfig();
-			Element logicNode = node.element("Logic");
-			Element roomMaxUserNode = logicNode.element("RoomMaxUser");
-			short roomMaxUser = NumberUtils.toShort(roomMaxUserNode.getStringValue(), (short) 5);
-			logicConfig.setRoomMaxUser(roomMaxUser);
-			logger.info("roomMaxUser:" + roomMaxUser);
-			
-			Element defaultQuestionTagsNode = logicNode.element("DefaultQuestionTags");
-			String defaultQuestionTagsStr = defaultQuestionTagsNode.getStringValue();
-			List<String> questionTags = new ArrayList<>();
-			String defaultQuestionTags[] = defaultQuestionTagsStr.split(";");
-			CollectionUtils.addAll(questionTags, defaultQuestionTags);
-			logicConfig.setDefaultQuestionTags(questionTags);
-			logger.info("defaultQuestionTags:" + defaultQuestionTagsStr);
+			//Element logicNode = node.element("Logic");
+			// Logic node
 			sc.setLogicConfig(logicConfig);
 
 			logger.info("--SocketConfig--");
@@ -136,79 +88,12 @@ public class ApplicationConfig {
 			socketConfig.setHeartBeatInterval(heartBeatInterval);
 			logger.info("heartBeatInterval:" + heartBeatInterval);
 
+			Element tokenExpireNode = socketNode.element("TokenExpire");
+			String tokenExpire = tokenExpireNode.getStringValue();
+			socketConfig.setTokenExpire(NumberUtils.toInt(tokenExpire, 7200));
+			logger.info("tokenExpire:" + tokenExpire);
+			
 			sc.setSocketConfig(socketConfig);
-			
-			
-			logger.info("--ApnsConfig--");
-			APNSConfig apnsConfig = new APNSConfig();
-			Element apnsNode = node.element("Apns");
-			Element certNameDevelopmentNode = apnsNode.element("DevelopmentCertName");
-			String certNameDevelopment = certNameDevelopmentNode.getStringValue();
-			apnsConfig.setCertNameDevelopment(certNameDevelopment);
-			logger.info("certNameDevelopment:" + certNameDevelopment);
-			
-			Element certPasswordDevelopmentNode = apnsNode.element("DevelopmentCertPassword");
-			String certPasswordDevelopment = certPasswordDevelopmentNode.getStringValue();
-			apnsConfig.setCertPasswordDevelopment(certPasswordDevelopment);
-			logger.info("certPasswordDevelopment:" + certPasswordDevelopment);
-			
-			Element certNameDistructionNode = apnsNode.element("DistructionCertName");
-			String certNameDistruction = certNameDistructionNode.getStringValue();
-			apnsConfig.setCertNameDistruction(certNameDistruction);
-			logger.info("certNameDistruction:" + certNameDistruction);
-			
-			Element certPasswordDistructionNode = apnsNode.element("DistructionCertPassword");
-			String certPasswordDistruction = certPasswordDistructionNode.getStringValue();
-			apnsConfig.setCertPasswordDistruction(certPasswordDistruction);
-			logger.info("certPasswordDistruction:" + certPasswordDistruction);
-			
-			Element pushSoundNode = apnsNode.element("PushSound");
-			String pushSound = pushSoundNode.getStringValue();
-			apnsConfig.setPushSound(pushSound);
-			logger.info("pushSound:" + pushSound);
-			
-			Element pushBadgeNode = apnsNode.element("PushBadge");
-			int pushBadge = NumberUtils.toInt(pushBadgeNode.getStringValue(), 1);
-			apnsConfig.setPushBadge(pushBadge);
-			logger.info("pushBadge:" + pushBadge);
-			sc.setApnsConfig(apnsConfig);
-			
-			logger.info("--PlatformConfig--");
-			PlatformConfig platformConfig = new PlatformConfig();
-			Element platformNode = node.element("Platform");
-			
-			Element qqNode = platformNode.element("QQ");
-			Element qqAppIdNode = qqNode.element("AppId");
-			String qqAppId = qqAppIdNode.getStringValue();
-			platformConfig.setQq_appid(qqAppId);
-			logger.info("qqAppId:" + qqAppId);
-			
-			Element wechatNode = platformNode.element("Wechat");
-			Element wechatAppIdNode = wechatNode.element("AppId");
-			String wechatAppId = wechatAppIdNode.getStringValue();
-			platformConfig.setWechat_appid(wechatAppId);
-			logger.info("wechatAppId:" + wechatAppId);
-			
-			Element wechatAppSecretNode = wechatNode.element("AppSecret");
-			String wechatAppSecret = wechatAppSecretNode.getStringValue();
-			platformConfig.setWechat_appsecret(wechatAppSecret);
-			logger.info("wechatAppSecret:" + wechatAppSecret);
-			
-			sc.setPlatformConfig(platformConfig);
-			
-			LiveConfig liveConfig = new LiveConfig();
-			Element liveNode = node.element("Live");
-			Element rtmpUrlNode = liveNode.element("RTMPUrl");
-			String rtmpUrl = rtmpUrlNode.getStringValue();
-			liveConfig.setRtmpUrl(rtmpUrl);
-			logger.info("rtmpUrl:" + rtmpUrl);
-			
-			Element hlsUrlNode = liveNode.element("HLSUrl");
-			String hlsUrl = hlsUrlNode.getStringValue();
-			liveConfig.setHlsUrl(hlsUrl);
-			logger.info("hlsUrl:" + hlsUrl);
-			
-			sc.setLiveConfig(liveConfig);
 			
 			logger.info("配置文件加载成功");
 		} catch (Exception e) {
@@ -226,22 +111,6 @@ public class ApplicationConfig {
 		return sc;
 	}
 
-	public RTCConfig getRtcConfig() {
-		return rtcConfig;
-	}
-
-	public void setRtcConfig(RTCConfig rtcConfig) {
-		this.rtcConfig = rtcConfig;
-	}
-
-	public int getTokenExpire() {
-		return tokenExpire;
-	}
-
-	public void setTokenExpire(int tokenExpire) {
-		this.tokenExpire = tokenExpire;
-	}
-
 	public LogicConfig getLogicConfig() {
 		return logicConfig;
 	}
@@ -256,29 +125,5 @@ public class ApplicationConfig {
 
 	public void setSocketConfig(SocketConfig socketConfig) {
 		this.socketConfig = socketConfig;
-	}
-
-	public APNSConfig getApnsConfig() {
-		return apnsConfig;
-	}
-
-	public void setApnsConfig(APNSConfig apnsConfig) {
-		this.apnsConfig = apnsConfig;
-	}
-
-	public PlatformConfig getPlatformConfig() {
-		return platformConfig;
-	}
-
-	public void setPlatformConfig(PlatformConfig platformConfig) {
-		this.platformConfig = platformConfig;
-	}
-
-	public LiveConfig getLiveConfig() {
-		return liveConfig;
-	}
-
-	public void setLiveConfig(LiveConfig liveConfig) {
-		this.liveConfig = liveConfig;
 	}
 }

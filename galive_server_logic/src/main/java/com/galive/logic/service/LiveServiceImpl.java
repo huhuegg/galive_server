@@ -8,12 +8,10 @@ import com.galive.logic.dao.LiveCacheImpl;
 import com.galive.logic.exception.LogicException;
 import com.galive.logic.model.Live;
 import com.galive.logic.model.Live.LiveState;
-import com.galive.logic.model.User;
 
 public class LiveServiceImpl extends BaseService implements LiveService {
 
 	private LiveCache liveCache = new LiveCacheImpl();
-	private UserService userService = new UserServiceImpl();
 	
 	public LiveServiceImpl() {
 		super();
@@ -44,33 +42,33 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 
 	@Override
 	public Live startLive(String userSid) throws LogicException {
-		User u = userService.findUserBySid(userSid);
-		if (u == null) {
-			appendLog("用户不存在。");
-			throw new LogicException("用户不存在。");
-		}
-		Live live = liveCache.findLiveByOwnerSid(userSid);
-		long now = System.currentTimeMillis();
-		if (live == null) {
-			live = new Live();
-			live.setCreateAt(now);
-			live.setName(u.getNickname() + "的直播间");
-			live.setOwnerSid(userSid);
-			appendLog("创建直播间" + live.desc());
-		} else {
-			appendLog("发现直播间" + live.desc());
-		}
-		live.setState(LiveState.On);
-		live.setLatestLiveAt(now);
-		liveCache.saveLive(live);
-		
-		liveCache.clearLikeNum(live.getSid());
-		
-		appendLog(u.desc() + "插入观众列表");
-		liveCache.saveAudience(live.getSid(), userSid, true);
-		appendLog(live.desc() + "按最后直播开始时间排序，插入直播列表。");
-		liveCache.insertToLiveListByLatestLiveAt(live.getSid());
-		return live;
+//		User u = userService.findUserBySid(userSid);
+//		if (u == null) {
+//			appendLog("用户不存在。");
+//			throw new LogicException("用户不存在。");
+//		}
+//		Live live = liveCache.findLiveByOwnerSid(userSid);
+//		long now = System.currentTimeMillis();
+//		if (live == null) {
+//			live = new Live();
+//			live.setCreateAt(now);
+//			live.setName(u.getNickname() + "的直播间");
+//			live.setOwnerSid(userSid);
+//			appendLog("创建直播间" + live.desc());
+//		} else {
+//			appendLog("发现直播间" + live.desc());
+//		}
+//		live.setState(LiveState.On);
+//		live.setLatestLiveAt(now);
+//		liveCache.saveLive(live);
+//		
+//		liveCache.clearLikeNum(live.getSid());
+//		
+//		appendLog(u.desc() + "插入观众列表");
+//		liveCache.saveAudience(live.getSid(), userSid, true);
+//		appendLog(live.desc() + "按最后直播开始时间排序，插入直播列表。");
+//		liveCache.insertToLiveListByLatestLiveAt(live.getSid());
+		return null;
 	}
 	
 	@Override
@@ -135,19 +133,6 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 		}
 		liveCache.removeAudience(userSid);
 		return live;
-	}
-
-	@Override
-	public List<User> listAudiences(String liveSid, int index, int size) throws LogicException {
-		List<User> audiences = new ArrayList<>();
-		List<String> audienceSids = liveCache.listAudiences(liveSid, index, index + size - 1);
-		for (String sid : audienceSids) {
-			User u = userService.findUserBySid(sid);
-			if (u != null) {
-				audiences.add(u);
-			}
-		}
-		return audiences;
 	}
 
 	@Override
