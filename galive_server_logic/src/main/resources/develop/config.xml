@@ -2,7 +2,7 @@
 <!DOCTYPE Config>
 <Config>
 
-	
+
 
 	<Socket>
 		<Host>192.168.216.172</Host>
@@ -17,6 +17,11 @@
 
 
 	<Logic>
-		
+		<Channels>
+			<Channel>
+				<sid>001</sid>
+				<name>doudizhu</name>
+			</Channel>
+		</Channels>
 	</Logic>
 </Config>

@@ -2,6 +2,9 @@ package com.galive.logic.config;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.math.NumberUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -46,7 +49,23 @@ public class ApplicationConfig {
 
 			logger.info("--LogicConfig--");
 			LogicConfig logicConfig = new LogicConfig();
-			//Element logicNode = node.element("Logic");
+			Element logicNode = node.element("Logic");
+			Element channelsNode = logicNode.element("Channels");
+			List<?> channelNodes = channelsNode.elements();
+			List<Channel> channels = new ArrayList<>();
+			for (Object obj : channelNodes) {
+				Channel c = new Channel();
+				Element channelNode = (Element)obj;
+				String sid = channelNode.element("sid").getStringValue();
+				String name = channelNode.element("name").getStringValue();
+				logger.info("channel:" + sid + "(" + name + ")");
+				c.setSid(sid);
+				c.setName(name);
+				channels.add(c);
+			}
+			logicConfig.setChannels(channels);
+			
+			
 			// Logic node
 			sc.setLogicConfig(logicConfig);
 

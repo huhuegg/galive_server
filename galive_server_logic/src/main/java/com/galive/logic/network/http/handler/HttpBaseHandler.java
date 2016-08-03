@@ -31,7 +31,7 @@ public abstract class HttpBaseHandler {
 		appendLog("params:" + params);
 		try {
 			if (!command.equals(Command.USR_LOGIN) && !command.equals(Command.USR_REGISTER) && !command.equals(Command.USR_LOGIN_PLATFORM)) {
-				UserService userService = new UserServiceImpl();
+				AccountDao accountDao = new AccountDaoImpl();
 				if (!userService.verifyToken(userSid, token)) {
 					// 验证token
 					CommandOut out = CommandOut.failureOut(command, "登录已过期");
