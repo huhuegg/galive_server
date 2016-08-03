@@ -2,17 +2,10 @@ package com.galive.logic.model;
 
 public class Account {
 
-	private String sid = "";
+	private String account = "";
 	
 	private String channelSid = "";
 
-	public String getSid() {
-		return sid;
-	}
-
-	public void setSid(String sid) {
-		this.sid = sid;
-	}
 
 	public String getChannelSid() {
 		return channelSid;
@@ -20,6 +13,14 @@ public class Account {
 
 	public void setChannelSid(String channelSid) {
 		this.channelSid = channelSid;
+	}
+
+	public String getAccount() {
+		return account;
+	}
+
+	public void setAccount(String account) {
+		this.account = account;
 	}
 
 	
