@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SocketRequestHandler {
 
-	public String command(); 
+	public int command(); 
 	public String desc();
 
 }

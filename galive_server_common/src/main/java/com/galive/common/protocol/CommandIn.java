@@ -17,12 +17,12 @@ public class CommandIn {
 	/**
 	 * 请求id
 	 */
-	private String command;
+	private int command;
 	
 	/**
-	 * 用户id
+	 * 用户账号
 	 */
-	private String userSid = "";
+	private String account = "";
 	
 	/**
 	 * token
@@ -35,9 +35,14 @@ public class CommandIn {
 	private String params = "";
 	
 	/**
+	 * channelid
+	 */
+	private String channel = "";
+	
+	/**
 	 * 客户端自定义参数
 	 */
-	private String c1 = "";
+	private String tag = "";
 	
 	/**
 	 * 从socket接收的消息组装对象 
@@ -46,23 +51,27 @@ public class CommandIn {
 	 */
 	public static CommandIn fromSocketReq(String req, String paramsDelimiter) {
 		try {
-			String s[] = StringUtils.split(req, paramsDelimiter, 5);
-			if (s.length < 5) {
+			String s[] = StringUtils.split(req, paramsDelimiter, 6);
+			if (s.length < 6) {
 				return null;
 			}
-			String command = s[0];
-			if (StringUtils.isBlank(command)) {
+			String commandStr = s[0];
+			if (StringUtils.isBlank(commandStr)) {
 				return null;
 			}
-			String userSid = s[1];
-			String token = s[2];
-			String c1 = s[3];
-			String params = URLDecoder.decode(s[4], StandardCharsets.UTF_8.name());
+			int command = Integer.parseInt(commandStr);
+			String account = s[1];
+			String channel = s[2];
+			String token = s[3];
+			String tag = s[4];
+			String params = URLDecoder.decode(s[5], StandardCharsets.UTF_8.name());
+			
 			CommandIn in = new CommandIn();
 			in.setCommand(command);
-			in.setUserSid(userSid);
+			in.setAccount(account);
+			in.setChannel(channel);
+			in.setTag(tag);
 			in.setToken(token);
-			in.setC1(c1);
 			in.setParams(params);
 			return in;
 		} catch (UnsupportedEncodingException e) {
@@ -78,18 +87,23 @@ public class CommandIn {
 	 */
 	public static CommandIn fromHttpReq(HttpServletRequest req) {
 		try {
-			String command = req.getParameter("command");
-			if (StringUtils.isBlank(command)) {
+			String commandStr = req.getParameter("command");
+			if (StringUtils.isBlank(commandStr)) {
 				return null;
 			}
-			String userSid = req.getHeader("userSid");
+			int command = Integer.parseInt(commandStr);
+			String account = req.getHeader("account");
 			String token = req.getHeader("token");
 			String params = req.getParameter("params");
-			logger.debug(String.format("command:%s,userSid:%s,token:%s,params:%s", command,userSid,token,params));
+			String channel = req.getParameter("channel");
+			String tag = req.getParameter("tag");
+			logger.debug(String.format("command:%s,account:%s,channel:%s,token:%s,params:%s,tag:%s", command,account,channel,token,params,tag));
 			CommandIn in = new CommandIn();
 			in.setCommand(command);
-			in.setUserSid(userSid);
+			in.setAccount(account);
+			in.setChannel(channel);
 			in.setToken(token);
+			in.setTag(tag);
 			if (params != null) {
 				in.setParams(URLDecoder.decode(params, StandardCharsets.UTF_8.name()));
 			}
@@ -98,14 +112,6 @@ public class CommandIn {
 			e.printStackTrace();
 		}
 		return null;
-	}
-	
-	public String getUserSid() {
-		return userSid;
-	}
-
-	public void setUserSid(String userSid) {
-		this.userSid = userSid;
 	}
 
 	public String getToken() {
@@ -116,11 +122,11 @@ public class CommandIn {
 		this.token = token;
 	}
 
-	public String getCommand() {
+	public int getCommand() {
 		return command;
 	}
 
-	public void setCommand(String command) {
+	public void setCommand(int command) {
 		this.command = command;
 	}
 
@@ -132,11 +138,28 @@ public class CommandIn {
 		this.params = params;
 	}
 
-	public String getC1() {
-		return c1;
+	public String getAccount() {
+		return account;
 	}
 
-	public void setC1(String c1) {
-		this.c1 = c1;
-	}	
+	public void setAccount(String account) {
+		this.account = account;
+	}
+
+	public String getChannel() {
+		return channel;
+	}
+
+	public void setChannel(String channel) {
+		this.channel = channel;
+	}
+
+	public String getTag() {
+		return tag;
+	}
+
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
+
 }

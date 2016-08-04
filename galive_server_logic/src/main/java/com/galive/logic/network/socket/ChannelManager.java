@@ -10,7 +10,7 @@ public class ChannelManager {
 
 	private Map<String, ChannelHandlerContext> clientChannels = new ConcurrentHashMap<>();
 	
-	public static final AttributeKey<String> USER_SID_KEY = AttributeKey.valueOf("userSid"); 
+	public static final AttributeKey<String> ACCOUNT_KEY = AttributeKey.valueOf("account"); 
 	
 	private static ChannelManager instance = null;
 	
@@ -24,35 +24,36 @@ public class ChannelManager {
 		return instance;
 	}
 	
-	public ChannelHandlerContext findChannel(String userSid) {
-		return clientChannels.get(userSid);
+	public ChannelHandlerContext findChannel(String account, String channel) {
+		return clientChannels.get(accountTag(account, channel));
 	}
 	
-	public void addChannel(String userSid, ChannelHandlerContext channel) {
-		channel.attr(USER_SID_KEY).set(userSid);
-		clientChannels.put(userSid, channel);
+	public void addChannel(String account, String channel, ChannelHandlerContext context) {
+		String accountTag = accountTag(account, channel);
+		context.attr(ACCOUNT_KEY).set(accountTag);
+		clientChannels.put(accountTag, context);
 	}
 	
-	public void removeChannel(String userSid) {
-		clientChannels.remove(userSid);
+	public void removeChannel(String account, String channel) {
+		clientChannels.remove(accountTag(account, channel));
 	}
 	
-	public void closeAndRemoveChannel(String userSid) {
-		ChannelHandlerContext channel = clientChannels.get(userSid);
-		closeChannel(channel);
-		clientChannels.remove(userSid);
+	public void closeAndRemoveChannel(String account, String channel) {
+		ChannelHandlerContext context = clientChannels.get(accountTag(account, channel));
+		closeChannel(context);
+		clientChannels.remove(accountTag(account, channel));
 	}
 	
 	public long channelCount() {
 		return clientChannels.size();
 	}
 	
-	public void sendMessage(String userSid, String message) {
+	public void sendMessage(String account, String channel, String message) {
 		if (message != null) {
-			ChannelHandlerContext channel = clientChannels.get(userSid);
-			if (channel != null && channel.channel().isActive()) {
+			ChannelHandlerContext context = clientChannels.get(accountTag(account, channel));
+			if (channel != null && context.channel().isActive()) {
 				message += delimiter;
-				channel.writeAndFlush(message);
+				context.writeAndFlush(message);
 			}
 		}
 	}
@@ -62,5 +63,15 @@ public class ChannelManager {
 			ctx.flush();
 			ctx.close();
 		}
+	}
+	
+	private String accountTag(String account, String channel) {
+		return account + "#" + channel;
+	}
+	
+	public static String[] getAccount(ChannelHandlerContext context) {
+		String accountTag = context.attr(ChannelManager.ACCOUNT_KEY).get(); 
+		String account[] = accountTag.split("#");
+		return account;
 	}
 }

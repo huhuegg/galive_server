@@ -2,8 +2,11 @@ package com.galive.common.protocol;
 
 public class Command {
 
-	// 用户登录
-	public static final String USR_LOGIN = "USR_LOGIN";
+	// 获取Token
+	public static final int REQ_TOKEN = 1000;
 	
-
+	
+	
+	// 用户下线
+	public static final int OFFLINE = 1999;
 }

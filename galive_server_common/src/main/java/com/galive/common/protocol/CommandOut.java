@@ -6,21 +6,21 @@ import com.alibaba.fastjson.JSON;
 
 public class CommandOut {
 
-	private String command;
+	private int command;
 	
 	private String ret_msg = "";
 	
-	private String c1 = "";
+	private String tag = "";
 	
 	private int ret_code = RetCode.SUCCESS;
 	
-	public CommandOut(String command) {
+	public CommandOut(int command) {
 		this.command = command;
 		this.ret_code = RetCode.SUCCESS;
-		this.c1 = "";
+		this.tag = "";
 	}
 	
-	public static CommandOut failureOut(String command, String message) {
+	public static CommandOut failureOut(int command, String message) {
 		CommandOut out = new CommandOut(command);
 		if (StringUtils.isBlank(message)) {
 			out.setRet_msg("内部错误");
@@ -55,21 +55,23 @@ public class CommandOut {
 		this.ret_code = ret_code;
 	}
 
-	public String getCommand() {
+	public int getCommand() {
 		return command;
 	}
 
-	public void setCommand(String command) {
+	public void setCommand(int command) {
 		this.command = command;
 	}
 
-	public String getC1() {
-		return c1;
+	public String getTag() {
+		return tag;
 	}
 
-	public void setC1(String c1) {
-		this.c1 = c1;
+	public void setTag(String tag) {
+		this.tag = tag;
 	}
+
+	
 
 }
 	
