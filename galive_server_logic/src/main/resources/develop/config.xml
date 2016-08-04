@@ -17,6 +17,6 @@
 
 
 	<Logic>
-		
+		<StreamUrl>http://</StreamUrl>
 	</Logic>
 </Config>

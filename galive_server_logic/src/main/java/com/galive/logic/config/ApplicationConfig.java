@@ -46,8 +46,10 @@ public class ApplicationConfig {
 
 			logger.info("--LogicConfig--");
 			LogicConfig logicConfig = new LogicConfig();
-			//Element logicNode = node.element("Logic");	
-			// Logic node
+			Element logicNode = node.element("Logic");	
+			Element streamUrlNode = logicNode.element("StreamUrl");
+			String streamUrl = streamUrlNode.getStringValue();
+			logicConfig.setStreamUrl(streamUrl);
 			sc.setLogicConfig(logicConfig);
 
 			logger.info("--SocketConfig--");
