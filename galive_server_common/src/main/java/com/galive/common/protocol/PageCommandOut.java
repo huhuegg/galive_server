@@ -14,7 +14,7 @@ public class PageCommandOut<T> extends CommandOut {
 	
 	public List<T> objs = new ArrayList<T>();
 	
-	public PageCommandOut(String command, PageCommandIn in) {
+	public PageCommandOut(int command, PageCommandIn in) {
 		super(command);
 		this.index = in.index;
 		this.size = in.size;

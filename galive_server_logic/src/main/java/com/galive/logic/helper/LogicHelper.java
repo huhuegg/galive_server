@@ -2,16 +2,11 @@ package com.galive.logic.helper;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.UUID;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.LoggerFactory;
 
 import com.galive.logic.ApplicationMain;
-import com.galive.logic.config.ApplicationConfig;
-import com.galive.logic.config.Channel;
-import com.galive.logic.config.LogicConfig;
-
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -62,14 +57,4 @@ public class LogicHelper {
 		return md5;
 	}
 	
-	public static boolean channelExist(String channel) {
-		LogicConfig config = ApplicationConfig.getInstance().getLogicConfig();
-		List<Channel> channels = config.getChannels();
-		for (Channel c : channels) {
-			if (c.getSid().equals(channel)) {
-				return true;
-			}
-		}
-		return false;
-	}
 }

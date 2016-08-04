@@ -18,10 +18,10 @@ public class ReqTokenHandler extends HttpBaseHandler {
 	private AccountService accountService = new AccountServiceImpl();
 	
 	@Override
-	public CommandOut handle(String account, String channel, String reqData) throws Exception {
+	public CommandOut handle(String account, String reqData) throws Exception {
 		appendLog("--ReqTokenHandler(用户获取token)--");
 		
-		String token = accountService.generateToken(account, channel);
+		String token = accountService.generateToken(account);
 		
 		// TODO
 		// 清除直播状态，处理直播房间剩余人数

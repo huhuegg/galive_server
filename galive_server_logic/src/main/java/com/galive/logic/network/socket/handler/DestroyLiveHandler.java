@@ -8,8 +8,8 @@ import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.service.LiveService;
 import com.galive.logic.service.LiveServiceImpl;
 
-@SocketRequestHandler(desc = "直播观众列表", command = Command.LIVE_AUDIENCE_LIST)
-public class LiveAudienceListHandler extends SocketBaseHandler  {
+@SocketRequestHandler(desc = "创建直播", command = Command.CREATE_LIVE)
+public class DestroyLiveHandler extends SocketBaseHandler  {
 	
 	private LiveService liveService = new LiveServiceImpl();
 	

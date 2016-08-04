@@ -17,11 +17,6 @@
 
 
 	<Logic>
-		<Channels>
-			<Channel>
-				<sid>001</sid>
-				<name>doudizhu</name>
-			</Channel>
-		</Channels>
+		
 	</Logic>
 </Config>

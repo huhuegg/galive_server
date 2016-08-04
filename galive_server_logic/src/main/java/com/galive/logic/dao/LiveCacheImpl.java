@@ -86,7 +86,7 @@ public class LiveCacheImpl implements LiveCache {
 		String json = JSON.toJSONString(live);
 		String liveKey = liveKey(liveSid);
 		jedis.set(liveKey, json);
-		jedis.hset(liveOwnerKey(), live.getOwnerSid(), liveSid);
+		//jedis.hset(liveOwnerKey(), live.getOwnerSid(), liveSid);
 		return live;
 	}
 

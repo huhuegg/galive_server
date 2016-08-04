@@ -38,10 +38,10 @@ public class ChannelHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {    
     	printLog("channelUnregistered", ctx);
-    	String account[] = ChannelManager.getAccount(ctx);
+    	String account = ctx.attr(ChannelManager.ACCOUNT_KEY).get(); 
 		if (account != null) {
 			CommandIn in = new CommandIn();
-			in.setAccount(account[0]);
+			in.setAccount(account);
 			in.setCommand(Command.OFFLINE);
 			SocketBaseHandler handler = AnnotationManager.createSocketHandlerInstance(in.getCommand());
 			handler.handle(in, ctx);
@@ -133,9 +133,9 @@ public class ChannelHandler extends ChannelInboundHandlerAdapter {
     }
     
     private void closeAndRemoveChannel(ChannelHandlerContext ctx) {
-    	String account[] = ChannelManager.getAccount(ctx);   
+    	String account = ctx.attr(ChannelManager.ACCOUNT_KEY).get();  
 		if (account != null) {
-			ChannelManager.getInstance().closeAndRemoveChannel(account[0], account[1]);
+			ChannelManager.getInstance().closeAndRemoveChannel(account);
 		} else {
 			ChannelManager.closeChannel(ctx);
 		}

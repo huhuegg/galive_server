@@ -1,7 +1,5 @@
 package com.galive.logic.service;
 
-import java.util.List;
-import com.galive.logic.exception.LogicException;
 import com.galive.logic.model.Live;
 
 public interface LiveService {
@@ -28,7 +26,11 @@ public interface LiveService {
 //	
 //	public long[] likeNums(String liveSid) throws LogicException;
 	
-	public Live createLive(String account, String channel);
+	public Live createLive(String account);
 	
-	public void joinLive();
+	public Live joinLive(String account, String liveSid);
+	
+	public void leaveLive(String account);
+	
+	public void destroyLive(String account);
 }

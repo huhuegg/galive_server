@@ -24,34 +24,33 @@ public class ChannelManager {
 		return instance;
 	}
 	
-	public ChannelHandlerContext findChannel(String account, String channel) {
-		return clientChannels.get(accountTag(account, channel));
+	public ChannelHandlerContext findChannel(String account) {
+		return clientChannels.get(account);
 	}
 	
-	public void addChannel(String account, String channel, ChannelHandlerContext context) {
-		String accountTag = accountTag(account, channel);
-		context.attr(ACCOUNT_KEY).set(accountTag);
-		clientChannels.put(accountTag, context);
+	public void addChannel(String account, ChannelHandlerContext context) {
+		context.attr(ACCOUNT_KEY).set(account);
+		clientChannels.put(account, context);
 	}
 	
-	public void removeChannel(String account, String channel) {
-		clientChannels.remove(accountTag(account, channel));
+	public void removeChannel(String account) {
+		clientChannels.remove(account);
 	}
 	
-	public void closeAndRemoveChannel(String account, String channel) {
-		ChannelHandlerContext context = clientChannels.get(accountTag(account, channel));
+	public void closeAndRemoveChannel(String account) {
+		ChannelHandlerContext context = clientChannels.get(account);
 		closeChannel(context);
-		clientChannels.remove(accountTag(account, channel));
+		clientChannels.remove(account);
 	}
 	
 	public long channelCount() {
 		return clientChannels.size();
 	}
 	
-	public void sendMessage(String account, String channel, String message) {
+	public void sendMessage(String account, String message) {
 		if (message != null) {
-			ChannelHandlerContext context = clientChannels.get(accountTag(account, channel));
-			if (channel != null && context.channel().isActive()) {
+			ChannelHandlerContext context = clientChannels.get(account);
+			if (context != null && context.channel().isActive()) {
 				message += delimiter;
 				context.writeAndFlush(message);
 			}
@@ -64,14 +63,5 @@ public class ChannelManager {
 			ctx.close();
 		}
 	}
-	
-	private String accountTag(String account, String channel) {
-		return account + "#" + channel;
-	}
-	
-	public static String[] getAccount(ChannelHandlerContext context) {
-		String accountTag = context.attr(ChannelManager.ACCOUNT_KEY).get(); 
-		String account[] = accountTag.split("#");
-		return account;
-	}
+
 }

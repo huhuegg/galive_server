@@ -1,13 +1,8 @@
 package com.galive.logic.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.galive.logic.dao.LiveCache;
 import com.galive.logic.dao.LiveCacheImpl;
-import com.galive.logic.exception.LogicException;
 import com.galive.logic.model.Live;
-import com.galive.logic.model.Live.LiveState;
 
 public class LiveServiceImpl extends BaseService implements LiveService {
 
@@ -16,6 +11,29 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 	public LiveServiceImpl() {
 		super();
 		appendLog("LiveServiceImpl");
+	}
+
+	@Override
+	public Live createLive(String account) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Live joinLive(String account, String liveSid) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void leaveLive(String account) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void destroyLive(String account) {
+		// TODO Auto-generated method stub
 	}
 	
 //	@Override

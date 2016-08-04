@@ -35,11 +35,6 @@ public class CommandIn {
 	private String params = "";
 	
 	/**
-	 * channelid
-	 */
-	private String channel = "";
-	
-	/**
 	 * 客户端自定义参数
 	 */
 	private String tag = "";
@@ -51,8 +46,8 @@ public class CommandIn {
 	 */
 	public static CommandIn fromSocketReq(String req, String paramsDelimiter) {
 		try {
-			String s[] = StringUtils.split(req, paramsDelimiter, 6);
-			if (s.length < 6) {
+			String s[] = StringUtils.split(req, paramsDelimiter, 5);
+			if (s.length < 5) {
 				return null;
 			}
 			String commandStr = s[0];
@@ -61,15 +56,13 @@ public class CommandIn {
 			}
 			int command = Integer.parseInt(commandStr);
 			String account = s[1];
-			String channel = s[2];
-			String token = s[3];
-			String tag = s[4];
-			String params = URLDecoder.decode(s[5], StandardCharsets.UTF_8.name());
+			String token = s[2];
+			String tag = s[3];
+			String params = URLDecoder.decode(s[4], StandardCharsets.UTF_8.name());
 			
 			CommandIn in = new CommandIn();
 			in.setCommand(command);
 			in.setAccount(account);
-			in.setChannel(channel);
 			in.setTag(tag);
 			in.setToken(token);
 			in.setParams(params);
@@ -95,13 +88,11 @@ public class CommandIn {
 			String account = req.getHeader("account");
 			String token = req.getHeader("token");
 			String params = req.getParameter("params");
-			String channel = req.getParameter("channel");
 			String tag = req.getParameter("tag");
-			logger.debug(String.format("command:%s,account:%s,channel:%s,token:%s,params:%s,tag:%s", command,account,channel,token,params,tag));
+			logger.debug(String.format("command:%s,account:%s,token:%s,params:%s,tag:%s", command,account,token,params,tag));
 			CommandIn in = new CommandIn();
 			in.setCommand(command);
 			in.setAccount(account);
-			in.setChannel(channel);
 			in.setToken(token);
 			in.setTag(tag);
 			if (params != null) {
@@ -144,14 +135,6 @@ public class CommandIn {
 
 	public void setAccount(String account) {
 		this.account = account;
-	}
-
-	public String getChannel() {
-		return channel;
-	}
-
-	public void setChannel(String channel) {
-		this.channel = channel;
 	}
 
 	public String getTag() {

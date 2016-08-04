@@ -5,15 +5,12 @@ import org.slf4j.LoggerFactory;
 import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.exception.LogicException;
-import com.galive.logic.helper.LogicHelper;
-import com.galive.logic.service.LiveService;
-import com.galive.logic.service.LiveServiceImpl;
 
 public abstract class HttpBaseHandler {
 	
 	private static Logger logger = LoggerFactory.getLogger(HttpBaseHandler.class);
 	
-	public abstract CommandOut handle(String account, String channel, String reqData) throws Exception;
+	public abstract CommandOut handle(String account, String reqData) throws Exception;
 	
 	protected StringBuffer logBuffer = new StringBuffer();
 	
@@ -25,21 +22,15 @@ public abstract class HttpBaseHandler {
 		String account = in.getAccount();
 		String token = in.getToken();
 		String params = in.getParams();
-		String channel = in.getChannel();
 		String tag = in.getTag();
 		appendLog("请求参数:");
 		appendLog("command:" + command);
 		appendLog("account:" + account);
-		appendLog("channel:" + channel);
 		appendLog("token:" + token);
 		appendLog("params:" + params);
 		
 		try {
-			if (!LogicHelper.channelExist(channel)) {
-				appendLog("channel不合法");
-				out = respFail("channel不合法", command);
-			}
-			out = handle(account, channel, params);
+			out = handle(account, params);
 		} catch (LogicException logicException) {
 			logicException.printStackTrace();
 			String error = logicException.getMessage();

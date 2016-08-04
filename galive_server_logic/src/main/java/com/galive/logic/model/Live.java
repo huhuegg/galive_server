@@ -1,32 +1,35 @@
 package com.galive.logic.model;
 
-public class Live {
+import java.util.LinkedList;
+import java.util.List;
 
-	public static enum LiveState {
-		On,
-		Off;
-	}
+public class Live {
 	
-	public static final int MAX_AUDIENCE = 5;
-	
+	/**
+	 * 直播房间id
+	 */
 	private String sid = "";
 	
-	private String name = "";
+	/**
+	 * 创建人
+	 */
+	private String account = "";
 	
-	private String ownerSid = "";
+	/**
+	 * 房间内成员
+	 */
+	private List<String> accounts = new LinkedList<String>();
 	
+	/**
+	 * 创建时间
+	 */
 	private long createAt = System.currentTimeMillis();
 	
-	private long latestLiveAt = System.currentTimeMillis();
+	/**
+	 * 房间id
+	 */
+	private String room = "";
 	
-	private LiveState state = LiveState.Off;
-	
-	private String actionRecordUrl = "";
-	
-	public String desc() {
-		return " " + name + "(" + sid + ") ";
-	}
-
 	public String getSid() {
 		return sid;
 	}
@@ -34,23 +37,7 @@ public class Live {
 	public void setSid(String sid) {
 		this.sid = sid;
 	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getOwnerSid() {
-		return ownerSid;
-	}
-
-	public void setOwnerSid(String ownerSid) {
-		this.ownerSid = ownerSid;
-	}
-
+	
 	public long getCreateAt() {
 		return createAt;
 	}
@@ -59,29 +46,29 @@ public class Live {
 		this.createAt = createAt;
 	}
 
-	public long getLatestLiveAt() {
-		return latestLiveAt;
+	public String getAccount() {
+		return account;
 	}
 
-	public void setLatestLiveAt(long latestLiveAt) {
-		this.latestLiveAt = latestLiveAt;
+	public void setAccount(String account) {
+		this.account = account;
 	}
 
-	public LiveState getState() {
-		return state;
+	public List<String> getAccounts() {
+		return accounts;
 	}
 
-	public void setState(LiveState state) {
-		this.state = state;
+	public void setAccounts(List<String> accounts) {
+		this.accounts = accounts;
 	}
 
-	public String getActionRecordUrl() {
-		return actionRecordUrl;
+	public String getRoom() {
+		return room;
 	}
 
-	public void setActionRecordUrl(String actionRecordUrl) {
-		this.actionRecordUrl = actionRecordUrl;
+	public void setRoom(String room) {
+		this.room = room;
 	}
-	
+
 	
 }
