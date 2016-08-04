@@ -15,8 +15,8 @@ public class Command {
 	public static final int DESTROY_LIVE_PUSH = 3053;
 
 	// 用户被踢下线
-	public static final int KICK_OFF = 1997;
-	// 用户下线
+	public static final int KICK_OFF_PUSH = 1997;
+	// 用户上线
 	public static final int ONLINE = 1998;
 	// 用户下线
 	public static final int OFFLINE = 1999;
