@@ -213,4 +213,28 @@ public class LiveCacheImpl implements LiveCache {
 		return time;
 	}
 
+	@Override
+	public void saveLiveOwner(String account, String liveSid) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void saveLiveMember(String account, String liveSid) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Live findLiveByOwner(String account) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Live findLiveByMember(String account) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

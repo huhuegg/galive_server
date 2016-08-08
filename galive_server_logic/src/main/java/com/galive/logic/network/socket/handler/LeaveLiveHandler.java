@@ -1,43 +1,38 @@
 package com.galive.logic.network.socket.handler;
 
-import com.alibaba.fastjson.JSON;
+import java.util.List;
+
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
-import com.galive.common.protocol.PageCommandIn;
+import com.galive.logic.model.Live;
 import com.galive.logic.network.socket.SocketRequestHandler;
+import com.galive.logic.network.socket.handler.push.LeaveLivePush;
 import com.galive.logic.service.LiveService;
 import com.galive.logic.service.LiveServiceImpl;
 
-@SocketRequestHandler(desc = "创建直播", command = Command.CREATE_LIVE)
-public class LeaveLiveHandler extends SocketBaseHandler  {
-	
+@SocketRequestHandler(desc = "离开直播", command = Command.LEAVE_LIVE)
+public class LeaveLiveHandler extends SocketBaseHandler {
+
 	private LiveService liveService = new LiveServiceImpl();
-	
+
 	@Override
-	public CommandOut handle(String userSid, String reqData) throws Exception {
-		appendLog("--LiveAudienceListHandler(直播观众列表)--");
-		LiveAudienceListIn in = JSON.parseObject(reqData, LiveAudienceListIn.class);
-		
-		String liveSid = in.liveSid;
-		int index = in.index;
-		int size = in.size;
-		appendLog("直播id(liveSid):" + liveSid);
-		appendLog("起始游标(index):" + index);
-		appendLog("分页数量(size):" + size);
-		
-//		List<User> users = liveService.listAudiences(liveSid, index, size);
-//		List<RespUser> respUsers = new ArrayList<>();
-//		for (User u : users) {
-//			RespUser respUser = new RespUser();
-//			respUser.convert(u);
-//			respUsers.add(respUser);
-//		}
-		//PageCommandOut<RespUser> out = new PageCommandOut<>(Command.LIVE_AUDIENCE_LIST, in);
-		//out.setData(respUsers);
-		return null;
+	public CommandOut handle(String account, String reqData) throws Exception {
+		appendLog("--LeaveLiveHandler(直播观众列表)--");
+
+		Live live = liveService.leaveLive(account);
+
+		LeaveLivePush push = new LeaveLivePush();
+		push.account = account;
+		String pushContent = push.socketResp();
+
+		List<String> accounts = live.getMemberAccounts();
+		for (String act : accounts) {
+			if (!act.equals(account))
+				pushMessage(act, pushContent);
+		}
+
+		CommandOut out = new CommandOut(Command.DESTROY_LIVE);
+		return out;
 	}
-	
-	public static class LiveAudienceListIn extends PageCommandIn {
-		public String liveSid = "";
-	}
+
 }

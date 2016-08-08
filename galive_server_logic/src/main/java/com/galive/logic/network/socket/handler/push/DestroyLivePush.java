@@ -5,6 +5,8 @@ import com.galive.common.protocol.CommandOut;
 
 public class DestroyLivePush extends CommandOut {
 	
+	public String account;
+	
 	public DestroyLivePush() {
 		super(Command.DESTROY_LIVE_PUSH);
 	}

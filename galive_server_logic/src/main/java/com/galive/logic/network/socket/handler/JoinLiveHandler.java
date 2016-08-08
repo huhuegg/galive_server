@@ -1,43 +1,47 @@
 package com.galive.logic.network.socket.handler;
 
+import java.util.List;
+
 import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
+import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
-import com.galive.common.protocol.PageCommandIn;
+import com.galive.logic.model.Live;
 import com.galive.logic.network.socket.SocketRequestHandler;
+import com.galive.logic.network.socket.handler.push.JoinLivePush;
 import com.galive.logic.service.LiveService;
 import com.galive.logic.service.LiveServiceImpl;
 
-@SocketRequestHandler(desc = "创建直播", command = Command.CREATE_LIVE)
-public class JoinLiveHandler extends SocketBaseHandler  {
-	
+@SocketRequestHandler(desc = "加入直播", command = Command.JOIN_LIVE)
+public class JoinLiveHandler extends SocketBaseHandler {
+
 	private LiveService liveService = new LiveServiceImpl();
-	
+
 	@Override
-	public CommandOut handle(String userSid, String reqData) throws Exception {
-		appendLog("--LiveAudienceListHandler(直播观众列表)--");
-		LiveAudienceListIn in = JSON.parseObject(reqData, LiveAudienceListIn.class);
-		
+	public CommandOut handle(String account, String reqData) throws Exception {
+		appendLog("--JoinLiveHandler(加入直播)--");
+
+		JoinLiveIn in = JSON.parseObject(reqData, JoinLiveIn.class);
 		String liveSid = in.liveSid;
-		int index = in.index;
-		int size = in.size;
 		appendLog("直播id(liveSid):" + liveSid);
-		appendLog("起始游标(index):" + index);
-		appendLog("分页数量(size):" + size);
-		
-//		List<User> users = liveService.listAudiences(liveSid, index, size);
-//		List<RespUser> respUsers = new ArrayList<>();
-//		for (User u : users) {
-//			RespUser respUser = new RespUser();
-//			respUser.convert(u);
-//			respUsers.add(respUser);
-//		}
-		//PageCommandOut<RespUser> out = new PageCommandOut<>(Command.LIVE_AUDIENCE_LIST, in);
-		//out.setData(respUsers);
-		return null;
+
+		Live live = liveService.joinLive(account, liveSid);
+
+		JoinLivePush push = new JoinLivePush();
+		push.account = account;
+		String pushContent = push.socketResp();
+
+		List<String> accounts = live.getMemberAccounts();
+		for (String act : accounts) {
+			if (!act.equals(account))
+				pushMessage(act, pushContent);
+		}
+
+		CommandOut out = new CommandOut(Command.JOIN_LIVE);
+		return out;
 	}
-	
-	public static class LiveAudienceListIn extends PageCommandIn {
+
+	public static class JoinLiveIn extends CommandIn {
 		public String liveSid = "";
 	}
 }

@@ -1,19 +1,25 @@
 package com.galive.logic.dao;
 
+import com.galive.logic.model.Account;
+
 public interface AccountDao {
 
 	/**
 	 * 保存登录Token
-	 * @param accountSid
+	 * @param account
 	 * @param token
 	 */
-	public void saveToken(String accountSid, String token);
+	public void saveToken(String account, String token);
 	
 	/**
 	 * 查询Token
-	 * @param accountSid
+	 * @param account
 	 * @return
 	 */
-	public String findToken(String accountSid);
+	public String findToken(String account);
+	
+	public Account save(Account account);
+	
+	public Account findAccount(String account);
 	
 }

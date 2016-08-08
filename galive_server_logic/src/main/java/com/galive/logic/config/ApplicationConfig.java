@@ -50,6 +50,14 @@ public class ApplicationConfig {
 			Element streamUrlNode = logicNode.element("StreamUrl");
 			String streamUrl = streamUrlNode.getStringValue();
 			logicConfig.setStreamUrl(streamUrl);
+			logger.info("streamUrl:" + streamUrl);
+			
+			Element maxLiveMemberNode = logicNode.element("MaxLiveMember");
+			String maxLiveMemberStr = maxLiveMemberNode.getStringValue();
+			int maxLiveMember = Integer.parseInt(maxLiveMemberStr);
+			logicConfig.setMaxLiveMember(maxLiveMember);
+			logger.info("maxLiveMember:" + maxLiveMember);
+			
 			sc.setLogicConfig(logicConfig);
 
 			logger.info("--SocketConfig--");
