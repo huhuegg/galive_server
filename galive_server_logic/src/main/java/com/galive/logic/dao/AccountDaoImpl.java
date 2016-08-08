@@ -1,7 +1,5 @@
 package com.galive.logic.dao;
 
-import org.apache.commons.lang.time.DateUtils;
-
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.dao.cache.RedisManager;
 import com.galive.logic.model.Account;
