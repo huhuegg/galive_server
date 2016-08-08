@@ -2,7 +2,7 @@ package com.galive.logic.dao;
 
 import java.util.List;
 
-public interface LiveCache {
+public interface LiveDao {
 	
 	
 	public void saveLiveOwner(String liveSid, String account);

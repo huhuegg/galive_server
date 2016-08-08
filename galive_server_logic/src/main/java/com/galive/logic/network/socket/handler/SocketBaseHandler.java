@@ -9,6 +9,8 @@ import com.galive.common.protocol.CommandOut;
 import com.galive.logic.exception.LogicException;
 import com.galive.logic.network.socket.ChannelManager;
 import com.galive.logic.network.socket.handler.push.KickOffPush;
+import com.galive.logic.service.AccountService;
+import com.galive.logic.service.AccountServiceImpl;
 
 import io.netty.channel.ChannelHandlerContext;
 
@@ -48,7 +50,12 @@ public abstract class SocketBaseHandler {
 				}
 				ChannelManager.getInstance().addChannel(account, channel);
 			}
-			out = handle(account, in.getParams());
+			AccountService accountService = new AccountServiceImpl();
+			if (!accountService.verifyToken(account, token)) {
+				out = respFail("token已过期", command);
+			} else {
+				out = handle(account, in.getParams());
+			}
 		} catch (LogicException logicException) {
 			logicException.printStackTrace();
 			String error = logicException.getMessage();
