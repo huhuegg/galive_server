@@ -36,6 +36,9 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 	}
 	
 	private void decodeRegisterRoomInfo(ByteBuf buf) {
+		long timestamp = buf.readLong();
+		logger.debug("timestamp:" + timestamp);
+		
 		long serverId = buf.readUnsignedInt();
 		logger.debug("serverId:" + serverId);
 		
@@ -50,6 +53,9 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 	}
 	
 	private void decodeReqUserInfo(ByteBuf buf) {
+		long timestamp = buf.readLong();
+		logger.debug("timestamp:" + timestamp);
+		
 		long serverId = buf.readUnsignedInt();
 		logger.debug("serverId:" + serverId);
 		
