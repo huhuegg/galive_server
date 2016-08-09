@@ -29,6 +29,7 @@ public class LogicServlet extends HttpServlet {
 		try {
 			CommandIn in = CommandIn.fromHttpReq(req);
 			if (in == null) {
+				logger.error("参数错误");
 				badRequest(resp);
 				return;
 			}

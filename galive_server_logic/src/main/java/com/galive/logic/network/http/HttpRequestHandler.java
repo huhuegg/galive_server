@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HttpRequestHandler {
 
-	public int command();
+	public String command();
 	public String desc();
 
 }

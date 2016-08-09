@@ -21,8 +21,8 @@ public class AnnotationManager {
 
 	private static Logger logger = LoggerFactory.getLogger(AnnotationManager.class);
 
-	private static Map<Integer, Class<?>> socketHandlers = new HashMap<>();
-	private static Map<Integer, Class<?>> httpHandlers = new HashMap<>();
+	private static Map<String, Class<?>> socketHandlers = new HashMap<>();
+	private static Map<String, Class<?>> httpHandlers = new HashMap<>();
 	
 	/**
 	 * 扫描AppLogicHandler所在包 加载所有@LogicHandler标签类
@@ -60,7 +60,7 @@ public class AnnotationManager {
 	 * @param messageID
 	 * @return
 	 */
-	public static SocketBaseHandler createSocketHandlerInstance(int command) {
+	public static SocketBaseHandler createSocketHandlerInstance(String command) {
 		SocketBaseHandler handler = null;
 		Class<?> clazz = socketHandlers.get(command);
 		if (clazz != null) {
@@ -80,7 +80,7 @@ public class AnnotationManager {
 	 * @param messageID
 	 * @return
 	 */
-	public static HttpBaseHandler createHttpHandlerInstance(int command) {
+	public static HttpBaseHandler createHttpHandlerInstance(String command) {
 		HttpBaseHandler handler = null;
 		Class<?> clazz = httpHandlers.get(command);
 		if (clazz != null) {

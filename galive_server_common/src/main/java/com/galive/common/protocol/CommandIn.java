@@ -17,7 +17,7 @@ public class CommandIn {
 	/**
 	 * 请求id
 	 */
-	private int command;
+	private String command;
 	
 	/**
 	 * 用户账号
@@ -54,7 +54,7 @@ public class CommandIn {
 			if (StringUtils.isBlank(commandStr)) {
 				return null;
 			}
-			int command = Integer.parseInt(commandStr);
+			String command = commandStr;
 			String account = s[1];
 			String token = s[2];
 			String tag = s[3];
@@ -84,7 +84,7 @@ public class CommandIn {
 			if (StringUtils.isBlank(commandStr)) {
 				return null;
 			}
-			int command = Integer.parseInt(commandStr);
+			String command = commandStr;
 			String account = req.getHeader("account");
 			String token = req.getHeader("token");
 			String params = req.getParameter("params");
@@ -113,11 +113,11 @@ public class CommandIn {
 		this.token = token;
 	}
 
-	public int getCommand() {
+	public String getCommand() {
 		return command;
 	}
 
-	public void setCommand(int command) {
+	public void setCommand(String command) {
 		this.command = command;
 	}
 

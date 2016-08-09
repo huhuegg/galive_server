@@ -3,21 +3,21 @@ package com.galive.common.protocol;
 public class Command {
 
 	// 获取Token
-	public static final int REQ_TOKEN = 1000;
+	public static final String REQ_TOKEN = "REQ_TOKEN";
 
-	public static final int CREATE_LIVE = 1050;
-	public static final int JOIN_LIVE = 1051;
-	public static final int LEAVE_LIVE = 1052;
-	public static final int DESTROY_LIVE = 1053;
+	public static final String CREATE_LIVE = "CREATE_LIVE";
+	public static final String JOIN_LIVE = "JOIN_LIVE";
+	public static final String LEAVE_LIVE = "LEAVE_LIVE";
+	public static final String DESTROY_LIVE = "DESTROY_LIVE";
 
-	public static final int JOIN_LIVE_PUSH = 3051;
-	public static final int LEAVE_LIVE_PUSH = 3052;
-	public static final int DESTROY_LIVE_PUSH = 3053;
+	public static final String JOIN_LIVE_PUSH = "JOIN_LIVE_PUSH";
+	public static final String LEAVE_LIVE_PUSH = "LEAVE_LIVE_PUSH";
+	public static final String DESTROY_LIVE_PUSH = "DESTROY_LIVE_PUSH";
 
 	// 用户被踢下线
-	public static final int KICK_OFF_PUSH = 1970;
+	public static final String KICK_OFF_PUSH = "KICK_OFF_PUSH";
 	// 用户上线
-	public static final int ONLINE = 1980;
+	public static final String ONLINE = "ONLINE";
 	// 用户下线
-	public static final int OFFLINE = 1990;
+	public static final String OFFLINE = "OFFLINE";
 }

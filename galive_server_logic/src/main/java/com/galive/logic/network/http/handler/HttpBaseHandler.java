@@ -18,7 +18,7 @@ public abstract class HttpBaseHandler {
 		appendSplit();
 		long start = System.currentTimeMillis();
 		CommandOut out = null;
-		int command = in.getCommand();
+		String command = in.getCommand();
 		String account = in.getAccount();
 		String token = in.getToken();
 		String params = in.getParams();
@@ -53,7 +53,7 @@ public abstract class HttpBaseHandler {
 		return resp;
 	}
 	
-	private CommandOut respFail(String message, int command) {
+	private CommandOut respFail(String message, String command) {
 		CommandOut resp = CommandOut.failureOut(command, message);
 		return resp;
 	}

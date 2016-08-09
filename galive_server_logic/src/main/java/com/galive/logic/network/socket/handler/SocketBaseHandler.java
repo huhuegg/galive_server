@@ -26,7 +26,7 @@ public abstract class SocketBaseHandler {
 		appendSplit();
 		long start = System.currentTimeMillis();
 		CommandOut out = null;
-		int command = in.getCommand();
+		String command = in.getCommand();
 		String account = in.getAccount();
 		String token = in.getToken();
 		String tag = in.getTag();
@@ -84,7 +84,7 @@ public abstract class SocketBaseHandler {
 		ChannelManager.getInstance().sendMessage(account, message);
 	}
 	
-	private CommandOut respFail(String message, int command) {
+	private CommandOut respFail(String message, String command) {
 		CommandOut out = CommandOut.failureOut(command, message);
 		return out;
 	}
