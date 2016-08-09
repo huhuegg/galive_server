@@ -8,7 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.SocketConfig;
-import com.galive.logic.network.socket.ChannelHandler;
+import com.galive.logic.network.socket.ChannelByteHandler;
+import com.galive.logic.network.socket.ChannelStringLineHandler;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
@@ -16,11 +17,14 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LogLevel;
@@ -32,17 +36,26 @@ public class NettyServer {
 
 	private static Logger logger = LoggerFactory.getLogger(NettyServer.class);
 	
-	private ChannelFuture channelFuture;
-	private EventLoopGroup bossGroup;
-	private EventLoopGroup workerGroup;
+	private ChannelFuture logicChannelFuture;
+	private EventLoopGroup logicMainGroup;
+	private EventLoopGroup logicWorkerGroup;
+	
+	private ChannelFuture voiceChannelFuture;
+	private EventLoopGroup voiceMainGroup;
+	private EventLoopGroup voiceWorkerGroup;
 
 	public void start() throws InterruptedException, IOException {
-		bossGroup = new NioEventLoopGroup(); 
-		workerGroup = new NioEventLoopGroup();
+		startLogicChannel();
+		startVoiceChannel();
+	}
+	
+	private void startLogicChannel() throws InterruptedException, IOException {
+		logicMainGroup = new NioEventLoopGroup(); 
+		logicWorkerGroup = new NioEventLoopGroup();
 		final NettyConfig nettyConfig = NettyConfig.loadConfig();
 		final SocketConfig socketConfig = ApplicationConfig.getInstance().getSocketConfig();
 		ServerBootstrap b = new ServerBootstrap(); 
-		b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
+		b.group(logicMainGroup, logicWorkerGroup).channel(NioServerSocketChannel.class)
 				.childHandler(new ChannelInitializer<SocketChannel>() { 
 					@Override
 					public void initChannel(SocketChannel ch) throws Exception {
@@ -65,24 +78,51 @@ public class NettyServer {
 						//心跳
 						ch.pipeline().addLast(new IdleStateHandler(0, 0, nettyConfig.getBothIdleTime(), TimeUnit.SECONDS));
 						
-						ch.pipeline().addLast(new ChannelHandler());
+						ch.pipeline().addLast(new ChannelStringLineHandler());
 					}
 				}).childOption(ChannelOption.SO_KEEPALIVE, true);
 
 		// Bind and start to accept incoming connections.
 		int port = socketConfig.getPort();
-		channelFuture = b.bind(port).sync();
-		channelFuture.channel().closeFuture();
-		logger.info("绑定端口" + port + (channelFuture.isSuccess() ? "成功" : "失败"));
+		logicChannelFuture = b.bind(port).sync();
+		logicChannelFuture.channel().closeFuture();
+		logger.info("绑定端口" + port + (logicChannelFuture.isSuccess() ? "成功" : "失败"));
+	}
+	
+	private void startVoiceChannel() throws InterruptedException, IOException {
+		voiceMainGroup = new NioEventLoopGroup(); 
+		voiceWorkerGroup = new NioEventLoopGroup();
+		ServerBootstrap b2 = new ServerBootstrap(); 
+		b2.group(voiceMainGroup, voiceWorkerGroup).channel(NioServerSocketChannel.class)
+				.childHandler(new ChannelInitializer<SocketChannel>() { 
+					@Override
+					public void initChannel(SocketChannel ch) throws Exception {
+						ChannelPipeline pipeline = ch.pipeline();  
+						pipeline.addLast(new LoggingHandler(LogLevel.DEBUG));
+		                pipeline.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));  
+		                pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));  
+		                pipeline.addLast(new ChannelByteHandler());  
+					}
+				}).childOption(ChannelOption.SO_KEEPALIVE, true);
+		int port = 44100;
+		voiceChannelFuture = b2.bind(port).sync();
+		voiceChannelFuture.channel().closeFuture();
+		logger.info("绑定端口" + port + (voiceChannelFuture.isSuccess() ? "成功" : "失败"));
 	}
 
 	public void stop() {
 		try {
-			if (workerGroup != null) {
-				workerGroup.shutdownGracefully().sync();
+			if (logicMainGroup != null) {
+				logicMainGroup.shutdownGracefully().sync();
 			}
-			if (bossGroup != null) {
-				bossGroup.shutdownGracefully().sync();
+			if (logicWorkerGroup != null) {
+				logicWorkerGroup.shutdownGracefully().sync();
+			}
+			if (voiceMainGroup != null) {
+				voiceMainGroup.shutdownGracefully().sync();
+			}
+			if (voiceWorkerGroup != null) {
+				voiceWorkerGroup.shutdownGracefully().sync();
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

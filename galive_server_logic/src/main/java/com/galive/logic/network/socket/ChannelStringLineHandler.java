@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
-import com.galive.logic.ApplicationMain;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.SocketConfig;
 import com.galive.logic.manager.AnnotationManager;
@@ -16,9 +15,9 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 
-public class ChannelHandler extends ChannelInboundHandlerAdapter {
+public class ChannelStringLineHandler extends ChannelInboundHandlerAdapter {
 
-	private static Logger logger = LoggerFactory.getLogger(ApplicationMain.class);
+	private static Logger logger = LoggerFactory.getLogger(ChannelStringLineHandler.class);
 	
 	private static String KEEP_ALIVE_REQ;
 	private static String KEEP_ALIVE_RESP;
