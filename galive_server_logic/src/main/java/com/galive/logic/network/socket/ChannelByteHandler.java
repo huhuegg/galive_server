@@ -11,15 +11,13 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import com.galive.logic.service.AccountService;
+import com.galive.logic.service.AccountServiceImpl;
 import com.galive.logic.service.RoomService;
 import com.galive.logic.service.RoomServiceImpl;
-
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -28,64 +26,62 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 	private static final short REGISTER_ROOM_INFO = 10001;
 	private static final short REQ_USER_INFO = 10002;
 	private static final short RET_USER_INFO = 10003;
-	
+
 	private static Logger logger = LoggerFactory.getLogger(ChannelByteHandler.class);
-	private static final int MAX_NAME_SIZE = 32;
-	private static final int USER_KEY_SIZE = 64;
-	
-	
+	private static final int MAX_NAME_SIZE = 8;
+	private static final int USER_KEY_SIZE = 8;
+
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		printLog("channelRead", ctx);
-		//super.channelRead(ctx, msg);
-		
+		// super.channelRead(ctx, msg);
+
 		ByteBuf buf = (ByteBuf) msg;
-		
+
 		byte[] bytes = new byte[buf.readableBytes()];
 		buf.getBytes(0, bytes);
-		
-//		byte[] bytes = new byte[buf.readableBytes()];
-//		buf.readBytes(bytes);
+
+		// byte[] bytes = new byte[buf.readableBytes()];
+		// buf.readBytes(bytes);
 		logger.debug(bytes + "");
-		logger.debug(new String(bytes));		
+		logger.debug(new String(bytes));
 		logger.debug("===========================================");
-		//short messageId = buf.readUnsignedShort()
+		// short messageId = buf.readUnsignedShort()
 		short pkglen = buf.readShort();
 		logger.debug("pkglen:" + pkglen);
-		
+
 		short contentlen = buf.readShort();
 		logger.debug("contentlen:" + contentlen);
-		
+
 		short encrypt = buf.readShort();
 		logger.debug("encrypt:" + encrypt);
-		
-		int messageId = buf.readShort();
+
+		short messageId = buf.readShort();
 		logger.debug("messageId:" + messageId);
-		
+
 		int timestamp = buf.readInt();
 		logger.debug("timestamp:" + timestamp);
-		
+
 		switch (messageId) {
 		case REGISTER_ROOM_INFO:
-			InetSocketAddress address = ((InetSocketAddress)(ctx.channel().remoteAddress()));
+			InetSocketAddress address = ((InetSocketAddress) (ctx.channel().remoteAddress()));
 			String ip = address.getHostString();
 			int port = address.getPort();
 			decodeRegisterRoomInfo(buf, ip, port);
 			break;
 		case REQ_USER_INFO:
-			decodeReqUserInfo(buf);
+			decodeReqUserInfo(timestamp, buf, ctx);
 			break;
 		}
 		logger.debug("===========================================");
 		buf.release();
-		
-		
+
 	}
-	
+
 	private void decodeRegisterRoomInfo(ByteBuf buf, String ip, int port) {
 		long serverId = buf.readUnsignedInt();
 		logger.debug("serverId:" + serverId);
-		
+
 		byte size = buf.readByte();
 		logger.debug("size:" + size);
 		List<String> rooms = new ArrayList<>();
@@ -97,34 +93,53 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 		RoomService rs = new RoomServiceImpl();
 		rs.saveRooms(ip, port, rooms);
 	}
-	
-	private void decodeReqUserInfo(ByteBuf buf) {		
+
+	private void decodeReqUserInfo(int timestamp, ByteBuf buf, ChannelHandlerContext ctx) {
 		long conID = buf.readLong();
 		logger.debug("conID:" + conID);
-		
-		
-		ByteBuf userIdBuf  = buf.readBytes(MAX_NAME_SIZE);
-		byte[] userIdBytes = new byte[userIdBuf.readableBytes()];
-	
+
+		byte[] userIdBytes = new byte[MAX_NAME_SIZE];
+		buf.readBytes(userIdBytes);
+
 		String userId = new String(userIdBytes, StandardCharsets.UTF_8);
+		userId = userId.trim();
 		logger.debug("userId:" + userId);
 		
-		ByteBuf UserKeyBuf = buf.readBytes(USER_KEY_SIZE);
-		byte[] userKeyBytes = new byte[UserKeyBuf.readableBytes()];
-		String userKey = new String(userKeyBytes, StandardCharsets.UTF_8);
+		byte[] userkeyBytes = new byte[USER_KEY_SIZE];
+		buf.readBytes(userkeyBytes);
+
+		String userKey = new String(userkeyBytes, StandardCharsets.UTF_8);
+		userKey = userKey.trim();
 		logger.debug("userKey:" + userKey);
+
+		AccountService accountService = new AccountServiceImpl();
+		boolean isValid = accountService.verifyToken(userId, userKey);
+		
+		encodeReqUserInfo(conID, timestamp ,userId, isValid, ctx);
+		
 	}
-	
-	private void encodeReqUserInfo(ByteBuf buf, long conID, String userId, boolean isValid) {
+
+	private void encodeReqUserInfo(long conID, int timestamp, String userId, boolean isValid, ChannelHandlerContext ctx) {
+		int pkgLen = 2 * 4 + 4 + 8 + MAX_NAME_SIZE + 1;
+		ByteBuf buf = ctx.alloc().buffer(pkgLen); 
+		buf.writeShort((short)pkgLen);
+		buf.writeShort((short)(pkgLen - 2));
+		buf.writeShort((short)0);
+		buf.writeShort(RET_USER_INFO);
+		buf.writeInt(timestamp);
 		buf.writeLong(conID);
-		char[] charUserId = userId.toCharArray();
-		int userIdLen = charUserId.length;
-		int zeroCount = MAX_NAME_SIZE - userIdLen;
-		buf.writeZero(zeroCount);
-		for (int i = 0; i < userIdLen; i++) {
-			buf.writeChar(charUserId[i]);
-		}
-		buf.writeBoolean(isValid);
+
+		byte[] userIdBytes = userId.getBytes();
+		buf.writeZero(MAX_NAME_SIZE - userIdBytes.length);
+		buf.writeBytes(userIdBytes);
+		
+		buf.writeByte(isValid ? 0x01 : 0x00);
+		
+		byte[] pkg = new byte[buf.readableBytes()];
+		buf.getBytes(0, pkg);
+		
+		ctx.write(buf);
+		buf.release();
 	}
 
 	@Override
@@ -185,30 +200,50 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 		Socket socket = new Socket();
 		try {
 			socket.connect(new InetSocketAddress("127.0.0.1", 44100));
-			//socket.setKeepAlive(true);
+			// socket.setKeepAlive(true);
 			OutputStream o = socket.getOutputStream();
-			DataOutputStream out = new DataOutputStream(o);  
+			DataOutputStream out = new DataOutputStream(o);
 			while (true) {
-				byte[] message = "wangxin".getBytes();
-				int len = message.length;
+				byte[] userId = "wangxin".getBytes();
+				int userIdLen = userId.length;
 				
-//				ByteBuffer headLen = ByteBuffer.allocate(2);
-//				headLen.putShort( (short) (20 + len));
-//				
-//				ByteBuffer contentlen = ByteBuffer.allocate(2);
-//				contentlen.putShort((short)0);
-//				
-//				ByteBuffer encryptLen = ByteBuffer.allocate(2);
-//				encryptLen.putShort( (short) 0);
-				
-				out.writeShort((short) (20 + len));
-				out.writeShort((short)0);
-				out.writeShort((short)0);
+				byte[] userKey = "ab啊吧".getBytes();
+				int userKeyLen = userKey.length;
+				// ByteBuffer headLen = ByteBuffer.allocate(2);
+				// headLen.putShort( (short) (20 + len));
+				//
+				// ByteBuffer contentlen = ByteBuffer.allocate(2);
+				// contentlen.putShort((short)0);
+				//
+				// ByteBuffer encryptLen = ByteBuffer.allocate(2);
+				// encryptLen.putShort( (short) 0);
+
+				out.writeShort((short) (18 + MAX_NAME_SIZE + USER_KEY_SIZE));
+				out.writeShort((short) 1);
+				out.writeShort((short) 2);
 				out.writeShort(REQ_USER_INFO);
-				out.writeInt(0);
-				out.writeLong(0);
-				out.write(message);
+				out.writeInt(3);
+				out.writeLong(4);
+
+				ByteBuffer userIdBuf = ByteBuffer.allocate(MAX_NAME_SIZE);
+				for (int i = 0; i < MAX_NAME_SIZE - userIdLen; i++) {
+					userIdBuf.put((byte) 0);
+				}
+				userIdBuf.put(userId);
+				byte[] userIdByte = userIdBuf.array();
+				out.write(userIdByte);
 				
+				ByteBuffer userKeyBuf = ByteBuffer.allocate(USER_KEY_SIZE);
+				for (int i = 0; i < USER_KEY_SIZE - userKeyLen; i++) {
+					userKeyBuf.put((byte) 0);
+				}
+				userKeyBuf.put(userKey);
+				byte[] userKeyByte = userKeyBuf.array();
+				out.write(userKeyByte);
+				
+				
+				
+
 				out.flush();
 				InputStream in = socket.getInputStream();
 				byte[] buff = new byte[4096];
@@ -224,8 +259,8 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 					e.printStackTrace();
 				}
 			}
-			
-			//out.close();
+
+			// out.close();
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -241,5 +276,23 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 			}
 		}
 	}
-	
+
+/*	private byte[] getBytes(char[] chars) {
+		CharBuffer cb = CharBuffer.allocate(chars.length);
+		cb.put(chars);
+		cb.flip();
+		ByteBuffer bb = StandardCharsets.UTF_8.encode(cb);
+
+		return bb.array();
+
+	}
+
+	private char[] getChars(byte[] bytes) {
+		ByteBuffer bb = ByteBuffer.allocate(bytes.length);
+		bb.put(bytes);
+		bb.flip();
+		CharBuffer cb = StandardCharsets.UTF_8.decode(bb);
+		return cb.array();
+	}*/
+
 }
