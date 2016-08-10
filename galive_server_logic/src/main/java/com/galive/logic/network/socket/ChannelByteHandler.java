@@ -8,9 +8,15 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.galive.logic.service.RoomService;
+import com.galive.logic.service.RoomServiceImpl;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -32,6 +38,7 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		printLog("channelRead", ctx);
 		//super.channelRead(ctx, msg);
+		
 		ByteBuf buf = (ByteBuf) msg;
 		
 		byte[] bytes = new byte[buf.readableBytes()];
@@ -58,13 +65,12 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 		int timestamp = buf.readInt();
 		logger.debug("timestamp:" + timestamp);
 		
-		long serverId = buf.readUnsignedInt();
-		logger.debug("serverId:" + serverId);
-		
-		
 		switch (messageId) {
 		case REGISTER_ROOM_INFO:
-			decodeRegisterRoomInfo(buf);
+			InetSocketAddress address = ((InetSocketAddress)(ctx.channel().remoteAddress()));
+			String ip = address.getHostString();
+			int port = address.getPort();
+			decodeRegisterRoomInfo(buf, ip, port);
 			break;
 		case REQ_USER_INFO:
 			decodeReqUserInfo(buf);
@@ -76,33 +82,36 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 		
 	}
 	
-	private void decodeRegisterRoomInfo(ByteBuf buf) {
+	private void decodeRegisterRoomInfo(ByteBuf buf, String ip, int port) {
+		long serverId = buf.readUnsignedInt();
+		logger.debug("serverId:" + serverId);
+		
 		byte size = buf.readByte();
 		logger.debug("size:" + size);
+		List<String> rooms = new ArrayList<>();
 		for (int i = 0; i < size; i++) {
 			long roomId = buf.readUnsignedInt();
 			logger.debug("roomId:" + roomId);
+			rooms.add(roomId + "");
 		}
+		RoomService rs = new RoomServiceImpl();
+		rs.saveRooms(ip, port, rooms);
 	}
 	
 	private void decodeReqUserInfo(ByteBuf buf) {		
-		long conID = buf.readUnsignedInt();
+		long conID = buf.readLong();
 		logger.debug("conID:" + conID);
 		
-		char[] charUserId = new char[MAX_NAME_SIZE];
-		for (int i = 0; i < MAX_NAME_SIZE; i++) {
-			char c = buf.readChar();
-			charUserId[i] = c;
-		}
-		String userId = String.valueOf(charUserId);
+		
+		ByteBuf userIdBuf  = buf.readBytes(MAX_NAME_SIZE);
+		byte[] userIdBytes = new byte[userIdBuf.readableBytes()];
+	
+		String userId = new String(userIdBytes, StandardCharsets.UTF_8);
 		logger.debug("userId:" + userId);
 		
-		char[] charUserKey = new char[USER_KEY_SIZE];
-		for (int i = 0; i < USER_KEY_SIZE; i++) {
-			char c = buf.readChar();
-			charUserKey[i] = c;
-		}
-		String userKey = String.valueOf(charUserKey);
+		ByteBuf UserKeyBuf = buf.readBytes(USER_KEY_SIZE);
+		byte[] userKeyBytes = new byte[UserKeyBuf.readableBytes()];
+		String userKey = new String(userKeyBytes, StandardCharsets.UTF_8);
 		logger.debug("userKey:" + userKey);
 	}
 	
@@ -180,21 +189,24 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 			OutputStream o = socket.getOutputStream();
 			DataOutputStream out = new DataOutputStream(o);  
 			while (true) {
-				byte[] message = "aaaaaaaaaa".getBytes();
+				byte[] message = "wangxin".getBytes();
 				int len = message.length;
 				
-				ByteBuffer headLen = ByteBuffer.allocate(2);
-				headLen.putShort( (short) (2 + 2 + 4 + len));
+//				ByteBuffer headLen = ByteBuffer.allocate(2);
+//				headLen.putShort( (short) (20 + len));
+//				
+//				ByteBuffer contentlen = ByteBuffer.allocate(2);
+//				contentlen.putShort((short)0);
+//				
+//				ByteBuffer encryptLen = ByteBuffer.allocate(2);
+//				encryptLen.putShort( (short) 0);
 				
-				ByteBuffer encryptLen = ByteBuffer.allocate(2);
-				encryptLen.putShort( (short) 0);
-				
-				
-				
-				out.write(headLen.array());
-				out.write(encryptLen.array());
-				out.writeShort(REGISTER_ROOM_INFO);
+				out.writeShort((short) (20 + len));
+				out.writeShort((short)0);
+				out.writeShort((short)0);
+				out.writeShort(REQ_USER_INFO);
 				out.writeInt(0);
+				out.writeLong(0);
 				out.write(message);
 				
 				out.flush();
@@ -230,11 +242,4 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 		}
 	}
 	
-	private static int toUnsigned(short s) {  
-	    return s & 0x0FFFF;  
-	}
-	
-	public static long getUnsignedInt (int data){     //将int数据转换为0~4294967295 (0xFFFFFFFF即DWORD)。
-		return data&0x0FFFFFFFFl;
-	}
 }
