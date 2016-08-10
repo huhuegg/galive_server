@@ -13,52 +13,79 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 
+	private static final short REGISTER_ROOM_INFO = 10001;
+	private static final short REQ_USER_INFO = 10002;
+	private static final short RET_USER_INFO = 10003;
+	
 	private static Logger logger = LoggerFactory.getLogger(ChannelByteHandler.class);
 	private static final int MAX_NAME_SIZE = 32;
 	private static final int USER_KEY_SIZE = 64;
 	
+	
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		printLog("channelRead", ctx);
-		// super.channelRead(ctx, msg);
+		//super.channelRead(ctx, msg);
 		ByteBuf buf = (ByteBuf) msg;
-		/*byte[] bytes = new byte[buf.readableBytes()];
-		buf.readBytes(bytes);*/
+		
+		byte[] bytes = new byte[buf.readableBytes()];
+		buf.getBytes(0, bytes);
+		
+//		byte[] bytes = new byte[buf.readableBytes()];
+//		buf.readBytes(bytes);
+		logger.debug(bytes + "");
+		logger.debug(new String(bytes));		
 		logger.debug("===========================================");
-		decodeRegisterRoomInfo(buf);
-		logger.debug("===========================================");
-		buf.release();
-	}
-	
-	private void decodeRegisterRoomInfo(ByteBuf buf) {
-		long timestamp = buf.readLong();
+		//short messageId = buf.readUnsignedShort()
+		short pkglen = buf.readShort();
+		logger.debug("pkglen:" + pkglen);
+		
+		short contentlen = buf.readShort();
+		logger.debug("contentlen:" + contentlen);
+		
+		short encrypt = buf.readShort();
+		logger.debug("encrypt:" + encrypt);
+		
+		int messageId = buf.readShort();
+		logger.debug("messageId:" + messageId);
+		
+		int timestamp = buf.readInt();
 		logger.debug("timestamp:" + timestamp);
 		
 		long serverId = buf.readUnsignedInt();
 		logger.debug("serverId:" + serverId);
 		
-		byte size = buf.readByte();
-		int finalSize = size&0xff; // 转无符号 
-		logger.debug("size:" + finalSize);
 		
-		for (int i = 0; i < finalSize; i++) {
+		switch (messageId) {
+		case REGISTER_ROOM_INFO:
+			decodeRegisterRoomInfo(buf);
+			break;
+		case REQ_USER_INFO:
+			decodeReqUserInfo(buf);
+			break;
+		}
+		logger.debug("===========================================");
+		buf.release();
+		
+		
+	}
+	
+	private void decodeRegisterRoomInfo(ByteBuf buf) {
+		byte size = buf.readByte();
+		logger.debug("size:" + size);
+		for (int i = 0; i < size; i++) {
 			long roomId = buf.readUnsignedInt();
 			logger.debug("roomId:" + roomId);
 		}
 	}
 	
-	private void decodeReqUserInfo(ByteBuf buf) {
-		long timestamp = buf.readLong();
-		logger.debug("timestamp:" + timestamp);
-		
-		long serverId = buf.readUnsignedInt();
-		logger.debug("serverId:" + serverId);
-		
+	private void decodeReqUserInfo(ByteBuf buf) {		
 		long conID = buf.readUnsignedInt();
 		logger.debug("conID:" + conID);
 		
@@ -146,23 +173,30 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 	}
 
 	public static void main(String args[]) {
-		byte[] message = "hello".getBytes();
-		int len = message.length;
 		Socket socket = new Socket();
 		try {
-			
-			
 			socket.connect(new InetSocketAddress("127.0.0.1", 44100));
 			//socket.setKeepAlive(true);
-			OutputStream out = socket.getOutputStream();
-			DataOutputStream dos = new DataOutputStream(out);  
+			OutputStream o = socket.getOutputStream();
+			DataOutputStream out = new DataOutputStream(o);  
 			while (true) {
-				ByteBuffer header = ByteBuffer.allocate(4);
-				header.putInt(len);
-				dos.write(header.array());
-				dos.write(message);
-				//out.write(header.array());
-				//out.write(message, 0, message.length);
+				byte[] message = "aaaaaaaaaa".getBytes();
+				int len = message.length;
+				
+				ByteBuffer headLen = ByteBuffer.allocate(2);
+				headLen.putShort( (short) (2 + 2 + 4 + len));
+				
+				ByteBuffer encryptLen = ByteBuffer.allocate(2);
+				encryptLen.putShort( (short) 0);
+				
+				
+				
+				out.write(headLen.array());
+				out.write(encryptLen.array());
+				out.writeShort(REGISTER_ROOM_INFO);
+				out.writeInt(0);
+				out.write(message);
+				
 				out.flush();
 				InputStream in = socket.getInputStream();
 				byte[] buff = new byte[4096];
@@ -194,5 +228,13 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	private static int toUnsigned(short s) {  
+	    return s & 0x0FFFF;  
+	}
+	
+	public static long getUnsignedInt (int data){     //将int数据转换为0~4294967295 (0xFFFFFFFF即DWORD)。
+		return data&0x0FFFFFFFFl;
 	}
 }

@@ -92,20 +92,20 @@ public class NettyServer {
 	private void startVoiceChannel() throws InterruptedException, IOException {
 		voiceMainGroup = new NioEventLoopGroup(); 
 		voiceWorkerGroup = new NioEventLoopGroup();
-		ServerBootstrap b2 = new ServerBootstrap(); 
-		b2.group(voiceMainGroup, voiceWorkerGroup).channel(NioServerSocketChannel.class)
+		ServerBootstrap b = new ServerBootstrap(); 
+		b.group(voiceMainGroup, voiceWorkerGroup).channel(NioServerSocketChannel.class)
 				.childHandler(new ChannelInitializer<SocketChannel>() { 
 					@Override
 					public void initChannel(SocketChannel ch) throws Exception {
 						ChannelPipeline pipeline = ch.pipeline();  
 						pipeline.addLast(new LoggingHandler(LogLevel.DEBUG));
-		                pipeline.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));  
+		                pipeline.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 2, 0, 0));  
 		                pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));  
 		                pipeline.addLast(new ChannelByteHandler());  
 					}
 				}).childOption(ChannelOption.SO_KEEPALIVE, true);
 		int port = 44100;
-		voiceChannelFuture = b2.bind(port).sync();
+		voiceChannelFuture = b.bind(port).sync();
 		voiceChannelFuture.channel().closeFuture();
 		logger.info("绑定端口" + port + (voiceChannelFuture.isSuccess() ? "成功" : "失败"));
 	}
