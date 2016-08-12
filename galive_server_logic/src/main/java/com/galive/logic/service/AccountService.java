@@ -11,4 +11,6 @@ public interface AccountService {
 	public boolean verifyAccount(String account);
 	
 	public void saveAccount(Account account);
+	
+	public Account findAccount(String account);
 }

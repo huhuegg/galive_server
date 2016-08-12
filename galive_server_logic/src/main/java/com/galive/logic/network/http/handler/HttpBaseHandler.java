@@ -37,7 +37,7 @@ public abstract class HttpBaseHandler {
 			appendLog("逻辑错误:" + error);
 			out = respFail(error, command);
 		} catch (Exception exception) {
-			exception.printStackTrace();
+		 	exception.printStackTrace();
 			String error = exception.getMessage();
 			appendLog("发生错误:" + error);
 			out = respFail(error, command);

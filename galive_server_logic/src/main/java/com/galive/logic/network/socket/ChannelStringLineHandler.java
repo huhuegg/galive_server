@@ -43,7 +43,9 @@ public class ChannelStringLineHandler extends ChannelInboundHandlerAdapter {
 			in.setAccount(account);
 			in.setCommand(Command.OFFLINE);
 			SocketBaseHandler handler = AnnotationManager.createSocketHandlerInstance(in.getCommand());
-			handler.handle(in, ctx);
+			if (handler != null) {
+				handler.handle(in, ctx);
+			}
 		}
 		super.channelUnregistered(ctx);
     }

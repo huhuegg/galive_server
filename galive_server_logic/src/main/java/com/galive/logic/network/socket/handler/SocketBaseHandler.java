@@ -40,7 +40,7 @@ public abstract class SocketBaseHandler {
 		
 		try {
 			// 客户端打开连接
-			if (command == Command.ONLINE) {
+			if (command.equals(Command.ONLINE)) {
 				// 是否不同设备连接
 				ChannelHandlerContext old = ChannelManager.getInstance().findChannel(account);
 				if (old != null) {

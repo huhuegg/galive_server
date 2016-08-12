@@ -17,7 +17,7 @@ public class LeaveLiveHandler extends SocketBaseHandler {
 
 	@Override
 	public CommandOut handle(String account, String reqData) throws Exception {
-		appendLog("--LeaveLiveHandler(直播观众列表)--");
+		appendLog("--LeaveLiveHandler(离开直播)--");
 
 		Live live = liveService.leaveLive(account);
 

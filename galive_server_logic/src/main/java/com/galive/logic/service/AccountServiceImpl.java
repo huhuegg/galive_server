@@ -43,6 +43,13 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 		accountDao.save(account);
 	}
 
+	@Override
+	public Account findAccount(String account) {
+		// TODO Auto-generated method stub
+		Account act = accountDao.findAccount(account);
+		return act;
+	}
+
 	
 
 	

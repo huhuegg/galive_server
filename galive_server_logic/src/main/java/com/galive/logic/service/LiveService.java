@@ -17,4 +17,6 @@ public interface LiveService {
 	
 	public List<String> listLiveMembersByAccount(String account) throws LogicException;
 	
+	public void clearLiveForAccount(String account) throws LogicException;
+	
 }

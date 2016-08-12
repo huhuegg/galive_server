@@ -1,5 +1,8 @@
 package com.galive.logic.dao;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.alibaba.fastjson.JSON;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.dao.cache.RedisManager;
 import com.galive.logic.model.Account;
@@ -17,7 +20,11 @@ public class AccountDaoImpl implements AccountDao {
 	}
 
 	private String tokenKey(String account) {
-		return RedisManager.getInstance().keyPrefix() + "live:token:" + account;
+		return RedisManager.getInstance().keyPrefix() + "live:account:token:" + account;
+	}
+	
+	private String accountKey(String account) {
+		return RedisManager.getInstance().keyPrefix() + "live:account:" + account;
 	}
 
 	@Override
@@ -29,19 +36,24 @@ public class AccountDaoImpl implements AccountDao {
 
 	@Override
 	public String findToken(String account) {
-		// TODO 查询token
-		return null;
+		String token = jedis.get(tokenKey(account));
+		return token;
 	}
 
 	@Override
 	public Account save(Account account) {
-		// TODO Auto-generated method stub
-		return null;
+		String act = JSON.toJSONString(account);
+		jedis.set(accountKey(account.getAccount()), act);
+		return account;
 	}
 
 	@Override
 	public Account findAccount(String account) {
-		// TODO Auto-generated method stub
+		String act = jedis.get(accountKey(account));
+		if (!StringUtils.isEmpty(act)) {
+			Account a = JSON.parseObject(act, Account.class);
+			return a;
+		}
 		return null;
 	}
 

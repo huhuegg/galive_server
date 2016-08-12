@@ -16,8 +16,7 @@ public class OnlineHandler extends SocketBaseHandler {
 		appendLog("--OnlineHandler(用户上线)--");
 
 		// 清除直播信息
-		liveService.leaveLive(account);
-		liveService.destroyLive(account);
+		liveService.clearLiveForAccount(account);
 		CommandOut out = new CommandOut(Command.ONLINE);
 		return out;
 	}

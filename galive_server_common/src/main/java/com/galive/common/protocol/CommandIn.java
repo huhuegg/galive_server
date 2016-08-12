@@ -80,13 +80,12 @@ public class CommandIn {
 	 */
 	public static CommandIn fromHttpReq(HttpServletRequest req) {
 		try {
-			String commandStr = req.getParameter("command");
-			if (StringUtils.isBlank(commandStr)) {
+			String command = req.getParameter("command");
+			if (StringUtils.isBlank(command)) {
 				return null;
 			}
-			String command = commandStr;
-			String account = req.getHeader("account");
-			String token = req.getHeader("token");
+			String account = req.getParameter("account");
+			String token = req.getParameter("token");
 			String params = req.getParameter("params");
 			String tag = req.getParameter("tag");
 			logger.debug(String.format("command:%s,account:%s,token:%s,params:%s,tag:%s", command,account,token,params,tag));
