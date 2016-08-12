@@ -100,7 +100,7 @@ public class NettyServer {
 						ChannelPipeline pipeline = ch.pipeline();  
 						pipeline.addLast(new LoggingHandler(LogLevel.DEBUG));
 		                pipeline.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 2, 0, 0));  
-		                pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));  
+		                pipeline.addLast("frameEncoder", new LengthFieldPrepender(2));  
 		                pipeline.addLast(new ChannelByteHandler());  
 					}
 				}).childOption(ChannelOption.SO_KEEPALIVE, true);

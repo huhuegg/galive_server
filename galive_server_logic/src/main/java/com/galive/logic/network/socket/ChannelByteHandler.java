@@ -28,8 +28,8 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 	private static final short RET_USER_INFO = 10003;
 
 	private static Logger logger = LoggerFactory.getLogger(ChannelByteHandler.class);
-	private static final int MAX_NAME_SIZE = 8;
-	private static final int USER_KEY_SIZE = 8;
+	private static final int MAX_NAME_SIZE = 32;
+	private static final int USER_KEY_SIZE = 64;
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -43,9 +43,8 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 
 		// byte[] bytes = new byte[buf.readableBytes()];
 		// buf.readBytes(bytes);
-		logger.debug(bytes + "");
-		logger.debug(new String(bytes));
 		logger.debug("===========================================");
+		printByte(bytes);
 		// short messageId = buf.readUnsignedShort()
 		short pkglen = buf.readShort();
 		logger.debug("pkglen:" + pkglen);
@@ -120,11 +119,12 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 	}
 
 	private void encodeReqUserInfo(long conID, int timestamp, String userId, boolean isValid, ChannelHandlerContext ctx) {
-		int pkgLen = 2 * 4 + 4 + 8 + MAX_NAME_SIZE + 1;
+		int pkgLen = 2 * 3 + 4 + 8 + MAX_NAME_SIZE + 1;
 		ByteBuf buf = ctx.alloc().buffer(pkgLen); 
-		buf.writeShort((short)pkgLen);
-		buf.writeShort((short)(pkgLen - 2));
-		buf.writeShort((short)0);
+		int contentLen = pkgLen - 2;
+//		buf.writeShort((short) pkgLen);
+		buf.writeShort((short) (contentLen));
+		buf.writeShort((short) 0);
 		buf.writeShort(RET_USER_INFO);
 		buf.writeInt(timestamp);
 		buf.writeLong(conID);
@@ -137,9 +137,9 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 		
 		byte[] pkg = new byte[buf.readableBytes()];
 		buf.getBytes(0, pkg);
-		
+		printByte(pkg);
 		ctx.write(buf);
-		buf.release();
+//		buf.release();
 	}
 
 	@Override
@@ -294,5 +294,14 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 		CharBuffer cb = StandardCharsets.UTF_8.decode(bb);
 		return cb.array();
 	}*/
-
+	
+	private void printByte(byte[] bytes) {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("[");
+		for (byte b : bytes) {
+			buffer.append(b + ",");
+		}
+		buffer.append("]");
+		logger.debug(buffer.toString());
+	}
 }
