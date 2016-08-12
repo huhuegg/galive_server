@@ -27,9 +27,15 @@ public class LeaveLiveHandler extends SocketBaseHandler {
 
 		List<String> accounts = live.getMemberAccounts();
 		for (String act : accounts) {
-			if (!act.equals(account))
+			if (!act.equals(account)) {
 				pushMessage(act, pushContent);
+				appendLog("推送房间内成员:" + act + " " + pushContent);
+			}
 		}
+		
+		String owner = live.getOwnerAccount();
+		pushMessage(owner, pushContent);
+		appendLog("推送房主:" + owner + " " + pushContent);
 
 		CommandOut out = new CommandOut(Command.DESTROY_LIVE);
 		return out;

@@ -62,7 +62,7 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 		members.add(account);
 		Live live = new Live();
 		live.setSid(liveSid);
-		live.setOwnerAccount(account);
+		live.setOwnerAccount(owner);
 		live.setMemberAccounts(members);
 		return live;
 	}

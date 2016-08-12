@@ -12,7 +12,7 @@ import org.mongodb.morphia.annotations.Indexes;
  *
  */
 @Entity
-@Indexes({@Index("sid")})
+@Indexes({@Index("sid")})	
 public class BaseModel {
 
 	@Id
