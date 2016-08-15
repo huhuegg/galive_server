@@ -18,19 +18,19 @@ public class LiveDaoImpl implements LiveDao {
 	}
 	
 	private String liveOwnerKey(String live) {
-		return RedisManager.getInstance().keyPrefix() + "live:" + live;
+		return RedisManager.getInstance().keyPrefix() + "live_belong:" + live;
 	}
 
 	private String ownerLiveKey(String owner) {
-		return RedisManager.getInstance().keyPrefix() + "live:owner:" + owner;
+		return RedisManager.getInstance().keyPrefix() + "live_owner:" + owner;
 	}
 	
 	private String liveMembersKey(String liveSid) {
-		return RedisManager.getInstance().keyPrefix() + "live:members:" + liveSid;
+		return RedisManager.getInstance().keyPrefix() + "live_members:" + liveSid;
 	}
 	
 	private String liveMemberKey(String member) {
-		return RedisManager.getInstance().keyPrefix() + "live:member:" + member;
+		return RedisManager.getInstance().keyPrefix() + "live_member_belong:" + member;
 	}
 
 	@Override

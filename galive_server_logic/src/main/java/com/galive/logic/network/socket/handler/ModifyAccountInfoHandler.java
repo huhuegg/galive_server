@@ -28,8 +28,6 @@ public class ModifyAccountInfoHandler extends SocketBaseHandler {
 		
 		accountService.saveAccount(act);
 
-		
-
 		CommandOut out = new CommandOut(Command.MODIFY_ACCOUNT_INFO);
 		return out;
 	}

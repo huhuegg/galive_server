@@ -1,6 +1,5 @@
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.+'
     compile 'commons-lang:commons-lang:2.6'
     compile 'commons-codec:commons-codec:1.10'
     compile 'org.apache.commons:commons-collections4:4.1'

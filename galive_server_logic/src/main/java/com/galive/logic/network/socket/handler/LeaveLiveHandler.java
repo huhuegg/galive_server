@@ -37,7 +37,7 @@ public class LeaveLiveHandler extends SocketBaseHandler {
 		pushMessage(owner, pushContent);
 		appendLog("推送房主:" + owner + " " + pushContent);
 
-		CommandOut out = new CommandOut(Command.DESTROY_LIVE);
+		CommandOut out = new CommandOut(Command.LEAVE_LIVE);
 		return out;
 	}
 
