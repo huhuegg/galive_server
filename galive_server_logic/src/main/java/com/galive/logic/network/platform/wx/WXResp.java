@@ -1,4 +1,4 @@
-package com.galive.logic.platform.wechat;
+package com.galive.logic.network.platform.wx;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

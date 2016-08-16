@@ -4,6 +4,8 @@ public class Command {
 
 	// 获取Token
 	public static final String REQ_TOKEN = "REQ_TOKEN";
+	
+	public static final String WECHAT_USR_INFO = "WECHAT_USR_INFO";
 
 	public static final String CREATE_LIVE = "CREATE_LIVE";
 	public static final String JOIN_LIVE = "JOIN_LIVE";

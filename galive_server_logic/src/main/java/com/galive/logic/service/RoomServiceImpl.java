@@ -19,8 +19,8 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 
 	@Override
 	public void saveRooms(String serverIp, int serverPort, List<String> rooms) {
-		roomDao.removeFreeRoom();
-		roomDao.removeUsedRoom();
+		roomDao.removeFreeRooms();
+		roomDao.removeUsedRooms();
 		for (String r : rooms) {
 			String room = roomName(serverIp, serverPort, r);
 			roomDao.saveFreeRoom(room);
@@ -30,11 +30,13 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 	@Override
 	public String getFreeRoom() throws LogicException {
 		String room = roomDao.popFreeRoom();
+		roomDao.saveUsedRoom(room);
 		return room;
 	}
 
 	@Override
 	public void returnRoom(String room) {
+		roomDao.removeUsedRoom(room);
 		roomDao.saveFreeRoom(room);
 	}
 

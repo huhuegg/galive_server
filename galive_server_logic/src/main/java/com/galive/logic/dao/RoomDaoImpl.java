@@ -25,7 +25,7 @@ public class RoomDaoImpl implements RoomDao {
 	}
 
 	@Override
-	public void removeFreeRoom() {
+	public void removeFreeRooms() {
 		String key = freeRoomKey();
 		Set<String> rooms = jedis.smembers(key);
 		for (String r : rooms) {
@@ -57,7 +57,7 @@ public class RoomDaoImpl implements RoomDao {
 	}
 
 	@Override
-	public void removeUsedRoom() {
+	public void removeUsedRooms() {
 		String key = usedRoomKey();
 		Set<String> rooms = jedis.smembers(key);
 		for (String r : rooms) {
@@ -69,6 +69,11 @@ public class RoomDaoImpl implements RoomDao {
 	public Set<String> findUsedRooms() {
 		Set<String> usedsRooms = jedis.smembers(usedRoomKey());
 		return usedsRooms;
+	}
+
+	@Override
+	public void removeUsedRoom(String room) {
+		jedis.srem(usedRoomKey(), room);
 	}
 
 	

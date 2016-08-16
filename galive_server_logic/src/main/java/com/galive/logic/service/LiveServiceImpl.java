@@ -34,7 +34,6 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 //			throw new LogicException("房间已满，无法再创建更多的房间");
 		}
 		
-		
 		liveDao.saveLiveOwner(liveSid, account);
 		
 		Live live = new Live();

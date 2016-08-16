@@ -1,4 +1,4 @@
-package com.galive.logic.platform.wechat;
+package com.galive.logic.network.platform.wx;
 
 /**
  * 微信用户个人信息

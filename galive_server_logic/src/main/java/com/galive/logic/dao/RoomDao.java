@@ -4,9 +4,11 @@ import java.util.Set;
 
 public interface RoomDao {
 	
-	public void removeFreeRoom();
+	public void removeFreeRooms();
 	
-	public void removeUsedRoom();
+	public void removeUsedRooms();
+	
+	public void removeUsedRoom(String room);
 	
 	public void saveFreeRoom(String room);
 	

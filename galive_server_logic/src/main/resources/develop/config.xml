@@ -16,6 +16,16 @@
 		<TokenExpire>7200</TokenExpire>
 	</Socket>
 
+	<Platform>
+		<QQ>
+			<AppId>1104695617</AppId>
+			<AppKey>z8sAyBATHrw4BCSU</AppKey>
+		</QQ>
+		<Wechat>
+			<AppId>wx136ef68ffc5d67df</AppId>
+			<AppSecret>e68e8d2644bbfecfe0af411f58532744</AppSecret>
+		</Wechat>
+	</Platform>
 
 	<Logic>
 		<StreamUrl>http://</StreamUrl>

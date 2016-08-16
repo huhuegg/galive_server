@@ -15,7 +15,7 @@ public class RoomListHandler extends SocketBaseHandler {
 
 	@Override
 	public CommandOut handle(String account, String reqData) throws Exception {
-		appendLog("--CreateLiveHandler(创建直播)--");
+		appendLog("--RoomListHandler(房间列表)--");
 		List<String> rooms = roomService.listUsedRoom();
 		RoomListOut out = new RoomListOut();
 		out.rooms = rooms;

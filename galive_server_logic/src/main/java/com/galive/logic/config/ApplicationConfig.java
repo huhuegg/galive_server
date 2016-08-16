@@ -18,6 +18,7 @@ public class ApplicationConfig {
 
 	private SocketConfig socketConfig;
 	private LogicConfig logicConfig;
+	private PlatformConfig platformConfig;
 
 	public final static ApplicationConfig getInstance() {
 		if (instance == null) {
@@ -105,6 +106,29 @@ public class ApplicationConfig {
 			
 			sc.setSocketConfig(socketConfig);
 			
+			logger.info("--PlatformConfig--");
+			PlatformConfig platformConfig = new PlatformConfig();
+			Element platformNode = node.element("Platform");
+			
+			Element qqNode = platformNode.element("QQ");
+			Element qqAppIdNode = qqNode.element("AppId");
+			String qqAppId = qqAppIdNode.getStringValue();
+			platformConfig.setQq_appid(qqAppId);
+			logger.info("qqAppId:" + qqAppId);
+			
+			Element wechatNode = platformNode.element("Wechat");
+			Element wechatAppIdNode = wechatNode.element("AppId");
+			String wechatAppId = wechatAppIdNode.getStringValue();
+			platformConfig.setWechat_appid(wechatAppId);
+			logger.info("wechatAppId:" + wechatAppId);
+			
+			Element wechatAppSecretNode = wechatNode.element("AppSecret");
+			String wechatAppSecret = wechatAppSecretNode.getStringValue();
+			platformConfig.setWechat_appsecret(wechatAppSecret);
+			logger.info("wechatAppSecret:" + wechatAppSecret);
+			
+			sc.setPlatformConfig(platformConfig);
+			
 			logger.info("配置文件加载成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -135,5 +159,13 @@ public class ApplicationConfig {
 
 	public void setSocketConfig(SocketConfig socketConfig) {
 		this.socketConfig = socketConfig;
+	}
+
+	public PlatformConfig getPlatformConfig() {
+		return platformConfig;
+	}
+
+	public void setPlatformConfig(PlatformConfig platformConfig) {
+		this.platformConfig = platformConfig;
 	}
 }
