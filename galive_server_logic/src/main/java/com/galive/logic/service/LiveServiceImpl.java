@@ -26,7 +26,7 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 		if (liveSid == null) {
 			List<String> rooms = new ArrayList<String>();
 			for (int i = 0; i < 30; i++) {
-				rooms.add("room" + i);
+				rooms.add(i + "");
 			}
 			roomService.saveRooms("192.168.0.1", 4050, rooms);
 			liveSid = roomService.getFreeRoom();

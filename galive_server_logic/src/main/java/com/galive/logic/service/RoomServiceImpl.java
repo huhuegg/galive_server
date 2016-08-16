@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.galive.logic.dao.RoomDao;
 import com.galive.logic.dao.RoomDaoImpl;
 import com.galive.logic.exception.LogicException;
@@ -30,7 +32,9 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 	@Override
 	public String getFreeRoom() throws LogicException {
 		String room = roomDao.popFreeRoom();
-		roomDao.saveUsedRoom(room);
+		if (!StringUtils.isEmpty(room)) {
+			roomDao.saveUsedRoom(room);
+		}
 		return room;
 	}
 
@@ -41,8 +45,8 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 	}
 
 	private String roomName(String serverIp, int serverPort, String room) {
-		String roomName = serverIp + ":" + serverPort + ":" + room;
-		return roomName;
+		//String roomName = serverIp + ":" + serverPort + ":" + room;
+		return room;
 	}
 
 	@Override
