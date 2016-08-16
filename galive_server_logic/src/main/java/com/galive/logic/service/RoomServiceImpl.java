@@ -1,6 +1,8 @@
 package com.galive.logic.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.galive.logic.dao.RoomDao;
 import com.galive.logic.dao.RoomDaoImpl;
@@ -17,26 +19,38 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 
 	@Override
 	public void saveRooms(String serverIp, int serverPort, List<String> rooms) {
+		roomDao.removeFreeRoom();
+		roomDao.removeUsedRoom();
 		for (String r : rooms) {
 			String room = roomName(serverIp, serverPort, r);
-			roomDao.saveRoom(room);
+			roomDao.saveFreeRoom(room);
 		}
 	}
 
 	@Override
 	public String getFreeRoom() throws LogicException {
-		String room = roomDao.getRandomRoom();
+		String room = roomDao.popFreeRoom();
 		return room;
 	}
 
 	@Override
 	public void returnRoom(String room) {
-		roomDao.saveRoom(room);
+		roomDao.saveFreeRoom(room);
 	}
 
 	private String roomName(String serverIp, int serverPort, String room) {
 		String roomName = serverIp + ":" + serverPort + ":" + room;
 		return roomName;
+	}
+
+	@Override
+	public List<String> listUsedRoom() {
+		List<String> result = new ArrayList<String>();
+		Set<String> rooms = roomDao.findUsedRooms();
+		for (String r : rooms) {
+			result.add(r);
+		}
+		return result;
 	}
 	
 	

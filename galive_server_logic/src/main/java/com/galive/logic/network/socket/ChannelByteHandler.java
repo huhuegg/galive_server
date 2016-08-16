@@ -26,6 +26,7 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 	private static final short REGISTER_ROOM_INFO = 10001;
 	private static final short REQ_USER_INFO = 10002;
 	private static final short RET_USER_INFO = 10003;
+	private static final short RET_USER_VOICE_PERMISSION = 10004;
 
 	private static Logger logger = LoggerFactory.getLogger(ChannelByteHandler.class);
 	private static final int MAX_NAME_SIZE = 32;
@@ -118,20 +119,20 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 		
 	}
 
+	
+	
 	private void encodeReqUserInfo(long conID, int timestamp, String userId, boolean isValid, ChannelHandlerContext ctx) {
-		int pkgLen = 2 * 3 + 4 + 8 + MAX_NAME_SIZE + 1;
-		ByteBuf buf = ctx.alloc().buffer(pkgLen); 
-		int contentLen = pkgLen - 2;
+		ByteBuf buf = ctx.alloc().buffer(4096); 
 //		buf.writeShort((short) pkgLen);
-		buf.writeShort((short) (contentLen));
+		buf.writeShort((short) 0);
 		buf.writeShort((short) 0);
 		buf.writeShort(RET_USER_INFO);
 		buf.writeInt(timestamp);
 		buf.writeLong(conID);
 
 		byte[] userIdBytes = userId.getBytes();
-		buf.writeZero(MAX_NAME_SIZE - userIdBytes.length);
 		buf.writeBytes(userIdBytes);
+		buf.writeZero(MAX_NAME_SIZE - userIdBytes.length);
 		
 		buf.writeByte(isValid ? 0x01 : 0x00);
 		
@@ -139,7 +140,31 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 		buf.getBytes(0, pkg);
 		printByte(pkg);
 		ctx.write(buf);
-//		buf.release();
+		
+		encodeReqUserVoicePermission(timestamp, userId, ctx);
+	}
+	
+	private void encodeReqUserVoicePermission(int timestamp, String userId, ChannelHandlerContext ctx) {
+		ByteBuf buf = ctx.alloc().buffer(4096); 
+		buf.writeShort((short) (0));
+		buf.writeShort((short) 0);
+		buf.writeShort(RET_USER_VOICE_PERMISSION);
+		buf.writeInt(timestamp);
+		
+		int count = 1;
+		// 用户数
+		buf.writeByte(count);
+		for (int i = 0; i < count; i++) {
+			byte[] userIdBytes = userId.getBytes();
+			buf.writeBytes(userIdBytes);
+			buf.writeZero(MAX_NAME_SIZE - userIdBytes.length);
+			// 权限
+			buf.writeByte(1);
+		}		
+		byte[] pkg = new byte[buf.readableBytes()];
+		buf.getBytes(0, pkg);
+		printByte(pkg);
+		ctx.write(buf);
 	}
 
 	@Override

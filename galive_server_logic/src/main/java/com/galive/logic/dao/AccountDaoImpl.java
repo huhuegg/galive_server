@@ -20,7 +20,7 @@ public class AccountDaoImpl implements AccountDao {
 	}
 
 	private String tokenKey(String account) {
-		return RedisManager.getInstance().keyPrefix() + "account_token:" + account;
+		return RedisManager.getInstance().keyPrefix() + "account:token:" + account;
 	}
 	
 	private String accountKey(String account) {

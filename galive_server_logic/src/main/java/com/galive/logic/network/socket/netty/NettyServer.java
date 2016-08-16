@@ -80,7 +80,7 @@ public class NettyServer {
 						
 						ch.pipeline().addLast(new ChannelStringLineHandler());
 					}
-				}).childOption(ChannelOption.SO_KEEPALIVE, true);
+				}).childOption(ChannelOption.SO_KEEPALIVE, false);
 
 		// Bind and start to accept incoming connections.
 		int port = socketConfig.getPort();

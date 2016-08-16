@@ -11,5 +11,7 @@ public interface RoomService {
 	public String getFreeRoom() throws LogicException;
 	
 	public void  returnRoom(String room);
+	
+	public List<String> listUsedRoom();
 }
 	

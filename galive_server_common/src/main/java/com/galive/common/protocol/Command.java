@@ -11,6 +11,8 @@ public class Command {
 	public static final String DESTROY_LIVE = "DESTROY_LIVE";
 	
 	public static final String MODIFY_ACCOUNT_INFO = "MODIFY_ACCOUNT_INFO";
+	
+	public static final String ROOM_LIST = "ROOM_LIST";
 
 	public static final String JOIN_LIVE_PUSH = "JOIN_LIVE_PUSH";
 	public static final String LEAVE_LIVE_PUSH = "LEAVE_LIVE_PUSH";
