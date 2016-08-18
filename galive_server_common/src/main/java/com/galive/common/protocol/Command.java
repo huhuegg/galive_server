@@ -2,6 +2,7 @@ package com.galive.common.protocol;
 
 public class Command {
 
+	public static final String USR_LOGIN = "USR_LOGIN";
 	// 获取Token
 	public static final String REQ_TOKEN = "REQ_TOKEN";
 	

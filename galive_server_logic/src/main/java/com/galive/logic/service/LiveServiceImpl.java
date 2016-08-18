@@ -1,6 +1,5 @@
 package com.galive.logic.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.dao.LiveDao;
@@ -24,14 +23,8 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 		
 		String liveSid = roomService.getFreeRoom();
 		if (liveSid == null) {
-			List<String> rooms = new ArrayList<String>();
-			for (int i = 0; i < 30; i++) {
-				rooms.add(i + "");
-			}
-			roomService.saveRooms("192.168.0.1", 4050, rooms);
-			liveSid = roomService.getFreeRoom();
-//			appendLog("房间已满，无法再创建更多的房间。");
-//			throw new LogicException("房间已满，无法再创建更多的房间");
+			appendLog("房间已满，无法再创建更多的房间。");
+			throw new LogicException("房间已满，无法再创建更多的房间");
 		}
 		
 		liveDao.saveLiveOwner(liveSid, account);
@@ -129,11 +122,12 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 	public void clearLiveForAccount(String account) throws LogicException {
 		String liveSid = liveDao.findLiveByMember(account);
 		if (liveSid != null) {
+			appendLog(account + "用户为房间成员，退出房间" + liveSid);
 			liveDao.removeLiveMember(liveSid, account);
 		}
 		liveSid = liveDao.findLiveByOwner(account);
 		if (liveSid != null) {
-			liveDao.removeLiveMembers(liveSid);
+			appendLog(account + "用户为房主，移除房间" + liveSid);
 			liveDao.removeLiveOwner(liveSid);
 			roomService.returnRoom(liveSid);
 		}

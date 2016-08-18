@@ -10,6 +10,7 @@ import redis.clients.jedis.Jedis;
 public class LiveDaoImpl implements LiveDao {
 
 	private Jedis jedis = RedisManager.getInstance().getResource();
+	private int EXPIRE_SEC = 3600;
 
 	@Override
 	protected void finalize() throws Throwable {
@@ -17,11 +18,11 @@ public class LiveDaoImpl implements LiveDao {
 		super.finalize();
 	}
 	
-	private String liveOwnerKey(String live) {
+	private String liveBelongKey(String live) {
 		return RedisManager.getInstance().keyPrefix() + "live:belong:" + live;
 	}
 
-	private String ownerLiveKey(String owner) {
+	private String liveOwnerKey(String owner) {
 		return RedisManager.getInstance().keyPrefix() + "live:owner:" + owner;
 	}
 	
@@ -35,8 +36,10 @@ public class LiveDaoImpl implements LiveDao {
 
 	@Override
 	public void saveLiveOwner(String liveSid, String account) {
-		jedis.set(liveOwnerKey(liveSid), account);
-		jedis.set(ownerLiveKey(account), liveSid);
+		jedis.set(liveBelongKey(liveSid), account);
+		jedis.expire(liveBelongKey(liveSid), EXPIRE_SEC);
+		jedis.set(liveOwnerKey(account), liveSid);
+		jedis.expire(liveOwnerKey(account), EXPIRE_SEC);
 	}
 
 	@Override
@@ -47,7 +50,7 @@ public class LiveDaoImpl implements LiveDao {
 
 	@Override
 	public String findLive(String liveSid) {
-		if (jedis.exists(liveOwnerKey(liveSid))) {
+		if (jedis.exists(liveBelongKey(liveSid))) {
 			return liveSid;
 		}
 		return null;
@@ -55,13 +58,13 @@ public class LiveDaoImpl implements LiveDao {
 
 	@Override
 	public String findLiveOwner(String liveSid) {
-		String owner = jedis.get(liveOwnerKey(liveSid));
+		String owner = jedis.get(liveBelongKey(liveSid));
 		return owner;
 	}
 
 	@Override
 	public String findLiveByOwner(String account) {
-		String live = jedis.get(ownerLiveKey(account));
+		String live = jedis.get(liveOwnerKey(account));
 		return live;
 	}
 
@@ -103,8 +106,8 @@ public class LiveDaoImpl implements LiveDao {
 	@Override
 	public String removeLiveOwner(String liveSid) {
 		String owner = findLiveOwner(liveSid);
-		jedis.del(liveOwnerKey(liveSid));
-		jedis.del(ownerLiveKey(owner));
+		jedis.del(liveBelongKey(liveSid));
+		jedis.del(liveOwnerKey(owner));
 		return owner;
 	}
 

@@ -50,10 +50,10 @@ public abstract class SocketBaseHandler {
 				}
 				ChannelManager.getInstance().addChannel(account, channel);
 			}
-			AccountService accountService = new AccountServiceImpl();
 			if (command.equals(Command.OFFLINE)) {
 				out = handle(account, in.getParams());
 			} else {
+				AccountService accountService = new AccountServiceImpl();
 				if (!accountService.verifyToken(account, token)) {
 					out = respFail("token已过期", command);
 				} else {

@@ -101,7 +101,7 @@ public class ApplicationMain implements Daemon {
 			AnnotationManager.initAnnotation();
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error("初始化失败:" + e.getMessage());
+			logger.error("初始化失败:" + e.getMessage() + e.getLocalizedMessage());
 			throw new Exception("初始化失败:" + e.getMessage());
 		}
 
