@@ -1,6 +1,5 @@
 package com.galive.logic.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.dao.LiveDao;
