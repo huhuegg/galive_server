@@ -1,10 +1,13 @@
 package com.galive.logic.network.http.handler;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.LogicConfig;
 import com.galive.logic.config.SocketConfig;
+import com.galive.logic.exception.LogicException;
 import com.galive.logic.model.Account;
 import com.galive.logic.network.http.HttpRequestHandler;
 import com.galive.logic.service.AccountService;
@@ -18,6 +21,10 @@ public class ReqTokenHandler extends HttpBaseHandler {
 	@Override
 	public CommandOut handle(String account, String reqData) throws Exception {
 		appendLog("--ReqTokenHandler(用户获取token)--");
+		
+		if (StringUtils.isEmpty(account)) {
+			throw new LogicException("账号为空");
+		}
 		
 		Account act = new Account();
 		act.setAccount(account);
