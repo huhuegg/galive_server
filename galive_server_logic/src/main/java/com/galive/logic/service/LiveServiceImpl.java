@@ -43,8 +43,8 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 		
 		boolean exist = liveDao.liveExsit(liveSid);
 		if (!exist) {
-			appendLog("房间不存在");
-			throw new LogicException("房间不存在。");
+			appendLog("房间不存在或已结束直播");
+			throw new LogicException("房间不存在或已结束直播");
 		}
 		
 		List<String> members = liveDao.findLiveMembers(liveSid);
@@ -87,9 +87,8 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 	public Live destroyLive(String account) throws LogicException {
 		String liveSid = liveDao.findLiveByCreator(account);
 		if (liveSid == null) {
-//			appendLog("不在房间中。");
-//			throw new LogicException("不在房间中。");
-			return null;
+			appendLog("不在房间中。");
+			throw new LogicException("不在房间中。");
 		}
 		
 		List<String> members = liveDao.removeLiveMembers(liveSid);

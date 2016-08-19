@@ -218,13 +218,14 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 
 	private void printLog(String message, ChannelHandlerContext ctx) {
 		String ip = ctx.channel().remoteAddress().toString();
-		logger.debug("client:" + ip + " " + message);
+		logger.info("client:" + ip + " " + message);
 	}
 
 	public static void main(String args[]) {
 		Socket socket = new Socket();
 		try {
-			socket.connect(new InetSocketAddress("127.0.0.1", 44100));
+			//socket.connect(new InetSocketAddress("127.0.0.1", 44100));
+			socket.connect(new InetSocketAddress("222.73.196.99", 44100));
 			// socket.setKeepAlive(true);
 			OutputStream o = socket.getOutputStream();
 			DataOutputStream out = new DataOutputStream(o);
@@ -242,29 +243,44 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 				//
 				// ByteBuffer encryptLen = ByteBuffer.allocate(2);
 				// encryptLen.putShort( (short) 0);
-
-				out.writeShort((short) (18 + MAX_NAME_SIZE + USER_KEY_SIZE));
-				out.writeShort((short) 1);
-				out.writeShort((short) 2);
-				out.writeShort(REQ_USER_INFO);
-				out.writeInt(3);
-				out.writeLong(4);
-
-				ByteBuffer userIdBuf = ByteBuffer.allocate(MAX_NAME_SIZE);
-				for (int i = 0; i < MAX_NAME_SIZE - userIdLen; i++) {
-					userIdBuf.put((byte) 0);
+				out.writeShort(35);
+				out.writeShort(0);
+				out.writeShort(0);
+				out.writeShort(REGISTER_ROOM_INFO);
+				out.writeInt(0);
+				out.writeInt(100);
+				int roomcount = 5;
+				out.writeByte(roomcount);
+				for (int i = 0; i < roomcount; i++) {
+					out.writeInt(i + 1);
 				}
-				userIdBuf.put(userId);
-				byte[] userIdByte = userIdBuf.array();
-				out.write(userIdByte);
 				
-				ByteBuffer userKeyBuf = ByteBuffer.allocate(USER_KEY_SIZE);
-				for (int i = 0; i < USER_KEY_SIZE - userKeyLen; i++) {
-					userKeyBuf.put((byte) 0);
-				}
-				userKeyBuf.put(userKey);
-				byte[] userKeyByte = userKeyBuf.array();
-				out.write(userKeyByte);
+				
+				
+				
+
+//				out.writeShort((short) (18 + MAX_NAME_SIZE + USER_KEY_SIZE));
+//				out.writeShort((short) 1);
+//				out.writeShort((short) 2);
+//				out.writeShort(REQ_USER_INFO);
+//				out.writeInt(3);
+//				out.writeLong(4);
+//
+//				ByteBuffer userIdBuf = ByteBuffer.allocate(MAX_NAME_SIZE);
+//				for (int i = 0; i < MAX_NAME_SIZE - userIdLen; i++) {
+//					userIdBuf.put((byte) 0);
+//				}
+//				userIdBuf.put(userId);
+//				byte[] userIdByte = userIdBuf.array();
+//				out.write(userIdByte);
+//				
+//				ByteBuffer userKeyBuf = ByteBuffer.allocate(USER_KEY_SIZE);
+//				for (int i = 0; i < USER_KEY_SIZE - userKeyLen; i++) {
+//					userKeyBuf.put((byte) 0);
+//				}
+//				userKeyBuf.put(userKey);
+//				byte[] userKeyByte = userKeyBuf.array();
+//				out.write(userKeyByte);
 				
 				
 				

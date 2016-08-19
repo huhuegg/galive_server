@@ -1,11 +1,14 @@
 package com.galive.logic.network.socket.netty;
 
 import java.io.IOException;
+import java.nio.ByteOrder;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.galive.logic.ApplicationMain;
+import com.galive.logic.ApplicationMain.ApplicationMode;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.SocketConfig;
 import com.galive.logic.network.socket.ChannelByteHandler;
@@ -98,13 +101,22 @@ public class NettyServer {
 					@Override
 					public void initChannel(SocketChannel ch) throws Exception {
 						ChannelPipeline pipeline = ch.pipeline();  
-						pipeline.addLast(new LoggingHandler(LogLevel.DEBUG));
-		                pipeline.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 2, 0, 0));  
-		                pipeline.addLast("frameEncoder", new LengthFieldPrepender(2)); 
+						pipeline.addLast(new LoggingHandler(LoggerFactory.class, LogLevel.DEBUG));
+						LengthFieldBasedFrameDecoder decoder;
+						LengthFieldPrepender prepender;
+						if (ApplicationMain.get().getMode() == ApplicationMode.Develop) {
+							decoder = new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 2, 0, 0, true);
+							prepender = new LengthFieldPrepender(2);
+						} else {
+							decoder = new LengthFieldBasedFrameDecoder(ByteOrder.BIG_ENDIAN, Integer.MAX_VALUE, 0, 2, 0, 0, true);
+							prepender = new LengthFieldPrepender(ByteOrder.BIG_ENDIAN, 2, 0, false);
+						}
+		                pipeline.addLast("frameDecoder", decoder);  
+		                pipeline.addLast("frameEncoder", prepender); 
 		                pipeline.addLast(new IdleStateHandler(0, 0, 0, TimeUnit.SECONDS));
 		                pipeline.addLast(new ChannelByteHandler());  
 					}
-				}).childOption(ChannelOption.SO_KEEPALIVE, true);
+				}).childOption(ChannelOption.SO_KEEPALIVE, true).childOption(ChannelOption.TCP_NODELAY, true);
 		int port = 44100;
 		voiceChannelFuture = b.bind(port).sync();
 		voiceChannelFuture.channel().closeFuture();
