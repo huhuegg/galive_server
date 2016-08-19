@@ -23,9 +23,12 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 	public void saveRooms(String serverIp, int serverPort, List<String> rooms) {
 		roomDao.removeFreeRooms();
 		roomDao.removeUsedRooms();
-		for (String r : rooms) {
-			String room = roomName(serverIp, serverPort, r);
-			roomDao.saveFreeRoom(room);
+		Set<String> usedRooms = roomDao.findUsedRooms();
+		for (String room : rooms) {
+			if (!usedRooms.contains(room)) {
+				String roomName = roomName(serverIp, serverPort, room);
+				roomDao.saveFreeRoom(roomName);
+			}
 		}
 	}
 

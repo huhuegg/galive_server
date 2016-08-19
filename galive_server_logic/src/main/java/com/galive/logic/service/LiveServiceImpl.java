@@ -139,6 +139,7 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 			liveDao.removeLiveForCreator(liveSid);
 			roomService.returnRoom(liveSid);
 		}
+		
 	}
 
 

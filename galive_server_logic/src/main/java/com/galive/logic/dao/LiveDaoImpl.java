@@ -30,7 +30,7 @@ public class LiveDaoImpl implements LiveDao {
 	}
 	
 	private String liveMemberKey(String member) {
-		return RedisManager.getInstance().keyPrefix() + "live:member" + member;
+		return RedisManager.getInstance().keyPrefix() + "live:member:" + member;
 	}
 	
 	@Override
