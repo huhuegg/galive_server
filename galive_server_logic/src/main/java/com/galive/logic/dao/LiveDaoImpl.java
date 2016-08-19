@@ -10,20 +10,19 @@ import redis.clients.jedis.Jedis;
 public class LiveDaoImpl implements LiveDao {
 
 	private Jedis jedis = RedisManager.getInstance().getResource();
-	private int EXPIRE_SEC = 3600;
 
 	@Override
 	protected void finalize() throws Throwable {
 		RedisManager.getInstance().returnToPool(jedis);
 		super.finalize();
 	}
-	
-	private String liveBelongKey(String live) {
-		return RedisManager.getInstance().keyPrefix() + "live:belong:" + live;
+
+	private String liveCreatorKey(String liveSid) {
+		return RedisManager.getInstance().keyPrefix() + "live:creator:" + liveSid;
 	}
 
-	private String liveOwnerKey(String owner) {
-		return RedisManager.getInstance().keyPrefix() + "live:owner:" + owner;
+	private String liveByCreatorKey(String creator) {
+		return RedisManager.getInstance().keyPrefix() + "live:by_creator:" + creator;
 	}
 	
 	private String liveMembersKey(String liveSid) {
@@ -33,39 +32,50 @@ public class LiveDaoImpl implements LiveDao {
 	private String liveMemberKey(String member) {
 		return RedisManager.getInstance().keyPrefix() + "live:member" + member;
 	}
-
+	
 	@Override
-	public void saveLiveOwner(String liveSid, String account) {
-		jedis.set(liveBelongKey(liveSid), account);
-		jedis.expire(liveBelongKey(liveSid), EXPIRE_SEC);
-		jedis.set(liveOwnerKey(account), liveSid);
-		jedis.expire(liveOwnerKey(account), EXPIRE_SEC);
+	public void saveLiveCreator(String liveSid, String account) {
+		jedis.set(liveCreatorKey(liveSid), account);
+	}
+	
+	@Override
+	public void saveLiveForCreator(String liveSid, String account) {
+		jedis.set(liveByCreatorKey(account), liveSid);
 	}
 
+	@Override
+	public String findLiveCreator(String liveSid) {
+		String creator = jedis.get(liveCreatorKey(liveSid));
+		return creator;
+	}
+
+	@Override
+	public String findLiveByCreator(String account) {
+		String live = jedis.get(liveByCreatorKey(account));
+		return live;
+	}
+
+	@Override
+	public String removeLiveCreator(String liveSid) {
+		jedis.del(liveCreatorKey(liveSid));
+		return liveSid;
+	}
+	
+	@Override
+	public String removeLiveForCreator(String creator) {
+		jedis.del(liveByCreatorKey(creator));
+		return creator;
+	}
+	
 	@Override
 	public void saveLiveMember(String liveSid, String account) {
 		jedis.sadd(liveMembersKey(liveSid), account);
+		
+	}
+	
+	@Override
+	public void saveLiveForMember(String liveSid, String account) {
 		jedis.set(liveMemberKey(account), liveSid);
-	}
-
-	@Override
-	public String findLive(String liveSid) {
-		if (jedis.exists(liveBelongKey(liveSid))) {
-			return liveSid;
-		}
-		return null;
-	}
-
-	@Override
-	public String findLiveOwner(String liveSid) {
-		String owner = jedis.get(liveBelongKey(liveSid));
-		return owner;
-	}
-
-	@Override
-	public String findLiveByOwner(String account) {
-		String live = jedis.get(liveOwnerKey(account));
-		return live;
 	}
 
 	@Override
@@ -87,9 +97,13 @@ public class LiveDaoImpl implements LiveDao {
 	@Override
 	public List<String> removeLiveMember(String liveSid, String account) {
 		jedis.srem(liveMembersKey(liveSid), account);
-		jedis.del(liveMemberKey(account));
 		List<String> result = findLiveMembers(liveSid);
 		return result;
+	}
+	
+	@Override
+	public void removeLiveForMember(String liveSid, String account) {
+		jedis.del(liveMemberKey(account));
 	}
 
 	@Override
@@ -102,14 +116,21 @@ public class LiveDaoImpl implements LiveDao {
 		}
 		return result;
 	}
-
-	@Override
-	public String removeLiveOwner(String liveSid) {
-		String owner = findLiveOwner(liveSid);
-		jedis.del(liveBelongKey(liveSid));
-		jedis.del(liveOwnerKey(owner));
-		return owner;
+	
+	public boolean liveExsit(String liveSid) {
+		if (jedis.exists(liveCreatorKey(liveSid))) {
+			return true;
+		}
+		return false;
 	}
+
+	
+
+	
+
+	
+
+	
 
 
 }

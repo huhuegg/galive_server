@@ -27,7 +27,8 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 			throw new LogicException("房间已满，无法再创建更多的房间");
 		}
 		
-		liveDao.saveLiveOwner(liveSid, account);
+		liveDao.saveLiveCreator(liveSid, account);
+		liveDao.saveLiveForCreator(liveSid, account);
 		
 		Live live = new Live();
 		live.setSid(liveSid);
@@ -40,8 +41,8 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 	public Live joinLive(String account, String liveSid) throws LogicException {
 		checkInLive(account);
 		
-		String owner = liveDao.findLiveOwner(liveSid);
-		if (owner == null) {
+		boolean exist = liveDao.liveExsit(liveSid);
+		if (!exist) {
 			appendLog("房间不存在");
 			throw new LogicException("房间不存在。");
 		}
@@ -51,10 +52,14 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 			throw new LogicException("该房间已满员。");
 		}
 		liveDao.saveLiveMember(liveSid, account);
+		liveDao.saveLiveForMember(liveSid, account);
+		
+		String creator = liveDao.findLiveCreator(liveSid);
+		
 		members.add(account);
 		Live live = new Live();
 		live.setSid(liveSid);
-		live.setOwnerAccount(owner);
+		live.setOwnerAccount(creator);
 		live.setMemberAccounts(members);
 		return live;
 	}
@@ -66,10 +71,10 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 			appendLog("不在房间中。");
 			throw new LogicException("不在房间中。");
 		}
-		String owner = liveDao.findLiveOwner(liveSid);
+		String owner = liveDao.findLiveCreator(liveSid);
 		
 		List<String> members = liveDao.removeLiveMember(liveSid, account);
-		
+		liveDao.removeLiveForMember(liveSid, account);
 		
 		Live live = new Live();
 		live.setSid(liveSid);
@@ -80,14 +85,15 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 
 	@Override
 	public Live destroyLive(String account) throws LogicException {
-		String liveSid = liveDao.findLiveByOwner(account);
+		String liveSid = liveDao.findLiveByCreator(account);
 		if (liveSid == null) {
 			appendLog("不在房间中。");
 			throw new LogicException("不在房间中。");
 		}
 		
 		List<String> members = liveDao.removeLiveMembers(liveSid);
-		String owner = liveDao.removeLiveOwner(liveSid);
+		String owner = liveDao.removeLiveCreator(account);
+		liveDao.removeLiveForCreator(liveSid);
 		roomService.returnRoom(liveSid);
 		
 		Live live = new Live();
@@ -99,7 +105,7 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 
 	@Override
 	public List<String> listLiveMembersByAccount(String account) throws LogicException {
-		String liveSid = liveDao.findLiveByOwner(account);
+		String liveSid = liveDao.findLiveByCreator(account);
 		if (liveSid == null) {
 			appendLog("不在房间中。");
 			throw new LogicException("不在房间中。");
@@ -109,7 +115,7 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 	}
 
 	private void checkInLive(String account) throws LogicException {
-		String live = liveDao.findLiveByOwner(account);
+		String live = liveDao.findLiveByCreator(account);
 		if (live == null) {
 			live = liveDao.findLiveByMember(account);
 		}
@@ -124,11 +130,13 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 		if (liveSid != null) {
 			appendLog(account + "用户为房间成员，退出房间" + liveSid);
 			liveDao.removeLiveMember(liveSid, account);
+			liveDao.removeLiveForMember(liveSid, account);
 		}
-		liveSid = liveDao.findLiveByOwner(account);
+		liveSid = liveDao.findLiveByCreator(account);
 		if (liveSid != null) {
-			appendLog(account + "用户为房主，移除房间" + liveSid);
-			liveDao.removeLiveOwner(liveSid);
+			liveDao.removeLiveMembers(liveSid);
+			liveDao.removeLiveCreator(account);
+			liveDao.removeLiveForCreator(liveSid);
 			roomService.returnRoom(liveSid);
 		}
 	}

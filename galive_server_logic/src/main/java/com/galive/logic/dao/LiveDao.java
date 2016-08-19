@@ -5,15 +5,22 @@ import java.util.List;
 public interface LiveDao {
 	
 	
-	public void saveLiveOwner(String liveSid, String account);
+	public void saveLiveCreator(String liveSid, String account);
+	
+	public void saveLiveForCreator(String liveSid, String account);
+	
+	public String findLiveCreator(String liveSid);
+
+	public String findLiveByCreator(String account);
+	
+	public String removeLiveCreator(String creator);
+	
+	public String removeLiveForCreator(String liveSid);
+	
 	
 	public void saveLiveMember(String liveSid, String account);
 	
-	public String findLive(String liveSid);
-	
-	public String findLiveOwner(String liveSid);
-
-	public String findLiveByOwner(String account);
+	public void saveLiveForMember(String liveSid, String account);
 	
 	public String findLiveByMember(String account);
 	
@@ -21,9 +28,11 @@ public interface LiveDao {
 	
 	public List<String> removeLiveMember(String liveSid, String account);
 	
+	public void removeLiveForMember(String liveSid, String account);
+	
 	public List<String> removeLiveMembers(String liveSid);
 	
-	public String removeLiveOwner(String liveSid);
+	public boolean liveExsit(String liveSid);
 	
 	
 //	
