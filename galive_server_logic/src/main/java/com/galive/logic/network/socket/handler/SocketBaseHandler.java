@@ -41,6 +41,12 @@ public abstract class SocketBaseHandler {
 		try {
 			// 客户端打开连接
 			if (command.equals(Command.ONLINE)) {
+				AccountService accountService = new AccountServiceImpl();
+				if (!accountService.verifyToken(account, token)) {
+					out = respFail("token已过期", command);
+				} else {
+					out = handle(account, in.getParams());
+				}
 				// 是否不同设备连接
 				ChannelHandlerContext old = ChannelManager.getInstance().findChannel(account);
 				if (old != null) {
@@ -49,16 +55,8 @@ public abstract class SocketBaseHandler {
 					appendLog("用户重复登录，将帐号踢下线。");
 				}
 				ChannelManager.getInstance().addChannel(account, channel);
-			}
-			if (command.equals(Command.OFFLINE)) {
-				out = handle(account, in.getParams());
 			} else {
-				AccountService accountService = new AccountServiceImpl();
-				if (!accountService.verifyToken(account, token)) {
-					out = respFail("token已过期", command);
-				} else {
-					out = handle(account, in.getParams());
-				}
+				out = handle(account, in.getParams());
 			}
 			
 		} catch (LogicException logicException) {

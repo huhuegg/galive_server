@@ -35,41 +35,48 @@ public class LiveDaoImpl implements LiveDao {
 	
 	@Override
 	public void saveLiveCreator(String liveSid, String account) {
-		jedis.set(liveCreatorKey(liveSid), account);
+		String key = liveCreatorKey(liveSid);
+		jedis.set(key, account);
 	}
 	
 	@Override
 	public void saveLiveForCreator(String liveSid, String account) {
-		jedis.set(liveByCreatorKey(account), liveSid);
+		String key = liveByCreatorKey(account);
+		jedis.set(key, liveSid);
 	}
 
 	@Override
 	public String findLiveCreator(String liveSid) {
-		String creator = jedis.get(liveCreatorKey(liveSid));
+		String key = liveCreatorKey(liveSid);
+		String creator = jedis.get(key);
 		return creator;
 	}
 
 	@Override
 	public String findLiveByCreator(String account) {
-		String live = jedis.get(liveByCreatorKey(account));
+		String key = liveByCreatorKey(account);
+		String live = jedis.get(key);
 		return live;
 	}
 
 	@Override
 	public String removeLiveCreator(String liveSid) {
-		jedis.del(liveCreatorKey(liveSid));
+		String key = liveCreatorKey(liveSid);
+		jedis.del(key);
 		return liveSid;
 	}
 	
 	@Override
 	public String removeLiveForCreator(String creator) {
-		jedis.del(liveByCreatorKey(creator));
+		String key = liveByCreatorKey(creator);
+		jedis.del(key);
 		return creator;
 	}
 	
 	@Override
 	public void saveLiveMember(String liveSid, String account) {
-		jedis.sadd(liveMembersKey(liveSid), account);
+		String key = liveMembersKey(liveSid);
+		jedis.sadd(key, account);
 		
 	}
 	

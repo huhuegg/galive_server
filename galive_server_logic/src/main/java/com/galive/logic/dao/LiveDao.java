@@ -13,9 +13,9 @@ public interface LiveDao {
 
 	public String findLiveByCreator(String account);
 	
-	public String removeLiveCreator(String creator);
+	public String removeLiveCreator(String liveSid);
 	
-	public String removeLiveForCreator(String liveSid);
+	public String removeLiveForCreator(String creator);
 	
 	
 	public void saveLiveMember(String liveSid, String account);

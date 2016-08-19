@@ -10,14 +10,14 @@ import com.galive.logic.network.socket.handler.push.DestroyLivePush;
 import com.galive.logic.service.LiveService;
 import com.galive.logic.service.LiveServiceImpl;
 
-@SocketRequestHandler(desc = "创建直播", command = Command.DESTROY_LIVE)
+@SocketRequestHandler(desc = "退出直播", command = Command.DESTROY_LIVE)
 public class DestroyLiveHandler extends SocketBaseHandler {
 
 	private LiveService liveService = new LiveServiceImpl();
 
 	@Override
 	public CommandOut handle(String account, String reqData) throws Exception {
-		appendLog("--DestroyLiveHandler(创建直播)--");
+		appendLog("--DestroyLiveHandler(退出直播)--");
 
 		Live live = liveService.destroyLive(account);
 
