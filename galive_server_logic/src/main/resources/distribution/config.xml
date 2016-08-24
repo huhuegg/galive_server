@@ -26,6 +26,6 @@
 
 	<Logic>
 		<StreamUrl>http://</StreamUrl>
-		<MaxLiveMember>5</MaxLiveMember>
+		<MaxLiveMember>100</MaxLiveMember>
 	</Logic>
 </Config>
