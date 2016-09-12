@@ -1,16 +1,21 @@
 package com.galive.logic.dao;
 
-import org.apache.commons.lang.StringUtils;
+import org.mongodb.morphia.query.Query;
 
-import com.alibaba.fastjson.JSON;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.dao.cache.RedisManager;
-import com.galive.logic.model.Account;
+import com.galive.logic.dao.db.MongoDao;
+import com.galive.logic.dao.db.MongoManager;
+import com.galive.logic.model.Platform;
+import com.galive.logic.model.PlatformAccount;
+import com.galive.logic.model.Sid;
+import com.galive.logic.model.Sid.EntitySeq;
 
 import redis.clients.jedis.Jedis;
 
 public class AccountDaoImpl implements AccountDao {
 
+	private MongoDao<PlatformAccount> platformAccountDao = new MongoDao<PlatformAccount>(PlatformAccount.class, MongoManager.store);
 	private Jedis jedis = RedisManager.getInstance().getResource();
 
 	@Override
@@ -23,10 +28,6 @@ public class AccountDaoImpl implements AccountDao {
 		return RedisManager.getInstance().keyPrefix() + "account:token:" + account;
 	}
 	
-	private String accountKey(String account) {
-		return RedisManager.getInstance().keyPrefix() + "account:" + account;
-	}
-
 	@Override
 	public void saveToken(String account, String token) {
 		String key = tokenKey(account);
@@ -41,20 +42,38 @@ public class AccountDaoImpl implements AccountDao {
 	}
 
 	@Override
-	public Account save(Account account) {
-		String act = JSON.toJSONString(account);
-		jedis.set(accountKey(account.getAccount()), act);
+	public PlatformAccount savePlatformAccount(PlatformAccount account) {
+		if (account.getSid().isEmpty()) {
+			String sid = Sid.getNextSequence(EntitySeq.PlatformAccount) + "";	
+			account.setSid(sid);
+		}
+		platformAccountDao.save(account);
 		return account;
 	}
 
 	@Override
-	public Account findAccount(String account) {
-		String act = jedis.get(accountKey(account));
-		if (!StringUtils.isEmpty(act)) {
-			Account a = JSON.parseObject(act, Account.class);
-			return a;
+	public PlatformAccount findPlatformAccount(Platform platform, String unionId) {
+		Query<PlatformAccount> q = platformAccountDao.createQuery();
+		q.field("platform").equal(platform);
+		String unionIdField = null;
+		switch (platform) {
+		case WeChat:
+			unionIdField = "unionid";
+			break;
 		}
-		return null;
+		q.field(unionIdField).equal(unionId);
+		PlatformAccount account = platformAccountDao.findOne(q);
+		return account;
 	}
+
+	@Override
+	public PlatformAccount findPlatformAccount(String sid) {
+		Query<PlatformAccount> q = platformAccountDao.createQuery();
+		q.field("sid").equal(sid);
+		PlatformAccount account = platformAccountDao.findOne(q);
+		return account;
+	}
+
+	
 
 }

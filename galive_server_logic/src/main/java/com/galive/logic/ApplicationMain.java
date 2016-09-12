@@ -6,10 +6,11 @@ import org.apache.commons.daemon.DaemonInitException;
 import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.galive.logic.annotation.AnnotationManager;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.dao.cache.RedisManager;
 import com.galive.logic.helper.LogicHelper;
-import com.galive.logic.manager.AnnotationManager;
 import com.galive.logic.model.Sid;
 import com.galive.logic.model.Sid.EntitySeq;
 import com.galive.logic.network.http.jetty.JettyServer;

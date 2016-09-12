@@ -1,6 +1,7 @@
 package com.galive.logic.dao;
 
-import com.galive.logic.model.Account;
+import com.galive.logic.model.Platform;
+import com.galive.logic.model.PlatformAccount;
 
 public interface AccountDao {
 
@@ -18,8 +19,15 @@ public interface AccountDao {
 	 */
 	public String findToken(String account);
 	
-	public Account save(Account account);
+	/***
+	 * 保存用户平台信息
+	 * @param account
+	 * @return PlatformAccount
+	 */
+	public PlatformAccount savePlatformAccount(PlatformAccount account);
 	
-	public Account findAccount(String account);
+	public PlatformAccount findPlatformAccount(Platform platform, String unionId);
+	
+	public PlatformAccount findPlatformAccount(String sid);
 	
 }

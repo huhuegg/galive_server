@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.galive.common.protocol.CommandIn;
-import com.galive.logic.manager.AnnotationManager;
+import com.galive.logic.annotation.AnnotationManager;
 import com.galive.logic.network.http.handler.HttpBaseHandler;
 
 public class LogicServlet extends HttpServlet {

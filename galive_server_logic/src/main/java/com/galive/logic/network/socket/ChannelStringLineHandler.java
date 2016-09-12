@@ -5,9 +5,9 @@ import org.slf4j.LoggerFactory;
 
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
+import com.galive.logic.annotation.AnnotationManager;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.SocketConfig;
-import com.galive.logic.manager.AnnotationManager;
 import com.galive.logic.network.socket.handler.SocketBaseHandler;
 
 import io.netty.channel.ChannelHandlerContext;

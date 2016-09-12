@@ -7,7 +7,9 @@ import org.apache.commons.lang.StringUtils;
 import com.galive.logic.dao.AccountDao;
 import com.galive.logic.dao.AccountDaoImpl;
 import com.galive.logic.exception.LogicException;
-import com.galive.logic.model.Account;
+import com.galive.logic.model.Platform;
+import com.galive.logic.model.PlatformAccount;
+import com.galive.logic.model.PlatformAccountWeChat;
 import com.galive.logic.network.platform.wx.WXAccessTokenResp;
 import com.galive.logic.network.platform.wx.WXUserInfoResp;
 import com.galive.logic.network.platform.wx.WeChatRequest;
@@ -22,16 +24,16 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 	}
 	
 	@Override
-	public String generateToken(String account) {
+	public String generateToken(String sid) {
 		String uuid = UUID.randomUUID().toString();
 		String token = Md5Crypt.md5Crypt(uuid.getBytes());
-		accountDao.saveToken(account, token);
+		accountDao.saveToken(sid, token);
 		return token;
 	}
 
 	@Override
-	public boolean verifyToken(String account, String token) {
-		String existToken = accountDao.findToken(account);
+	public boolean verifyToken(String sid, String token) {
+		String existToken = accountDao.findToken(sid);
 		if (existToken != null) {
 			return existToken.equals(token);
 		}
@@ -45,18 +47,18 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 	}
 
 	@Override
-	public void saveAccount(Account account) {
-		accountDao.save(account);
+	public PlatformAccount getPlatformAccountInfo(String sid) throws LogicException {
+		PlatformAccount account = accountDao.findPlatformAccount(sid);
+		if (account == null) {
+			String error = String.format("用户(%s) 不存在", sid);
+			appendLog(error);
+			throw new LogicException(error); 
+		}
+		return account;
 	}
 
 	@Override
-	public Account findAccount(String account) {
-		Account act = accountDao.findAccount(account);
-		return act;
-	}
-
-	@Override
-	public WXUserInfoResp reqWechatUserInfo(String code) throws LogicException {
+	public PlatformAccountWeChat loginWechat(String code) throws LogicException {
 		if (StringUtils.isBlank(code)) {
 			appendLog("微信获取用户信息失败，code为空。");
 			throw new LogicException("微信获取用户信息失败，code为空。");
@@ -87,9 +89,18 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 		appendLog("openid:" + openid);
 		appendLog("unionid:" + unionid);
 		
+		PlatformAccountWeChat exist = (PlatformAccountWeChat) accountDao.findPlatformAccount(Platform.WeChat, unionid);
+		if (exist != null) {
+			PlatformAccountWeChat act = PlatformAccountWeChat.convert(userInfoResp);
+			act.setSid(exist.getSid());
+			act = (PlatformAccountWeChat) accountDao.savePlatformAccount(act);
+			return act;
+		}
 		appendLog("微信登录成功:" + userInfoResp.toString());
-		return userInfoResp;
+		return exist;
 	}
+
+	
 
 	
 }

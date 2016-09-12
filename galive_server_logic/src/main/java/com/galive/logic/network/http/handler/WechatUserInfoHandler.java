@@ -18,9 +18,9 @@ public class WechatUserInfoHandler extends HttpBaseHandler {
 		appendLog("--WechatUserInfoHandler(微信获取用户信息)--");
 		WechatUserInfoIn in = JSON.parseObject(reqData, WechatUserInfoIn.class);
 		
-		WXUserInfoResp wx = accountService.reqWechatUserInfo(in.code);
+		//WXUserInfoResp wx = accountService.reqWechatUserInfo(in.code);
 		WechatUserInfoOut out = new WechatUserInfoOut();
-		out.userInfo = wx;
+		//out.userInfo = wx;
 		return out;
 	}
 	

@@ -1,4 +1,4 @@
-package com.galive.logic.manager;
+package com.galive.logic.annotation;
 
 import java.util.HashMap;
 import java.util.List;

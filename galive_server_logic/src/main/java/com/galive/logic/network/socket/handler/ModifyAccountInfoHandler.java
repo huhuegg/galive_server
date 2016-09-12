@@ -19,15 +19,15 @@ public class ModifyAccountInfoHandler extends SocketBaseHandler {
 		appendLog("--ModifyAccountInfoHandler(更改用户信息)--");
 		ModifyAccountInfoIn in = JSON.parseObject(reqData, ModifyAccountInfoIn.class);
 		
-		Account act = accountService.findAccount(account);
-		
-		if (in.state != null) {
-			act.setState(in.state);
-			appendLog("state:" + in.state);
-		}
-		
-		accountService.saveAccount(act);
-
+//		Account act = accountService.findAccount(account);
+//		
+//		if (in.state != null) {
+//			act.setState(in.state);
+//			appendLog("state:" + in.state);
+//		}
+//		
+//		accountService.saveAccount(act);
+//
 		CommandOut out = new CommandOut(Command.MODIFY_ACCOUNT_INFO);
 		return out;
 	}
