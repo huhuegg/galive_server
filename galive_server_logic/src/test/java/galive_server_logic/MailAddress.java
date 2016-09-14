@@ -6,6 +6,11 @@ public class MailAddress {
 	
 	private String mailbox = "";
 	
+	@Override
+	public String toString() {
+		return displayName + " " + mailbox;
+	}
+	
 	public MailAddress(String displayName, String mailbox) {
 		this.displayName = displayName;
 		this.mailbox = mailbox;

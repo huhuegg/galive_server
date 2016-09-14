@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.mail.Message;
-
 import com.sun.mail.imap.IMAPMessage;
 
 public class Mail {
@@ -30,7 +28,62 @@ public class Mail {
 	
 	private Date sentDate = new Date();
 	
+	private List<MailAttachment> attachments = new ArrayList<>();
+	
+	private String plainText = "";
+	
+	private String htmlText = "";
+	
 	private IMAPMessage message;
+	
+	@Override
+	public String toString() {
+		StringBuffer b = new StringBuffer();
+		b.append("===================================");
+		b.append("\n");
+		b.append("folder|" + folder);
+		b.append("\n");
+		b.append("uid|" + uid);
+		b.append("\n");
+		b.append("messageID|" + messageID);
+		b.append("\n");
+		b.append("sentDate|" + sentDate);
+		b.append("\n");
+		b.append("subject|" + subject);
+		b.append("\n");
+/*		b.append("plainText|" + plainText);
+		b.append("\n");*/
+/*		b.append("htmlText|" + htmlText);
+		b.append("\n");*/
+		b.append("from|" + from.toString());
+		b.append("\n");
+		b.append("to|");
+		for (MailAddress address : to) {
+			b.append(address.toString() + "|");
+		}
+		b.append("\n");
+		b.append("cc|");
+		for (MailAddress address : cc) {
+			b.append(address.toString() + "|");
+		}
+		b.append("\n");
+		b.append("bcc|");
+		for (MailAddress address : bcc) {
+			b.append(address.toString() + "|");
+		}
+		b.append("\n");
+		b.append("hasAttachments|" + hasAttachments);
+		b.append("\n");
+		b.append("attachments|");
+		for (MailAttachment attachment : attachments) {
+			b.append(attachment.toString() + "|");
+		}
+		b.append("\n");
+		
+		
+		b.append("===================================");
+		return b.toString();
+	}
 
 	public String getMessageID() {
 		return messageID;
@@ -118,6 +171,30 @@ public class Mail {
 
 	public void setMessage(IMAPMessage message) {
 		this.message = message;
+	}
+
+	public List<MailAttachment> getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(List<MailAttachment> attachments) {
+		this.attachments = attachments;
+	}
+
+	public String getPlainText() {
+		return plainText;
+	}
+
+	public void setPlainText(String plainText) {
+		this.plainText = plainText;
+	}
+
+	public String getHtmlText() {
+		return htmlText;
+	}
+
+	public void setHtmlText(String htmlText) {
+		this.htmlText = htmlText;
 	}
 	
 	

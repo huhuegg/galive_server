@@ -43,7 +43,6 @@ public class MCFetechHeadersRequest extends MailClient {
 
 			Message[] messages = folder.getMessages(start, end);
 			ArrayUtils.reverse(messages);
-			System.out.println("获取邮件数:" + messages.length);
 
 			FetchProfile fp = new FetchProfile();
 			fp.add(FetchProfile.Item.ENVELOPE);
@@ -58,24 +57,17 @@ public class MCFetechHeadersRequest extends MailClient {
 
 				IMAPMessage msg = (IMAPMessage) message;
 
-				StringBuffer buffer = new StringBuffer();
-				buffer.append("================================\n");
-
 				long uid = folder.getUID(msg);
-				buffer.append("UID|" + uid + "\n");
 				mail.setUid(uid);
 
 				String messageID = msg.getMessageID();
-				buffer.append("MessageID|" + messageID + "\n");
 				mail.setMessageID(messageID);
 
 				String subject = MimeUtility.decodeText(msg.getSubject());
-				buffer.append("subject|" + subject + "\n");
 				mail.setSubject(subject);
 
 				String from = msg.getSender().toString();
 				String fromAddress[] = MailClientHepler.formatAddress(from);
-				buffer.append("from|" + fromAddress[0] + " " + fromAddress[1] + "\n");
 				MailAddress fromMailAddress = new MailAddress(fromAddress[0], fromAddress[1]);
 				mail.setFrom(fromMailAddress);
 
@@ -83,7 +75,6 @@ public class MCFetechHeadersRequest extends MailClient {
 				List<MailAddress> toMailAddresses = new ArrayList<>();
 				for (Address to : tos) {
 					String toAddress[] = MailClientHepler.formatAddress(to.toString());
-					buffer.append("to|" + toAddress[0] + " " + toAddress[1] + "\n");
 					MailAddress toMailAddress = new MailAddress(toAddress[0], toAddress[1]);
 					toMailAddresses.add(toMailAddress);
 				}
@@ -94,7 +85,6 @@ public class MCFetechHeadersRequest extends MailClient {
 				if (ccs != null) {
 					for (Address cc : ccs) {
 						String ccAddress[] = MailClientHepler.formatAddress(cc.toString());
-						buffer.append("cc|" + ccAddress[0] + " " + ccAddress[1] + "\n");
 						MailAddress ccMailAddress = new MailAddress(ccAddress[0], ccAddress[1]);
 						ccMailAddresses.add(ccMailAddress);
 					}
@@ -106,7 +96,6 @@ public class MCFetechHeadersRequest extends MailClient {
 				if (bccs != null) {
 					for (Address bcc : bccs) {
 						String bccAddress[] = MailClientHepler.formatAddress(bcc.toString());
-						buffer.append("bcc|" + bccAddress[0] + " " + bccAddress[1] + "\n");
 						MailAddress bccMailAddress = new MailAddress(bccAddress[0], bccAddress[1]);
 						bccMailAddresses.add(bccMailAddress);
 					}
@@ -114,21 +103,14 @@ public class MCFetechHeadersRequest extends MailClient {
 				mail.setBcc(bccMailAddresses);
 
 				Date date = msg.getSentDate();
-				buffer.append("date|" + date + "\n");
 				mail.setSentDate(date);
 
 				String[] hasAtta = msg.getHeader("X-Has-Attach");
 				boolean hasAttachments = false;
 				if (hasAtta != null) {
-					buffer.append("hasAtta|" + hasAtta[0] + "\n");
 					hasAttachments = hasAtta[0].equals("yes");
 				}
 				mail.setHasAttachments(hasAttachments);
-
-				buffer.append("================================\n");
-
-				System.out.println(buffer.toString());
-
 				mails.add(mail);
 			}
 

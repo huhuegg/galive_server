@@ -32,7 +32,7 @@ public abstract class MailClient {
 //		 props.setProperty("mail.imap.port", "143");
 		props.setProperty("mail.store.protocol", "imaps");
 		session = Session.getInstance(props);
-//		session.setDebug(true);
+		//session.setDebug(true);
 		store = session.getStore("imaps");
 		store.connect(host, username, password);
 		return store;
