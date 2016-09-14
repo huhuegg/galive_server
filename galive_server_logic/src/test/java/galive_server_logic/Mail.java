@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.mail.Message;
+
+import com.sun.mail.imap.IMAPMessage;
+
 public class Mail {
 
 	private String folder;
@@ -25,6 +29,8 @@ public class Mail {
 	private boolean hasAttachments = false;
 	
 	private Date sentDate = new Date();
+	
+	private IMAPMessage message;
 
 	public String getMessageID() {
 		return messageID;
@@ -104,6 +110,14 @@ public class Mail {
 
 	public void setUid(long uid) {
 		this.uid = uid;
+	}
+
+	public IMAPMessage getMessage() {
+		return message;
+	}
+
+	public void setMessage(IMAPMessage message) {
+		this.message = message;
 	}
 	
 	

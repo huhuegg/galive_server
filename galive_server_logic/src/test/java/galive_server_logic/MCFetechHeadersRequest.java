@@ -9,7 +9,7 @@ import javax.mail.FetchProfile;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.Message.RecipientType;
-import javax.mail.MessagingException;
+import javax.mail.Store;
 import javax.mail.internet.MimeUtility;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -19,11 +19,14 @@ import com.sun.mail.imap.IMAPMessage;
 
 public class MCFetechHeadersRequest extends MailClient {
 
+	public static final int kStartIndex = 1;
+	public static final int kPageSize = 20;
+	
 	public void req(String folderName, int index, MCFetechHeadersListener listener) {
 		MCFetechHeadersResponse resp = new MCFetechHeadersResponse();
 		IMAPFolder folder = null;
 		try {
-			connect();
+			Store store = connect();
 			folder = (IMAPFolder) store.getFolder(folderName);
 			folder.open(Folder.READ_ONLY);
 			int count = folder.getMessageCount();
@@ -51,6 +54,7 @@ public class MCFetechHeadersRequest extends MailClient {
 			for (Message message : messages) {
 				Mail mail = new Mail();
 				mail.setFolder(folderName);
+				mail.setMessage((IMAPMessage) message);
 
 				IMAPMessage msg = (IMAPMessage) message;
 
@@ -61,7 +65,7 @@ public class MCFetechHeadersRequest extends MailClient {
 				buffer.append("UID|" + uid + "\n");
 				mail.setUid(uid);
 
-				String messageID = msg.getMessageID().replace("<", "").replace(">", "");
+				String messageID = msg.getMessageID();
 				buffer.append("MessageID|" + messageID + "\n");
 				mail.setMessageID(messageID);
 
@@ -148,13 +152,7 @@ public class MCFetechHeadersRequest extends MailClient {
 			resp.msg = e.getLocalizedMessage();
 			listener.onResp(resp);
 		} finally {
-			if (folder.isOpen()) {
-				try {
-					folder.close(false);
-				} catch (MessagingException e) {
-					
-				}
-			}
+			
 		}
 	}
 

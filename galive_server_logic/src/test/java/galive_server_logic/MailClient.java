@@ -2,39 +2,52 @@ package galive_server_logic;
 
 import java.util.Properties;
 
+import javax.mail.Folder;
 import javax.mail.Session;
 import javax.mail.Store;
+
+import com.sun.mail.imap.IMAPMessage;
+import com.sun.mail.imap.IMAPStore;
+
 import galive_server_logic.MCFetechHeadersRequest.MCFetechHeadersListener;
 import galive_server_logic.MCFetechHeadersRequest.MCFetechHeadersResponse;
 
 public abstract class MailClient {
 
-	public static final int kStartIndex = 1;
-	public static final int kPageSize = 20;
-
 	public MailClient() {
 		username = "52119944@qq.com";
 		password = "Xmn871001";
 		host = "imap.qq.com";
-		Properties props = new Properties();
-		props.setProperty("mail.store.protocol", "imaps");
-		// props.setProperty("mail.imap.host", "imap.qq.com");
-		// props.setProperty("mail.imap.port", "993");
-		session = Session.getInstance(props);
-		session.setDebug(true);
 	}
 
-	private Session session;
-	protected Store store;
 	private String username;
 	private String password;
 	private String host;
-
-	protected void connect() throws Exception {
+	private Store store;
+	private Session session;
+	
+	protected Store connect() throws Exception {
+		Properties props = new Properties();
+		// props.setProperty("mail.imap.host", "imap.qq.com");
+//		 props.setProperty("mail.imap.port", "143");
+		props.setProperty("mail.store.protocol", "imaps");
+		session = Session.getInstance(props);
+//		session.setDebug(true);
 		store = session.getStore("imaps");
 		store.connect(host, username, password);
+		return store;
 	}
 
+	protected void reconnectIfNeed(IMAPMessage message) throws Exception {
+		IMAPStore store = (IMAPStore) message.getSession().getStore();
+		if (!store.isConnected()) {
+			store.connect(host, "nextcont@foxmail.com", "xhdmuekhsdvshiha");
+		}
+		Folder folder = message.getFolder();
+		if (!folder.isOpen()) {
+			folder.open(Folder.READ_ONLY);
+		}
+	}
 	
 
 	
@@ -43,16 +56,14 @@ public abstract class MailClient {
 
 	public static void main(String[] args) {
 		// MailClient.getInstance().reqFolderList();
-		new MCFetechHeadersRequest().req("INBOX", kStartIndex, new MCFetechHeadersListener() {
+		new MCFetechHeadersRequest().req("INBOX", 1, new MCFetechHeadersListener() {
 			
 			@Override
 			public void onResp(MCFetechHeadersResponse resp) {
 				System.out.println(resp.result + "|" + resp.mails.size());
 				for (Mail mail : resp.mails) {
-					if (mail.isHasAttachments()) {
-						new MCFetechContentRequest().req(mail);
-					}
-				}
+					new MCFetechContentRequest().req(mail);
+				}	
 			}
 		});
 
