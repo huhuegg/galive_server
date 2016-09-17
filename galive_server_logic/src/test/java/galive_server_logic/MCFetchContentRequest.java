@@ -10,7 +10,7 @@ import javax.mail.internet.MimeMultipart;
 import com.sun.mail.imap.IMAPBodyPart;
 import com.sun.mail.imap.IMAPMessage;
 
-public class MCFetechContentRequest extends MailClient {
+public class MCFetchContentRequest extends MailClient {
 
 	
 	public void req(Mail mail) {
@@ -75,16 +75,16 @@ public class MCFetechContentRequest extends MailClient {
 		}
 	}
 
-	public interface MCFetechContentListener {
-		void onResult(MCFetechContentResponse resp);
+	public interface MCFetchContentListener {
+		void onResult(MCFetchContentResponse resp);
 	}
 
-	public class MCFetechContentResponse {
-		public MCFetechContentResult result;
+	public class MCFetchContentResponse {
+		public MCFetchContentResult result;
 		public String msg;
 	}
 
-	public enum MCFetechContentResult {
+	public enum MCFetchContentResult {
 		Success, Failure
 	}
 	

@@ -62,7 +62,7 @@ public abstract class MailClient {
 			public void onResp(MCFetechHeadersResponse resp) {
 				System.out.println(resp.result + "|" + resp.mails.size());
 				for (Mail mail : resp.mails) {
-					new MCFetechContentRequest().req(mail);
+					new MCFetchContentRequest().req(mail);
 				}	
 			}
 		});

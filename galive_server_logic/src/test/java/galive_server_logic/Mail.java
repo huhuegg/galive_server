@@ -3,7 +3,6 @@ package galive_server_logic;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import com.sun.mail.imap.IMAPMessage;
 
 public class Mail {
