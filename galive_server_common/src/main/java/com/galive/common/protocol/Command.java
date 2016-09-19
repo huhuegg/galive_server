@@ -29,7 +29,7 @@ public class Command {
 	
 	public static final String KICK_MEETING_MEMBER = "KICK_MEETING_MEMBER";
 	
-	
+	public static final String UPDATE_MEETING_OPTIONS = "UPDATE_MEETING_OPTIONS";
 	
 	
 	
