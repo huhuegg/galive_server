@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.mail.Multipart;
 import javax.mail.Part;
-import javax.mail.internet.MimeMultipart;
-
 import com.sun.mail.imap.IMAPBodyPart;
 import com.sun.mail.imap.IMAPMessage;
 
