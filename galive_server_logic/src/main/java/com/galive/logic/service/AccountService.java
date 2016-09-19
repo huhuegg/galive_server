@@ -1,19 +1,23 @@
 package com.galive.logic.service;
 
 import com.galive.logic.exception.LogicException;
-import com.galive.logic.model.PlatformAccount;
-import com.galive.logic.model.PlatformAccountWeChat;
+import com.galive.logic.model.account.Account;
+import com.galive.logic.model.account.Platform;
+import com.galive.logic.model.account.PlatformAccount;
 
 public interface AccountService {
 
-	public String generateToken(String sid);
+	public String generateToken(String accountSid);
 	
-	public boolean verifyToken(String account, String token);
+	public boolean verifyToken(String accountSid, String token);
 	
-	public boolean verifyAccount(String account);
+	public boolean verifyAccount(String accountSid);
 	
-	public PlatformAccount getPlatformAccountInfo(String sid) throws LogicException;
+	public Account findAccount(String accountSid);
 	
-	public PlatformAccountWeChat loginWechat(String code) throws LogicException;
+	public PlatformAccount login(String accountSid, Platform platform, String params) throws LogicException;
 	
+	public void logout(String accountSid) throws LogicException;
+	
+
 }

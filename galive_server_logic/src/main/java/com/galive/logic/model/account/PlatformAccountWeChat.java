@@ -1,4 +1,4 @@
-package com.galive.logic.model;
+ package com.galive.logic.model.account;
 
 import org.mongodb.morphia.annotations.Entity;
 

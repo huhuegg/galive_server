@@ -34,7 +34,8 @@ public abstract class MailClient {
 		session = Session.getInstance(props);
 		//session.setDebug(true);
 		store = session.getStore("imaps");
-		store.connect(host, username, password);
+
+		
 		return store;
 	}
 

@@ -1,27 +1,27 @@
 package com.galive.logic.model;
 
-import org.mongodb.morphia.annotations.Embedded;
-
-@Embedded
 public class MeetingMember {
 
-	private String account;
+	private String accountSid;
 	
-	private String displayName;
+	private MeetingMemberOptions options;
 
-	public String getDisplayName() {
-		return displayName;
+	public String getAccountSid() {
+		return accountSid;
 	}
 
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
+	public void setAccountSid(String accountSid) {
+		this.accountSid = accountSid;
 	}
 
-	public String getAccount() {
-		return account;
+	public MeetingMemberOptions getOptions() {
+		return options;
 	}
 
-	public void setAccount(String account) {
-		this.account = account;
+	public void setOptions(MeetingMemberOptions options) {
+		this.options = options;
 	}
+	
+
+
 }

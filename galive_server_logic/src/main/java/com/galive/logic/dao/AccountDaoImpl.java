@@ -6,10 +6,10 @@ import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.dao.cache.RedisManager;
 import com.galive.logic.dao.db.MongoDao;
 import com.galive.logic.dao.db.MongoManager;
-import com.galive.logic.model.Platform;
-import com.galive.logic.model.PlatformAccount;
 import com.galive.logic.model.Sid;
 import com.galive.logic.model.Sid.EntitySeq;
+import com.galive.logic.model.account.Platform;
+import com.galive.logic.model.account.PlatformAccount;
 
 import redis.clients.jedis.Jedis;
 

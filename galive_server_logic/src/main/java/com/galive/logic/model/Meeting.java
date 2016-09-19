@@ -3,9 +3,7 @@ package com.galive.logic.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mongodb.morphia.annotations.Entity;
 
-@Entity(value="meeting")
 public class Meeting extends BaseModel {
 
 	private String room;
@@ -16,7 +14,7 @@ public class Meeting extends BaseModel {
 	
 	private List<MeetingMember> members = new ArrayList<>();
 	
-	private MeetingSetting setting;
+	private MeetingOptions options;
 
 	public String getRoom() {
 		return room;
@@ -50,13 +48,14 @@ public class Meeting extends BaseModel {
 		this.members = members;
 	}
 
-	public MeetingSetting getSetting() {
-		return setting;
+	public MeetingOptions getOptions() {
+		return options;
 	}
 
-	public void setSetting(MeetingSetting setting) {
-		this.setting = setting;
+	public void setOptions(MeetingOptions options) {
+		this.options = options;
 	}
+	
 	
 	
 }

@@ -1,7 +1,7 @@
 package com.galive.logic.dao;
 
-import com.galive.logic.model.Platform;
-import com.galive.logic.model.PlatformAccount;
+import com.galive.logic.model.account.Platform;
+import com.galive.logic.model.account.PlatformAccount;
 
 public interface AccountDao {
 
