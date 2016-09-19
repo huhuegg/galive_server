@@ -17,7 +17,7 @@ public class Command {
 	
 	public static final String MEETING_LEAVE = "MEETING_LEAVE";
 	
-	public static final String MEETING_TRANSMIT = "MEETING_TRANSMIT";
+	public static final String TRANSMIT = "TRANSMIT";
 	
 	
 	

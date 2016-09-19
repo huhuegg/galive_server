@@ -2,26 +2,14 @@ package com.galive.logic.config;
 
 public class LogicConfig {
 
-	private String streamUrl = "";
-	
-	private int maxLiveMember = 4;
+	private String magicKey;
 
-	public String getStreamUrl() {
-		return streamUrl;
+	public String getMagicKey() {
+		return magicKey;
 	}
 
-	public void setStreamUrl(String streamUrl) {
-		this.streamUrl = streamUrl;
+	public void setMagicKey(String magicKey) {
+		this.magicKey = magicKey;
 	}
-
-	public int getMaxLiveMember() {
-		return maxLiveMember;
-	}
-
-	public void setMaxLiveMember(int maxLiveMember) {
-		this.maxLiveMember = maxLiveMember;
-	}
-
-	
 	
 }

@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,9 @@ import org.slf4j.LoggerFactory;
 public class CommandIn {
 
 	private static Logger logger = LoggerFactory.getLogger(CommandIn.class);
+	
+	private static final String MAGIC_KEY = "lllfdfgert3242342sfsdfsad";
+	
 	/**
 	 * 请求id
 	 */
@@ -88,7 +92,12 @@ public class CommandIn {
 			String token = req.getParameter("token");
 			String params = req.getParameter("params");
 			String tag = req.getParameter("tag");
-			logger.debug(String.format("command:%s,account:%s,token:%s,params:%s,tag:%s", command,account,token,params,tag));
+			String s = req.getParameter("s");
+			logger.debug(String.format("command:%s,account:%s,token:%s,params:%s,tag:%s,s:%s", command,account,token,params,tag,s));
+			String md5 = DigestUtils.md5Hex(String.format("<%s>", account + params + MAGIC_KEY));
+			if (!md5.equals(s)) {
+				return null;
+			}
 			CommandIn in = new CommandIn();
 			in.setCommand(command);
 			in.setAccount(account);

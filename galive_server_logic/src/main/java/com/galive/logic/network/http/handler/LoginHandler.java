@@ -1,5 +1,8 @@
 package com.galive.logic.network.http.handler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
@@ -35,21 +38,29 @@ public class LoginHandler extends HttpBaseHandler {
 		}
 		LoginOut out = new LoginOut();
 		PlatformAccount platformAccount = null;
+		Map<String, Object> params = new HashMap<>();
 		switch (platform) {
 		case Guest:
 			String guestName = in.guestName;
 			appendLog("guestName(游客名):" + guestName);
-			platformAccount = accountService.login(accountSid, platform, guestName);
+			params.put("name", guestName);
+			platformAccount = accountService.login(accountSid, platform, params);
+			break;
 		case WeChat:
 			String code = in.wechatCode;
+			String unionid = in.wechatUnionId;
 			appendLog("微信code(wechatCode):" + code);
-			platformAccount = accountService.login(accountSid, platform, code);
+			appendLog("微信unionId(wechatUnionId):" + unionid);
+			params.put("wechatCode", code);
+			params.put("wechatUnionId", unionid);
+			
+			platformAccount = accountService.login(accountSid, platform, params);
 			break;
 		}
 		
 		String token = accountService.generateToken(platformAccount.getAccountSid());
 		
-		Account act = accountService.findAccount(platformAccount.getAccountSid());
+		Account act = accountService.findAndCheckAccount(platformAccount.getAccountSid());
 	
 		out.platformInfo = platformAccount;
 		out.token =  token;
@@ -61,9 +72,19 @@ public class LoginHandler extends HttpBaseHandler {
 	
 	public static class LoginIn {
 
+		// 账号id 可选 非空且platform不为Guest时做绑定
 		public String accountSid;
+		
+		// 账号平台[String] Guest WeChat 
 		public Platform platform;
+		
+		// 微信code platform为WeChat时 与wechatUnionId二选一 获取用户信息用
 		public String wechatCode;
+		
+		// 微信unionid platform为WeChat时 与wechatUnionId二选一 自动登录用 免去授权过程
+		public String wechatUnionId;
+		
+		// 游客名 platform为Guest时 必填
 		public String guestName;
 	}
 

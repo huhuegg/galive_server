@@ -9,8 +9,8 @@ import com.galive.logic.model.Meeting;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.service.MeetingService;
 
-@SocketRequestHandler(desc = "消息转发", command = Command.MEETING_TRANSMIT)
-public class MeetingTransmitHandler extends SocketBaseHandler {
+@SocketRequestHandler(desc = "消息转发", command = Command.TRANSMIT)
+public class TransmitHandler extends SocketBaseHandler {
 
 	private MeetingService meetingService;
 
@@ -22,16 +22,9 @@ public class MeetingTransmitHandler extends SocketBaseHandler {
 		String targetSid = in.targetSid;
 		
 		
-		Meeting meeting = meetingService.findMeetingByAccount(account);
-		if (StringUtils.isEmpty(targetSid)) {
-			appendLog("转发对象:所有人");
-		} else {
-			if (meetingService.isMeetingMember(targetSid)) {
-				
-			}
-		}
+		
 	
-		CommandOut out = new CommandOut(Command.MEETING_TRANSMIT);
+		CommandOut out = new CommandOut(Command.TRANSMIT);
 		return out;
 	}
 	

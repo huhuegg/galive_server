@@ -56,7 +56,11 @@ public abstract class SocketBaseHandler {
 				}
 				ChannelManager.getInstance().addChannel(account, channel);
 			} else {
-				out = handle(account, in.getParams());
+				// 是否不同设备连接
+				ChannelHandlerContext existChannel = ChannelManager.getInstance().findChannel(account);
+				if (existChannel != null) {
+					out = handle(account, in.getParams());
+				}
 			}
 			
 		} catch (LogicException logicException) {

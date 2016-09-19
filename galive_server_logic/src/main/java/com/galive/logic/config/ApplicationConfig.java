@@ -15,7 +15,7 @@ public class ApplicationConfig {
 	private static Logger logger = LoggerFactory.getLogger(ApplicationConfig.class);
 
 	private static ApplicationConfig instance = null;
-
+	
 	private SocketConfig socketConfig;
 	private LogicConfig logicConfig;
 	private PlatformConfig platformConfig;
@@ -47,17 +47,6 @@ public class ApplicationConfig {
 
 			logger.info("--LogicConfig--");
 			LogicConfig logicConfig = new LogicConfig();
-			Element logicNode = node.element("Logic");	
-			Element streamUrlNode = logicNode.element("StreamUrl");
-			String streamUrl = streamUrlNode.getStringValue();
-			logicConfig.setStreamUrl(streamUrl);
-			logger.info("streamUrl:" + streamUrl);
-			
-			Element maxLiveMemberNode = logicNode.element("MaxLiveMember");
-			String maxLiveMemberStr = maxLiveMemberNode.getStringValue();
-			int maxLiveMember = Integer.parseInt(maxLiveMemberStr);
-			logicConfig.setMaxLiveMember(maxLiveMember);
-			logger.info("maxLiveMember:" + maxLiveMember);
 			
 			sc.setLogicConfig(logicConfig);
 

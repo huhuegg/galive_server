@@ -8,9 +8,7 @@ public class Meeting extends BaseModel {
 
 	private String room;
 	
-	private String name;
-	
-	private MeetingMember owner;
+	private MeetingMember holder;
 	
 	private List<MeetingMember> members = new ArrayList<>();
 	
@@ -22,22 +20,6 @@ public class Meeting extends BaseModel {
 
 	public void setRoom(String room) {
 		this.room = room;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public MeetingMember getOwner() {
-		return owner;
-	}
-
-	public void setOwner(MeetingMember owner) {
-		this.owner = owner;
 	}
 
 	public List<MeetingMember> getMembers() {
@@ -54,6 +36,14 @@ public class Meeting extends BaseModel {
 
 	public void setOptions(MeetingOptions options) {
 		this.options = options;
+	}
+
+	public MeetingMember getHolder() {
+		return holder;
+	}
+
+	public void setHolder(MeetingMember holder) {
+		this.holder = holder;
 	}
 	
 	

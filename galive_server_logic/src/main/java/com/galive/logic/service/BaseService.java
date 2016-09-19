@@ -3,6 +3,8 @@ package com.galive.logic.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.galive.logic.exception.LogicException;
+
 public class BaseService {
 
 	private static Logger logger = LoggerFactory.getLogger(BaseService.class);
@@ -35,5 +37,11 @@ public class BaseService {
 	
 	protected String loggerString() {
 		return logBuffer == null ? "" : logBuffer.toString();
+	}
+	
+	protected LogicException makeLogicException(String error) {
+		logBuffer.append(error);
+		LogicException exception = new LogicException(error);
+		return exception;
 	}
 }

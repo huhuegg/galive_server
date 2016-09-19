@@ -25,7 +25,6 @@
 	</Platform>
 
 	<Logic>
-		<StreamUrl>http://</StreamUrl>
-		<MaxLiveMember>100</MaxLiveMember>
+		
 	</Logic>
 </Config>

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.model.Meeting;
+import com.galive.logic.model.MeetingMemberOptions;
 import com.galive.logic.model.MeetingOptions;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.service.MeetingService;
@@ -19,15 +20,13 @@ public class CreateMeetingHandler extends SocketBaseHandler {
 		
 		CreateMeetingIn in = JSON.parseObject(reqData, CreateMeetingIn.class);
 		
-		String name = in.name;
-		boolean useOwnerRoom = in.useOwnerRoom;
 		MeetingOptions options = in.options;
+		MeetingMemberOptions meetingMemberOptions = in.meetingMemberOptions;
 		
-		appendLog("会议名称(name):" + name);
-		appendLog("是否使用自己的会议id(useOwnerRoom):" + useOwnerRoom);
 		appendLog("会议设置(options):" + options);
+		appendLog("会议成员设置(meetingMemberOptions):" + meetingMemberOptions);
 	
-		Meeting meeting = meetingService.createMeeting(account, name, useOwnerRoom, options);
+		Meeting meeting = meetingService.createMeeting(account, options, meetingMemberOptions);
 		
 		CreateLiveOut out = new CreateLiveOut();
 		out.meeting = meeting;
@@ -36,9 +35,8 @@ public class CreateMeetingHandler extends SocketBaseHandler {
 	
 	public static class CreateMeetingIn {
 
-		public String name;
-		public boolean useOwnerRoom = false;
 		public MeetingOptions options;
+		public MeetingMemberOptions meetingMemberOptions;
 	}
 
 	public static class CreateLiveOut extends CommandOut {

@@ -2,7 +2,7 @@
 <!DOCTYPE Config>
 <Config>
 
-
+	
 
 	<Socket>
 		<Host>192.168.214.22</Host>
@@ -28,7 +28,6 @@
 	</Platform>
 
 	<Logic>
-		<StreamUrl>http://</StreamUrl>
-		<MaxLiveMember>5</MaxLiveMember>
+		
 	</Logic>
 </Config>

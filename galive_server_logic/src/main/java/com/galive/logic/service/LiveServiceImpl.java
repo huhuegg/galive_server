@@ -48,9 +48,9 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 		}
 		
 		List<String> members = liveDao.findLiveMembers(liveSid);
-		if (members.size() >= ApplicationConfig.getInstance().getLogicConfig().getMaxLiveMember()) {
-			throw new LogicException("该房间已满员。");
-		}
+//		if (members.size() >= ApplicationConfig.getInstance().getLogicConfig().getMaxLiveMember()) {
+//			throw new LogicException("该房间已满员。");
+//		}
 		liveDao.saveLiveMember(liveSid, account);
 		liveDao.saveLiveForMember(liveSid, account);
 		
