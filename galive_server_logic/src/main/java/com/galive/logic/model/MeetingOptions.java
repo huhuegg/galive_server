@@ -9,12 +9,12 @@ import org.mongodb.morphia.annotations.Embedded;
 public class MeetingOptions {
 	
 	/**
-	 * 房间名称
+	 * 会议名称
 	 */
 	private String name;
 	
 	/**
-	 * 进入房间需要的密码
+	 * 进入会议需要的密码
 	 */
 	private String password;
 	
@@ -57,9 +57,5 @@ public class MeetingOptions {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
 
-
-	
-	
 }

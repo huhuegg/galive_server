@@ -119,6 +119,24 @@ public class AccountDaoImpl extends BaseDao implements AccountDao {
 		return accounts;
 	}
 
+	@Override
+	public PlatformAccount saveOrUpdatePlatformAccount(PlatformAccount account) {
+		if (StringUtils.isEmpty(account.getSid())) {
+			String sid = String.valueOf(Sid.getNextSequence(EntitySeq.PlatformAccount));
+			account.setSid(sid);
+		} 
+		platformDao.save(account);
+		return account;
+	}
+
+	@Override
+	public PlatformAccount findPlatformAccount(String platfromAccountSid) {
+		Query<PlatformAccount> q = platformDao.createQuery();
+		q.field("sid").equal(platfromAccountSid);
+		PlatformAccount account = platformDao.findOne(q);
+		return account;
+	}
+
 	
 
 }

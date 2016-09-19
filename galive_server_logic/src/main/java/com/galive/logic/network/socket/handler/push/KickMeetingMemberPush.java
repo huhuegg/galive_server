@@ -3,12 +3,12 @@ package com.galive.logic.network.socket.handler.push;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 
-public class JoinLivePush extends CommandOut {
-
-	public String account;
+public class KickMeetingMemberPush extends CommandOut {
 	
-	public JoinLivePush() {
-		super(Command.JOIN_LIVE_PUSH);
+	public String targetSid;
+	
+	public KickMeetingMemberPush() {
+		super(Command.KICK_OFF_PUSH);
 	}
 
 	

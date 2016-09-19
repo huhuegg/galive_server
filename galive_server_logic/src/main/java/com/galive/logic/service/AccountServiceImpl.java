@@ -9,6 +9,8 @@ import org.apache.commons.lang.StringUtils;
 import com.galive.logic.dao.AccountDao;
 import com.galive.logic.dao.AccountDaoImpl;
 import com.galive.logic.exception.LogicException;
+import com.galive.logic.model.MeetingMemberOptions;
+import com.galive.logic.model.MeetingOptions;
 import com.galive.logic.model.account.Account;
 import com.galive.logic.model.account.Platform;
 import com.galive.logic.model.account.PlatformAccount;
@@ -111,6 +113,10 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 					platformAccount = createOrBindAccount(accountSid, platformAccountWeChat);
 				}
 			}
+			accountDao.saveOrUpdatePlatformAccount(platformAccount);
+			Account act = accountDao.findAccount(platformAccount.getAccountSid());
+			act.setLatestLoginPlatform(platformAccount.getSid());
+			accountDao.saveOrUpdateAccount(act);
 			appendLog(platformAccount.toString());
 		}
 		return platformAccount;
@@ -154,6 +160,26 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 	@Override
 	public void logout(String accountSid) throws LogicException {
 		accountDao.deleteToken(accountSid);
+	}
+
+	@Override
+	public MeetingOptions updateMeetingOptions(String accountSid, MeetingOptions options) throws LogicException {
+		Account act = accountDao.findAccount(accountSid);
+		act.setMeetingOptions(options);
+		return options;
+	}
+
+	@Override
+	public MeetingMemberOptions updateMeetingMemberOptions(String accountSid, MeetingMemberOptions options) throws LogicException {
+		Account act = accountDao.findAccount(accountSid);
+		act.setMeetingMemberOptions(options);
+		return options;
+	}
+
+	@Override
+	public PlatformAccount findPlatformAccount(String platformAccountSid) throws LogicException {
+		PlatformAccount act = accountDao.findPlatformAccount(platformAccountSid);
+		return act;
 	}
 
 }

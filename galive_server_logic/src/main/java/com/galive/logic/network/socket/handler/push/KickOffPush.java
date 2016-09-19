@@ -6,7 +6,7 @@ import com.galive.common.protocol.CommandOut;
 public class KickOffPush extends CommandOut {
 	
 	public KickOffPush() {
-		super(Command.DESTROY_LIVE_PUSH);
+		super(Command.KICK_OFF_PUSH);
 	}
 
 	

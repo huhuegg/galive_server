@@ -8,6 +8,15 @@ import com.galive.logic.model.MeetingOptions;
 public interface MeetingService {
 
 	/**
+	 * 检查用户是否在会议中
+	 * @param accountSid
+	 * @param isInMeeting 检查在/不在会议中
+	 * @return
+	 * @throws LogicException
+	 */
+	public Meeting checkAccountInMeeting(String accountSid, boolean isInMeeting) throws LogicException;
+	
+	/**
 	 * 查找会议
 	 * @param meetingSid 会议id 二选一
 	 * @param accountSid 用户所在的会议 可选 二选一
@@ -17,10 +26,10 @@ public interface MeetingService {
 	public Meeting findMeeting(String meetingSid, String accountSid, boolean checkNull) throws LogicException;
 
 	/**
-	 * 创建房间 
+	 * 创建会议
 	 * @param accountSid
-	 * @param options 房间设置 null则使用用户默认设置
-	 * @param memberOptions 房间中用户设置
+	 * @param options 会议设置 null则使用用户默认设置
+	 * @param memberOptions 会议中用户设置
 	 * @return
 	 * @throws LogicException
 	 */
@@ -28,24 +37,27 @@ public interface MeetingService {
 
 	public Meeting joinMeeting(String accountSid, String meetingSid, MeetingMemberOptions meetingMemberOptions) throws LogicException;
 
-	public Meeting leaveMeeting(String accountSid, String meetingSid) throws LogicException;
+	/**
+	 * 离开会议
+	 * @param accountSid
+	 * @return 空则说明会议被销毁
+	 * @throws LogicException
+	 */
+	public Meeting leaveMeeting(String accountSid) throws LogicException;
 
-	public void destroyMeeting(String accountSid) throws LogicException;
+	/**
+	 * 解散会议 仅主持人操作
+	 * @param accountSid
+	 * @throws LogicException
+	 */
+	public Meeting destroyMeeting(String accountSid) throws LogicException;
 
-	public void leaveMeeting(String accountSid) throws LogicException;
+	public void changeHolder(String accountSid, String newHolder) throws LogicException;
 
-	public void changeHolder(String accountSid, String holderSid) throws LogicException;
+	public Meeting updateMeetingOptions(String accountSid, MeetingOptions options, boolean belongToAccount) throws LogicException;
 
-	public void shareFile(String accountSid, String fileUrl) throws LogicException;
+	public Meeting updateMeetingMemberOptions(String accountSid, MeetingMemberOptions options, boolean belongToAccount) throws LogicException;
 
-	public void transmit(String accountSid, String content) throws LogicException;
-
-	public void updateMeetingOptions(String accountSid, MeetingOptions options) throws LogicException;
-
-	public void updateMeetingMemberOptions(String accountSid, MeetingMemberOptions options) throws LogicException;
-
-	public void kickMember(String accountSid, String targetSid) throws Exception;
-
-	public boolean isMeetingMember(String accountSid) throws Exception;
+	public Meeting kickMember(String accountSid, String targetSid) throws Exception;
 
 }

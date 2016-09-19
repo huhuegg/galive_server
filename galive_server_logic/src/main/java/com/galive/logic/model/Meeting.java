@@ -8,7 +8,10 @@ public class Meeting extends BaseModel {
 
 	private String room;
 	
-	private MeetingMember holder;
+	/**
+	 * 主持人accountSid
+	 */
+	private String holder;
 	
 	private List<MeetingMember> members = new ArrayList<>();
 	
@@ -38,14 +41,14 @@ public class Meeting extends BaseModel {
 		this.options = options;
 	}
 
-	public MeetingMember getHolder() {
+	public String getHolder() {
 		return holder;
 	}
 
-	public void setHolder(MeetingMember holder) {
+	public void setHolder(String holder) {
 		this.holder = holder;
 	}
+
 	
-	
-	
+
 }

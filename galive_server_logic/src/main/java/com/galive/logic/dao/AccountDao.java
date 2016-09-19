@@ -13,10 +13,14 @@ public interface AccountDao {
 	public void deleteToken(String accountSid);
 	
 	public Account saveOrUpdateAccount(Account account);
+	
+	public PlatformAccount saveOrUpdatePlatformAccount(PlatformAccount account);
 
 	public String findToken(String accountSid);
 	
 	public Account findAccount(String accountSid);
+	
+	public PlatformAccount findPlatformAccount(String platfromAccountSid);
 	
 	public PlatformAccount findPlatformAccount(Platform platform, String platformUnionId);
 	

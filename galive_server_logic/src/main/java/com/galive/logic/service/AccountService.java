@@ -3,6 +3,8 @@ package com.galive.logic.service;
 import java.util.Map;
 
 import com.galive.logic.exception.LogicException;
+import com.galive.logic.model.MeetingMemberOptions;
+import com.galive.logic.model.MeetingOptions;
 import com.galive.logic.model.account.Account;
 import com.galive.logic.model.account.Platform;
 import com.galive.logic.model.account.PlatformAccount;
@@ -37,6 +39,13 @@ public interface AccountService {
 	 * @return
 	 */
 	public Account findAndCheckAccount(String accountSid) throws LogicException;
+	
+	public PlatformAccount findPlatformAccount(String platformAccountSid) throws LogicException;
+	
+
+	public MeetingOptions updateMeetingOptions(String accountSid, MeetingOptions options) throws LogicException;
+	
+	public MeetingMemberOptions updateMeetingMemberOptions(String accountSid, MeetingMemberOptions options) throws LogicException;
 	
 	/**
 	 * 登录

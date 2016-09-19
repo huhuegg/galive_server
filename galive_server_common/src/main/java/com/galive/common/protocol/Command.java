@@ -17,7 +17,19 @@ public class Command {
 	
 	public static final String MEETING_LEAVE = "MEETING_LEAVE";
 	
+	public static final String MEETING_MEMBER_KICK = "MEETING_MEMBER_KICK";
+	
 	public static final String TRANSMIT = "TRANSMIT";
+	
+	public static final String DESTROY_MEETING_PUSH = "DESTROY_MEETING_PUSH";
+	
+	public static final String JOIN_MEETING_PUSH = "JOIN_MEETING_PUSH";
+	
+	public static final String LEAVE_MEETING_PUSH = "LEAVE_MEETING_PUSH";
+	
+	public static final String KICK_MEETING_MEMBER = "KICK_MEETING_MEMBER";
+	
+	
 	
 	
 	
@@ -34,7 +46,7 @@ public class Command {
 
 	public static final String JOIN_LIVE_PUSH = "JOIN_LIVE_PUSH";
 	public static final String LEAVE_LIVE_PUSH = "LEAVE_LIVE_PUSH";
-	public static final String DESTROY_LIVE_PUSH = "DESTROY_LIVE_PUSH";
+	
 
 	// 用户被踢下线
 	public static final String KICK_OFF_PUSH = "KICK_OFF_PUSH";

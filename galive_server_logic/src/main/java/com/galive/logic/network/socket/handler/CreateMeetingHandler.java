@@ -8,11 +8,12 @@ import com.galive.logic.model.MeetingMemberOptions;
 import com.galive.logic.model.MeetingOptions;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.service.MeetingService;
+import com.galive.logic.service.MeetingServiceImpl;
 
 @SocketRequestHandler(desc = "创建会议", command = Command.MEETING_CREATE)
 public class CreateMeetingHandler extends SocketBaseHandler {
 
-	private MeetingService meetingService;
+	private MeetingService meetingService = new MeetingServiceImpl();
 
 	@Override
 	public CommandOut handle(String account, String reqData) throws Exception {

@@ -26,7 +26,9 @@ public class Sid {
 
 	public enum EntitySeq {
 		Test("test", 1),
-		Account("account", 1);
+		Account("account", 1),
+		PlatformAccount("platform_account", 1),
+		Meeting("meeting", 1);
 		
 		public String seqName;
 		public long seqStart;
