@@ -5,7 +5,7 @@
 	
 
 	<Socket>
-		<Host>192.168.214.22</Host>
+		<Host>192.168.2.6</Host>
 		<!-- <Host>10.0.0.6</Host> -->
 		<Port>52195</Port>
 		<LiveReq>ga</LiveReq>
