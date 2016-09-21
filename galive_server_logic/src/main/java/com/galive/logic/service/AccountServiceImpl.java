@@ -75,8 +75,53 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 			}
 			break;
 		case WeChat:
+			String code = (String) params.get("wechatCode");
+			if (!StringUtils.isEmpty(code)) {
+				appendLog("微信授权code:" + code);
+				// 获取access_token
+				WXAccessTokenResp tokenResp = WeChatRequest.requestAccessToken(code);
+				if (tokenResp == null || !StringUtils.isBlank(tokenResp.errcode)) {
+					throw makeLogicException(String.format("登录失败:%s(%s)", tokenResp.getErrmsg(), tokenResp.getErrcode()));
+				}
+				appendLog("获取access_token:" + tokenResp.toString());
+				//
+				WXUserInfoResp userInfoResp = WeChatRequest.requestUserInfo(tokenResp.getAccess_token(), tokenResp.getOpenid());
+				if (userInfoResp == null || !StringUtils.isBlank(userInfoResp.errcode)) {
+					throw makeLogicException(String.format("登录失败:%s(%s)", userInfoResp.getErrmsg(), userInfoResp.getErrcode()));
+				}
+				appendLog("获取微信用户信息:" + userInfoResp.toString());
+				String unionid = userInfoResp.getUnionid();
+				// //
+				// http://wx.qlogo.cn/mmopen/ajNVdqHZLLCqBRT4kbibEibQVaAbuJZcmXNHNYEjZH4b1WtRDIPibafqKEJIYDKyticzvpwkpsLibjNol09OlqdIbmA/0
+				String avatar = userInfoResp.getHeadimgurl();
+				String nickname = userInfoResp.getNickname();
+				String openid = userInfoResp.getOpenid();
+				appendLog("微信头像:" + avatar);
+				appendLog("微信昵称:" + nickname);
+				appendLog("openid:" + openid);
+				appendLog("unionid:" + unionid);
+				
+				PlatformAccountWeChat exist = (PlatformAccountWeChat) accountDao.findPlatformAccount(platform, unionid);
+				if (exist != null) {
+					appendLog(String.format("unionid:%s 已存在。%s", unionid, exist.toString()));
+					platformAccount = exist;
+				} else {
+					PlatformAccountWeChat platformAccountWeChat = PlatformAccountWeChat.convert(userInfoResp);
+					if (StringUtils.isEmpty(accountSid)) {
+						appendLog("首次微信登录, 创建Account。");
+						platformAccount = createAccount(platformAccountWeChat);
+					} else {
+						appendLog("绑定游客账号。");
+						platformAccount = bindAccount(accountSid, platformAccountWeChat);
+					}
+				}
+			} else {
+				
+			}
+			
+			
 			if (StringUtils.isEmpty(platformSid)) {
-				String code = (String) params.get("wechatCode");
+				
 				appendLog("微信授权code:" + code);
 				// 获取access_token
 				WXAccessTokenResp tokenResp = WeChatRequest.requestAccessToken(code);
@@ -118,6 +163,7 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 				
 			} else {
 				platformAccount = accountDao.findPlatformAccount(platformSid);
+				
 			}
 		}
 		platformAccount = accountDao.saveOrUpdatePlatformAccount(platformAccount);
