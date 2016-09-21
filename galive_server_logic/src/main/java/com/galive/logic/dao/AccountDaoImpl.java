@@ -104,7 +104,7 @@ public class AccountDaoImpl extends BaseDao implements AccountDao {
 			q.field("sid").equal(platformUnionId);
 			break;
 		case WeChat:
-			q.field("unionid ").equal(platformUnionId);
+			q.field("unionid").equal(platformUnionId);
 			break;
 		}
 		PlatformAccount account = platformDao.findOne(q);
