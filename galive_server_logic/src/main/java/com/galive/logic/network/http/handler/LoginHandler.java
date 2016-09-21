@@ -13,6 +13,7 @@ import com.galive.logic.model.Meeting;
 import com.galive.logic.model.account.Account;
 import com.galive.logic.model.account.Platform;
 import com.galive.logic.model.account.PlatformAccount;
+import com.galive.logic.model.account.PlatformAccountWeChat;
 import com.galive.logic.network.http.HttpRequestHandler;
 import com.galive.logic.service.AccountService;
 import com.galive.logic.service.AccountServiceImpl;
@@ -39,12 +40,15 @@ public class LoginHandler extends HttpBaseHandler {
 		LoginOut out = new LoginOut();
 		PlatformAccount platformAccount = null;
 		Map<String, Object> params = new HashMap<>();
+		String nickname = "";
+		String avatar = "";
 		switch (platform) {
 		case Guest:
 			String guestName = in.guestName;
 			appendLog("guestName(游客名):" + guestName);
 			params.put("name", guestName);
 			platformAccount = accountService.login(accountSid, platform, params);
+			nickname = guestName;
 			break;
 		case WeChat:
 			String code = in.wechatCode;
@@ -55,14 +59,17 @@ public class LoginHandler extends HttpBaseHandler {
 			params.put("wechatUnionId", unionid);
 			
 			platformAccount = accountService.login(accountSid, platform, params);
+			nickname = ((PlatformAccountWeChat) platformAccount).getNickname();
+			avatar = ((PlatformAccountWeChat) platformAccount).getHeadimgurl();
 			break;
 		}
 		
 		String token = accountService.generateToken(platformAccount.getAccountSid());
 		
 		Account act = accountService.findAndCheckAccount(platformAccount.getAccountSid());
+		act.setAvatar(avatar);
+		act.setNickname(nickname);
 	
-		out.platformInfo = platformAccount;
 		out.token =  token;
 		out.account = act;
 		out.socketConfig = ApplicationConfig.getInstance().getSocketConfig();
@@ -97,7 +104,6 @@ public class LoginHandler extends HttpBaseHandler {
 		public SocketConfig socketConfig;
 		public LogicConfig logicConfig;
 		public Account account;
-		public PlatformAccount platformInfo;
 		public Meeting meeting;
 		public String token;
 	}

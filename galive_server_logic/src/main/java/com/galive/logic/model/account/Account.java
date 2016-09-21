@@ -1,5 +1,7 @@
 package com.galive.logic.model.account;
 
+import org.mongodb.morphia.annotations.Transient;
+
 import com.galive.logic.model.BaseModel;
 import com.galive.logic.model.MeetingMemberOptions;
 import com.galive.logic.model.MeetingOptions;
@@ -11,6 +13,16 @@ public class Account extends BaseModel {
 	private MeetingOptions meetingOptions;
 	
 	private MeetingMemberOptions meetingMemberOptions;
+	
+	@Transient
+	private String nickname;
+	
+	@Transient
+	private String avatar;
+	
+	@Transient
+	private String wechatUnionid;
+	
 	
 	public static Account createNewAccount() {
 		Account act = new Account();
@@ -40,5 +52,29 @@ public class Account extends BaseModel {
 
 	public void setLatestLoginPlatform(String latestLoginPlatform) {
 		this.latestLoginPlatform = latestLoginPlatform;
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+
+	public String getWechatUnionid() {
+		return wechatUnionid;
+	}
+
+	public void setWechatUnionid(String wechatUnionid) {
+		this.wechatUnionid = wechatUnionid;
 	}
 }
