@@ -6,6 +6,8 @@ import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * 基础Model
  * @author Luguangqing
@@ -16,6 +18,7 @@ import org.mongodb.morphia.annotations.Indexes;
 public class BaseModel {
 
 	@Id
+	@JsonIgnore
 	protected ObjectId id;
 	
 	protected long createAt = System.currentTimeMillis();

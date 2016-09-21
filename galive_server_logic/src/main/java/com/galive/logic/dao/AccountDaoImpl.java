@@ -98,6 +98,7 @@ public class AccountDaoImpl extends BaseDao implements AccountDao {
 	public PlatformAccount findPlatformAccount(Platform platform, String platformUnionId) {
 		Query<PlatformAccount> q = platformDao.createQuery();
 		q.field("platform").equal(platform);
+		q.disableValidation();
 		switch (platform) {
 		case Guest:
 			q.field("sid").equal(platformUnionId);

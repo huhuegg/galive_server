@@ -94,7 +94,8 @@ public class CommandIn {
 			String tag = req.getParameter("tag");
 			String s = req.getParameter("s");
 			logger.debug(String.format("command:%s,account:%s,token:%s,params:%s,tag:%s,s:%s", command,account,token,params,tag,s));
-			String md5 = DigestUtils.md5Hex(String.format("<%s>", account + params + MAGIC_KEY));
+			String planText = String.format("<%s>", account + params + MAGIC_KEY);
+			String md5 = DigestUtils.md5Hex(planText);
 			if (!md5.equals(s)) {
 				return null;
 			}
