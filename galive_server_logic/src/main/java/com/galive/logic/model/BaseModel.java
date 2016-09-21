@@ -6,6 +6,7 @@ import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -18,9 +19,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class BaseModel {
 
 	@Id
-	@JsonIgnore
+	@JSONField(serialize = false)
 	protected ObjectId id;
 	
+	@JSONField(serialize = false)
 	protected long createAt = System.currentTimeMillis();
 	
 	protected String sid;

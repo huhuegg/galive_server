@@ -2,6 +2,7 @@
 
 import org.mongodb.morphia.annotations.Entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.galive.logic.network.platform.wx.WXUserInfoResp;
 
 @Entity(value="platform_account")
@@ -10,26 +11,31 @@ public class PlatformAccountWeChat extends PlatformAccount {
 	/**
 	 * 普通用户的标识，对当前开发者帐号唯一
 	 */
+	@JSONField(serialize = false)
 	private String openid = "";
 	
 	/**
 	 * 普通用户昵称
 	 */
+	@JSONField(name="nickname")
 	private String nickname = "";
 	
 	/**
 	 * 普通用户性别，1为男性，2为女性
 	 */
+	@JSONField(serialize = false)
 	private int sex = 1;
 	
 	/**
 	 * 普通用户个人资料填写的省份
 	 */
+	@JSONField(serialize = false)
 	private String province = "";
 	
 	/**
 	 * 普通用户个人资料填写的城市
 	 */
+	@JSONField(serialize = false)
 	private String city = "";
 	
 	/**
@@ -40,6 +46,7 @@ public class PlatformAccountWeChat extends PlatformAccount {
 	/**
 	 * 用户头像，最后一个数值代表正方形头像大小（有0、46、64、96、132数值可选，0代表640*640正方形头像），用户没有头像时该项为空
 	 */
+	@JSONField(name="avatar")
 	private String headimgurl = "";
 	
 	/**
