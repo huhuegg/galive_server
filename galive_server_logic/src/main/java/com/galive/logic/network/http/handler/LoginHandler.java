@@ -10,6 +10,8 @@ import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.LogicConfig;
 import com.galive.logic.config.SocketConfig;
 import com.galive.logic.model.Meeting;
+import com.galive.logic.model.MeetingMemberOptions;
+import com.galive.logic.model.MeetingOptions;
 import com.galive.logic.model.account.Account;
 import com.galive.logic.model.account.Platform;
 import com.galive.logic.model.account.PlatformAccount;
@@ -42,6 +44,9 @@ public class LoginHandler extends HttpBaseHandler {
 		Map<String, Object> params = new HashMap<>();
 		String nickname = "";
 		String avatar = "";
+		String platformSid = in.platformSid;
+		params.put("platformSid", platformSid);
+		appendLog("platformSid(platformSid):" + platformSid);
 		switch (platform) {
 		case Guest:
 			String guestName = in.guestName;
@@ -52,12 +57,8 @@ public class LoginHandler extends HttpBaseHandler {
 			break;
 		case WeChat:
 			String code = in.wechatCode;
-			String unionid = in.wechatUnionId;
 			appendLog("微信code(wechatCode):" + code);
-			appendLog("微信unionId(wechatUnionId):" + unionid);
 			params.put("wechatCode", code);
-			params.put("wechatUnionId", unionid);
-			
 			platformAccount = accountService.login(accountSid, platform, params);
 			nickname = ((PlatformAccountWeChat) platformAccount).getNickname();
 			avatar = ((PlatformAccountWeChat) platformAccount).getHeadimgurl();
@@ -69,6 +70,16 @@ public class LoginHandler extends HttpBaseHandler {
 		Account act = accountService.findAndCheckAccount(platformAccount.getAccountSid());
 		act.setAvatar(avatar);
 		act.setNickname(nickname);
+		act.setPlatformSid(platformAccount.getSid());
+		
+		if (act.getMeetingOptions() == null) {
+			act.setMeetingOptions(new MeetingOptions());
+		}
+		if (act.getMeetingMemberOptions() == null) {
+			act.setMeetingMemberOptions(new MeetingMemberOptions());
+		}
+		
+		act.setPlatform(platform);
 	
 		out.token =  token;
 		out.account = act;
@@ -85,11 +96,11 @@ public class LoginHandler extends HttpBaseHandler {
 		// 账号平台[String] Guest WeChat 
 		public Platform platform;
 		
-		// 微信code platform为WeChat时 与wechatUnionId二选一 获取用户信息用
+		// 微信code platform为WeChat时 与platformSid二选一 获取用户信息用
 		public String wechatCode;
 		
-		// 微信unionid platform为WeChat时 与wechatUnionId二选一 自动登录用 免去授权过程
-		public String wechatUnionId;
+		// 自动登录 直接获取用户信息用 免去授权过程
+		public String platformSid;
 		
 		// 游客名 platform为Guest时 必填
 		public String guestName;

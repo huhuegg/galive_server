@@ -1,8 +1,6 @@
  package com.galive.logic.model.account;
 
 import org.mongodb.morphia.annotations.Entity;
-
-import com.alibaba.fastjson.annotation.JSONField;
 import com.galive.logic.network.platform.wx.WXUserInfoResp;
 
 @Entity(value="platform_account")
@@ -41,7 +39,6 @@ public class PlatformAccountWeChat extends PlatformAccount {
 	/**
 	 * 用户头像，最后一个数值代表正方形头像大小（有0、46、64、96、132数值可选，0代表640*640正方形头像），用户没有头像时该项为空
 	 */
-	@JSONField(name="avatar")
 	private String headimgurl = "";
 	
 	/**

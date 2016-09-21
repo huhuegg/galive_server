@@ -57,6 +57,7 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 		if (platform == null) {
 			throw makeLogicException("平台不存在。");
 		}
+		String platformSid = (String) params.get("platformSid");
 		PlatformAccount platformAccount = null;
 		switch (platform) {
 		case Guest:
@@ -64,20 +65,24 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 			if (StringUtils.isEmpty(name)) {
 				throw makeLogicException("用户名为空。");
 			}
-			PlatformAccountGuest guest = new PlatformAccountGuest();
-			guest.setName(name);
-			guest.setPlatform(Platform.Guest);
-			platformAccount = createOrBindAccount(accountSid, guest);
+			if (StringUtils.isEmpty(platformSid)) {
+				PlatformAccountGuest guest = new PlatformAccountGuest();
+				guest.setName(name);
+				guest.setPlatform(Platform.Guest);
+				platformAccount = createOrBindAccount(accountSid, guest);
+			} else {
+				platformAccount = accountDao.findPlatformAccount(platformSid);
+			}
 			break;
 		case WeChat:
 			String code = (String) params.get("wechatCode");
 			if (StringUtils.isEmpty(code)) {
 				// 验证微信用户
-				String wechatUnionId = (String) params.get("wechatUnionId");
-				if (StringUtils.isEmpty(wechatUnionId)) {
-					throw makeLogicException("unionId为空");
+				
+				if (StringUtils.isEmpty(platformSid)) {
+					throw makeLogicException("platformSid为空");
 				}
-				platformAccount = accountDao.findPlatformAccount(platform, wechatUnionId);
+				platformAccount = accountDao.findPlatformAccount(platformSid);
 			} else {
 				// 微信登录
 				// 获取access_token
@@ -113,12 +118,12 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 					platformAccount = createOrBindAccount(accountSid, platformAccountWeChat);
 				}
 			}
-			accountDao.saveOrUpdatePlatformAccount(platformAccount);
-			Account act = accountDao.findAccount(platformAccount.getAccountSid());
-			act.setLatestLoginPlatform(platformAccount.getSid());
-			accountDao.saveOrUpdateAccount(act);
-			appendLog(platformAccount.toString());
 		}
+		platformAccount = accountDao.saveOrUpdatePlatformAccount(platformAccount);
+		Account act = accountDao.findAccount(platformAccount.getAccountSid());
+		act.setLatestLoginPlatform(platformAccount.getSid());
+		accountDao.saveOrUpdateAccount(act);
+		appendLog(platformAccount.toString());
 		return platformAccount;
 	}
 

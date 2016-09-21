@@ -2,16 +2,20 @@ package com.galive.logic.model.account;
 
 import org.mongodb.morphia.annotations.Transient;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.galive.logic.model.BaseModel;
 import com.galive.logic.model.MeetingMemberOptions;
 import com.galive.logic.model.MeetingOptions;
 
 public class Account extends BaseModel {
 
+	@JSONField(serialize = false)
 	private String latestLoginPlatform;
 	
+	@JSONField(name="meeting_opt")
 	private MeetingOptions meetingOptions;
 	
+	@JSONField(name="meeting_member_opt")
 	private MeetingMemberOptions meetingMemberOptions;
 	
 	@Transient
@@ -21,7 +25,10 @@ public class Account extends BaseModel {
 	private String avatar;
 	
 	@Transient
-	private String wechatUnionid;
+	private String platformSid;
+	
+	@Transient
+	private Platform platform;
 	
 	
 	public static Account createNewAccount() {
@@ -70,11 +77,19 @@ public class Account extends BaseModel {
 		this.avatar = avatar;
 	}
 
-	public String getWechatUnionid() {
-		return wechatUnionid;
+	public Platform getPlatform() {
+		return platform;
 	}
 
-	public void setWechatUnionid(String wechatUnionid) {
-		this.wechatUnionid = wechatUnionid;
+	public void setPlatform(Platform platform) {
+		this.platform = platform;
+	}
+
+	public String getPlatformSid() {
+		return platformSid;
+	}
+
+	public void setPlatformSid(String platformSid) {
+		this.platformSid = platformSid;
 	}
 }
