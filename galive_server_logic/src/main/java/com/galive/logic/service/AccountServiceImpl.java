@@ -69,22 +69,15 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 				PlatformAccountGuest guest = new PlatformAccountGuest();
 				guest.setName(name);
 				guest.setPlatform(Platform.Guest);
-				platformAccount = createOrBindAccount(accountSid, guest);
+				platformAccount = createAccount(guest);
 			} else {
 				platformAccount = accountDao.findPlatformAccount(platformSid);
 			}
 			break;
 		case WeChat:
-			String code = (String) params.get("wechatCode");
-			if (StringUtils.isEmpty(code)) {
-				// 验证微信用户
-				
-				if (StringUtils.isEmpty(platformSid)) {
-					throw makeLogicException("platformSid为空");
-				}
-				platformAccount = accountDao.findPlatformAccount(platformSid);
-			} else {
-				// 微信登录
+			if (StringUtils.isEmpty(platformSid)) {
+				String code = (String) params.get("wechatCode");
+				appendLog("微信授权code:" + code);
 				// 获取access_token
 				WXAccessTokenResp tokenResp = WeChatRequest.requestAccessToken(code);
 				if (tokenResp == null || !StringUtils.isBlank(tokenResp.errcode)) {
@@ -110,46 +103,53 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 
 				PlatformAccountWeChat exist = (PlatformAccountWeChat) accountDao.findPlatformAccount(platform, unionid);
 				if (exist != null) {
-					// 已存在
+					appendLog(String.format("unionid:%s 已存在。%s", unionid, exist.toString()));
 					platformAccount = exist;
 				} else {
-					// 首次微信登录
 					PlatformAccountWeChat platformAccountWeChat = PlatformAccountWeChat.convert(userInfoResp);
-					platformAccount = createOrBindAccount(accountSid, platformAccountWeChat);
+					if (StringUtils.isEmpty(accountSid)) {
+						appendLog("首次微信登录, 创建Account。");
+						platformAccount = createAccount(platformAccountWeChat);
+					} else {
+						appendLog("绑定游客账号。");
+						platformAccount = bindAccount(accountSid, platformAccountWeChat);
+					}
 				}
+				
+			} else {
+				platformAccount = accountDao.findPlatformAccount(platformSid);
 			}
 		}
 		platformAccount = accountDao.saveOrUpdatePlatformAccount(platformAccount);
 		Account act = accountDao.findAccount(platformAccount.getAccountSid());
 		act.setLatestLoginPlatform(platformAccount.getSid());
 		accountDao.saveOrUpdateAccount(act);
-		appendLog(platformAccount.toString());
+		return platformAccount;
+	}
+	
+	private PlatformAccount createAccount(PlatformAccount platformAccount) throws LogicException {
+		Account act = Account.createNewAccount();
+		String accountSid = accountDao.saveOrUpdateAccount(act).getSid();
+		platformAccount.setAccountSid(accountSid);
 		return platformAccount;
 	}
 
-	private PlatformAccount createOrBindAccount(String accountSid, PlatformAccount platformAccount) throws LogicException {
-		if (StringUtils.isEmpty(accountSid)) { // 首次登录 生成新账号
-			Account act = Account.createNewAccount();
-			accountSid = accountDao.saveOrUpdateAccount(act).getSid();
-		} else { // 绑定现有账号
-			Account act = findAndCheckAccount(accountSid);
-			// 检查该账号是否绑定过该平台账号。
-			// 如绑过，则生成新Account，否则绑定Account
-			List<PlatformAccount> platformAccounts = accountDao.listPlatformAccounts(accountSid);
-			boolean bind = false;
-			for (PlatformAccount pa : platformAccounts) {
-				if (pa.getPlatform() == platformAccount.getPlatform()) {
-					bind = true;
-					break;
-				}
-			}
-			if (bind) {
-				return createOrBindAccount(null, platformAccount);
-			} else {
-				accountSid = act.getSid();
+	private PlatformAccount bindAccount(String accountSid, PlatformAccount platformAccount) throws LogicException {
+		Account act = findAndCheckAccount(accountSid);
+		// 检查该账号是否绑定过该平台账号。
+		// 如绑过，则生成新Account，否则绑定Account
+		List<PlatformAccount> platformAccounts = accountDao.listPlatformAccounts(accountSid);
+		boolean bind = false;
+		for (PlatformAccount pa : platformAccounts) {
+			if (pa.getPlatform() == platformAccount.getPlatform()) {
+				bind = true;
+				break;
 			}
 		}
-		platformAccount.setAccountSid(accountSid);
+		if (bind) {
+			return createAccount(platformAccount);
+		} 
+		platformAccount.setAccountSid(act.getSid());
 		return platformAccount;
 	}
 
