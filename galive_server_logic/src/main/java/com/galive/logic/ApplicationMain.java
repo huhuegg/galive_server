@@ -1,5 +1,9 @@
 package com.galive.logic;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
 import org.apache.commons.daemon.DaemonInitException;
@@ -15,6 +19,8 @@ import com.galive.logic.model.Sid;
 import com.galive.logic.model.Sid.EntitySeq;
 import com.galive.logic.network.http.jetty.JettyServer;
 import com.galive.logic.network.socket.netty.NettyServer;
+import com.galive.logic.service.RoomService;
+import com.galive.logic.service.RoomServiceImpl;
 
 import redis.clients.jedis.Jedis;
 
@@ -144,6 +150,15 @@ public class ApplicationMain implements Daemon {
 			logger.error("netty启动失败:" + e.getMessage());
 			throw new Exception("netty启动失败:" + e.getMessage());
 		}
+		
+		// TODO Test
+		RoomService service = new RoomServiceImpl();
+		List<String> rooms = new ArrayList<>();
+		for (int i = 0; i < 30; i++) {
+			rooms.add(UUID.randomUUID().toString());
+		}
+		service.saveRooms("", 0, rooms);
+		
 		logger.info("===============================================");
 		logger.info("==   *************************************   ==");
 		logger.info("==   *****                           *****   ==");

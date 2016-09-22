@@ -1,7 +1,10 @@
 package com.galive.logic.service;
 
+import java.util.List;
+
 import com.galive.logic.exception.LogicException;
 import com.galive.logic.model.Meeting;
+import com.galive.logic.model.MeetingMember;
 import com.galive.logic.model.MeetingMemberOptions;
 import com.galive.logic.model.MeetingOptions;
 
@@ -59,5 +62,7 @@ public interface MeetingService {
 	public Meeting updateMeetingMemberOptions(String accountSid, MeetingMemberOptions options, boolean belongToAccount) throws LogicException;
 
 	public Meeting kickMember(String accountSid, String targetSid) throws Exception;
+	
+	public List<MeetingMember> listMeetingMembersWithDetailInfo(Meeting meeting) throws Exception;
 
 }

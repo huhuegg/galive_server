@@ -1,5 +1,6 @@
 package com.galive.logic.model.account;
 
+import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Transient;
 
 import com.alibaba.fastjson.annotation.JSONField;
@@ -7,6 +8,7 @@ import com.galive.logic.model.BaseModel;
 import com.galive.logic.model.MeetingMemberOptions;
 import com.galive.logic.model.MeetingOptions;
 
+@Entity
 public class Account extends BaseModel {
 
 	@JSONField(serialize = false)

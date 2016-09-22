@@ -48,6 +48,9 @@ public class JoinMeetingHandler extends SocketBaseHandler {
 				appendLog("推送房间内成员:" + m.getAccountSid() + " " + pushContent);
 			}
 		}
+		
+		members = meetingService.listMeetingMembersWithDetailInfo(meeting);
+		meeting.setMembers(members);
 	
 		CommandOut out = new CommandOut(Command.MEETING_JOIN);
 		return out;
