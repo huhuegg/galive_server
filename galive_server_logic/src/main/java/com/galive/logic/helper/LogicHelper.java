@@ -2,8 +2,10 @@ package com.galive.logic.helper;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Random;
 import java.util.UUID;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.LoggerFactory;
 
 import com.galive.logic.ApplicationMain;
@@ -57,4 +59,38 @@ public class LogicHelper {
 		return md5;
 	}
 	
+	public static String makeRandomMeetingName() {
+		Random r = new Random();
+		long randomLong = r.nextInt(10000000);
+		String str = randomLong + "";
+		StringBuffer sb = new StringBuffer();
+		for(int i = 0; i < 8 - str.length(); i++) {
+			sb.append("0");
+		}
+		sb.append(str);
+		str = sb.toString();
+		return str;
+	}
+	
+	public static void main(String[] args) {
+		for (int i = 0; i < 100; i++) {
+			String s = LogicHelper.makeRandomMeetingName();
+			System.out.println(s);
+		}
+		
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

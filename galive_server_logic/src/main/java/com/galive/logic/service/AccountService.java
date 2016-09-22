@@ -42,6 +42,10 @@ public interface AccountService {
 	
 	public PlatformAccount findPlatformAccount(String platformAccountSid) throws LogicException;
 	
+	public MeetingOptions createMeetingOptions(String accountSid) throws LogicException;
+	
+	public MeetingMemberOptions createMeetingMemberOptions(String accountSid) throws LogicException;
+	
 
 	public MeetingOptions updateMeetingOptions(String accountSid, MeetingOptions options) throws LogicException;
 	
@@ -63,6 +67,8 @@ public interface AccountService {
 	 * @throws LogicException
 	 */
 	public void logout(String accountSid) throws LogicException;
+	
+	public void saveOrUpdateAccount(Account account) throws LogicException;
 	
 
 }

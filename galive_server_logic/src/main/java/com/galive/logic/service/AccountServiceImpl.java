@@ -9,8 +9,11 @@ import org.apache.commons.lang.StringUtils;
 import com.galive.logic.dao.AccountDao;
 import com.galive.logic.dao.AccountDaoImpl;
 import com.galive.logic.exception.LogicException;
+import com.galive.logic.helper.LogicHelper;
 import com.galive.logic.model.MeetingMemberOptions;
 import com.galive.logic.model.MeetingOptions;
+import com.galive.logic.model.Sid;
+import com.galive.logic.model.Sid.EntitySeq;
 import com.galive.logic.model.account.Account;
 import com.galive.logic.model.account.Platform;
 import com.galive.logic.model.account.PlatformAccount;
@@ -195,6 +198,25 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 	public PlatformAccount findPlatformAccount(String platformAccountSid) throws LogicException {
 		PlatformAccount act = accountDao.findPlatformAccount(platformAccountSid);
 		return act;
+	}
+
+	@Override
+	public MeetingOptions createMeetingOptions(String accountSid) throws LogicException {
+		MeetingOptions options = new MeetingOptions();
+		String name = Sid.getNextSequence(EntitySeq.MeetingName) + "";
+		options.setName(name);
+		return options;
+	}
+
+	@Override
+	public MeetingMemberOptions createMeetingMemberOptions(String accountSid) throws LogicException {
+		MeetingMemberOptions options = new MeetingMemberOptions();
+		return options;
+	}
+
+	@Override
+	public void saveOrUpdateAccount(Account account) throws LogicException {
+		accountDao.saveOrUpdateAccount(account);
 	}
 
 }

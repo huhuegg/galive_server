@@ -10,8 +10,6 @@ import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.LogicConfig;
 import com.galive.logic.config.SocketConfig;
 import com.galive.logic.model.Meeting;
-import com.galive.logic.model.MeetingMemberOptions;
-import com.galive.logic.model.MeetingOptions;
 import com.galive.logic.model.account.Account;
 import com.galive.logic.model.account.Platform;
 import com.galive.logic.model.account.PlatformAccount;
@@ -71,13 +69,6 @@ public class LoginHandler extends HttpBaseHandler {
 		act.setAvatar(avatar);
 		act.setNickname(nickname);
 		act.setPlatformSid(platformAccount.getSid());
-		
-		if (act.getMeetingOptions() == null) {
-			act.setMeetingOptions(new MeetingOptions());
-		}
-		if (act.getMeetingMemberOptions() == null) {
-			act.setMeetingMemberOptions(new MeetingMemberOptions());
-		}
 		
 		act.setPlatform(platform);
 	
