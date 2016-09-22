@@ -17,7 +17,7 @@ public class OnlineHandler extends SocketBaseHandler {
 		appendLog("--OnlineHandler(用户上线)--");
 
 		OnlineOut out = new OnlineOut();
-		// 清除直播信息
+		// 返回会议信息
 		Meeting meeting = meetingService.findMeeting(null, account, false);
 		if (meeting != null) {
 			out.meeting = meeting;
