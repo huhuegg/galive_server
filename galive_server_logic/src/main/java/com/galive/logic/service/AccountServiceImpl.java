@@ -5,11 +5,9 @@ import java.util.Map;
 import java.util.UUID;
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.apache.commons.lang.StringUtils;
-
 import com.galive.logic.dao.AccountDao;
 import com.galive.logic.dao.AccountDaoImpl;
 import com.galive.logic.exception.LogicException;
-import com.galive.logic.helper.LogicHelper;
 import com.galive.logic.model.MeetingMemberOptions;
 import com.galive.logic.model.MeetingOptions;
 import com.galive.logic.model.Sid;
@@ -122,6 +120,9 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 				platformAccount = accountDao.findPlatformAccount(platformSid);
 			}
 		}
+		if (platformAccount == null) {
+			throw makeLogicException("账号不存在。");
+		}
 		platformAccount = accountDao.saveOrUpdatePlatformAccount(platformAccount);
 		Account act = accountDao.findAccount(platformAccount.getAccountSid());
 		act.setLatestLoginPlatform(platformAccount.getSid());
@@ -203,8 +204,14 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 	@Override
 	public MeetingOptions createMeetingOptions(String accountSid) throws LogicException {
 		MeetingOptions options = new MeetingOptions();
+		StringBuffer sb = new StringBuffer();
 		String name = Sid.getNextSequence(EntitySeq.MeetingName) + "";
-		options.setName(name);
+		for(int i = 0; i < 8 - name.length(); i++) {
+			sb.append("0");
+		}
+		sb.append(name);
+		options.setName(sb.toString());
+		options.setPassword("");
 		return options;
 	}
 

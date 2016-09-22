@@ -27,12 +27,11 @@ public class Command {
 	
 	public static final String LEAVE_MEETING_PUSH = "LEAVE_MEETING_PUSH";
 	
-	public static final String KICK_MEETING_MEMBER = "KICK_MEETING_MEMBER";
-	
 	public static final String UPDATE_MEETING_OPTIONS = "UPDATE_MEETING_OPTIONS";
 	
 	
 	
+	// old
 	public static final String WECHAT_USR_INFO = "WECHAT_USR_INFO";
 
 	public static final String CREATE_LIVE = "CREATE_LIVE";

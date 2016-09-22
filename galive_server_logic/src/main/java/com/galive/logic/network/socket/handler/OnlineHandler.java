@@ -1,6 +1,5 @@
 package com.galive.logic.network.socket.handler;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.model.Meeting;
