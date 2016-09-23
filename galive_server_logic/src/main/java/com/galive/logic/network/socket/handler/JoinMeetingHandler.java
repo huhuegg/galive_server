@@ -10,6 +10,8 @@ import com.galive.logic.model.MeetingMember;
 import com.galive.logic.model.MeetingMemberOptions;
 import com.galive.logic.model.account.Account;
 import com.galive.logic.model.account.PlatformAccount;
+import com.galive.logic.model.account.PlatformAccountGuest;
+import com.galive.logic.model.account.PlatformAccountWeChat;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.JoinMeetingPush;
 import com.galive.logic.service.AccountService;
@@ -30,16 +32,37 @@ public class JoinMeetingHandler extends SocketBaseHandler {
 		JoinMeetingIn in = JSON.parseObject(reqData, JoinMeetingIn.class);
 		String meetingSid = in.meetingSid;
 		appendLog("会议id(meetingSid):" + meetingSid);
+		
+		String password = in.password;
+		appendLog("会议密码(password):" + password);
+		
 		MeetingMemberOptions meetingMemberOptions = in.meetingMemberOptions;
 		appendLog("会议成员设置(meetingMemberOptions):" + meetingMemberOptions);
 		
-		Meeting meeting = meetingService.joinMeeting(account, meetingSid, meetingMemberOptions);
+		Meeting meeting = meetingService.joinMeeting(account, meetingSid, password, meetingMemberOptions);
 		
 		Account act = accountService.findAndCheckAccount(account);
 		PlatformAccount platformAccount = accountService.findPlatformAccount(act.getLatestLoginPlatform());
 		
 		JoinMeetingPush push = new JoinMeetingPush();
-		push.account = platformAccount;
+		
+		act.setPlatformSid(platformAccount.getSid());
+		switch (platformAccount.getPlatform()) {
+		case Guest:
+			PlatformAccountGuest guest = (PlatformAccountGuest) platformAccount;
+			act.setAvatar("");
+			act.setNickname(guest.getName());
+			break;
+		case WeChat:
+			PlatformAccountWeChat wechat = (PlatformAccountWeChat) platformAccount;
+			act.setAvatar(wechat.getHeadimgurl());
+			act.setNickname(wechat.getNickname());
+			break;
+		}
+		
+		act.setPlatform(platformAccount.getPlatform());
+		
+		push.account = act;
 		String pushContent = push.socketResp();
 		List<MeetingMember> members = meeting.getMembers();
 		for (MeetingMember m : members) {
@@ -52,14 +75,26 @@ public class JoinMeetingHandler extends SocketBaseHandler {
 		members = meetingService.listMeetingMembersWithDetailInfo(meeting);
 		meeting.setMembers(members);
 	
-		CommandOut out = new CommandOut(Command.MEETING_JOIN);
+		JoinMeetingOut out = new JoinMeetingOut();
+		out.meeting = meeting;
 		return out;
 	}
 	
 	public static class JoinMeetingIn {
 
-		public String meetingSid;
+		public String meetingSid = "";
+		public String password = "";
 		public MeetingMemberOptions meetingMemberOptions;
+		
+	}
+	
+	public static class JoinMeetingOut extends CommandOut {
+
+		public JoinMeetingOut() {
+			super(Command.MEETING_JOIN);
+		}
+		
+		public Meeting meeting;
 		
 	}
 	

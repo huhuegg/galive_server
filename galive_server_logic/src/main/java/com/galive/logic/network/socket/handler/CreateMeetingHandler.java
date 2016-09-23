@@ -10,8 +10,6 @@ import com.galive.logic.model.MeetingMember;
 import com.galive.logic.model.MeetingMemberOptions;
 import com.galive.logic.model.MeetingOptions;
 import com.galive.logic.network.socket.SocketRequestHandler;
-import com.galive.logic.service.AccountService;
-import com.galive.logic.service.AccountServiceImpl;
 import com.galive.logic.service.MeetingService;
 import com.galive.logic.service.MeetingServiceImpl;
 
@@ -19,7 +17,6 @@ import com.galive.logic.service.MeetingServiceImpl;
 public class CreateMeetingHandler extends SocketBaseHandler {
 
 	private MeetingService meetingService = new MeetingServiceImpl();
-	private AccountService accountService = new AccountServiceImpl();
 
 	@Override
 	public CommandOut handle(String account, String reqData) throws Exception {

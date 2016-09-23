@@ -104,14 +104,20 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 	}
 
 	@Override
-	public Meeting joinMeeting(String accountSid, String meetingSid, MeetingMemberOptions meetingMemberOptions) throws LogicException {
+	public Meeting joinMeeting(String accountSid, String meetingSid, String password, MeetingMemberOptions meetingMemberOptions) throws LogicException {
 		checkAccountInMeeting(accountSid, false);
 		Meeting meeting = findMeeting(meetingSid, null, true);
+		String meetingPass = meeting.getOptions().getPassword();
+		if (!StringUtils.isEmpty(meetingPass) && !StringUtils.isEmpty(password) && !password.equals(meeting.getOptions().getPassword())) {
+			throw makeLogicException("会议密码错误。");
+		}
+		
 		List<MeetingMember> members = meeting.getMembers();
 		if (meetingMemberOptions == null) {
 			meetingMemberOptions = new MeetingMemberOptions();
 		}
 		MeetingMember meetingMember = new MeetingMember();
+		meetingMember.setAccountSid(accountSid);
 		meetingMember.setOptions(meetingMemberOptions);
 		members.add(meetingMember);
 		meeting.setMembers(members);

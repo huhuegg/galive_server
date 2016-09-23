@@ -4,9 +4,9 @@ import org.mongodb.morphia.annotations.Transient;
 
 public class MeetingMember {
 
-	private String accountSid;
+	private String accountSid = "";
 	
-	private MeetingMemberOptions options;
+	private MeetingMemberOptions options = new MeetingMemberOptions();
 	
 	@Transient
 	private String nickname = "";

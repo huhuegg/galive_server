@@ -29,6 +29,10 @@ public class Command {
 	
 	public static final String UPDATE_MEETING_OPTIONS = "UPDATE_MEETING_OPTIONS";
 	
+	public static final String TRANSMIT_PUSH = "TRANSMIT_PUSH";
+	
+	
+	
 	
 	
 	// old

@@ -7,16 +7,16 @@ import org.mongodb.morphia.annotations.Entity;
 @Entity
 public class Meeting extends BaseModel {
 
-	private String room;
+	private String room = "";
 	
 	/**
 	 * 主持人accountSid
 	 */
-	private String holder;
+	private String holder = "";
 	
 	private List<MeetingMember> members = new ArrayList<>();
 	
-	private MeetingOptions options;
+	private MeetingOptions options = new MeetingOptions();
 
 	public String getRoom() {
 		return room;

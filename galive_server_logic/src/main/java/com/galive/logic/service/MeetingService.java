@@ -38,7 +38,7 @@ public interface MeetingService {
 	 */
 	public Meeting createMeeting(String accountSid, MeetingOptions options, MeetingMemberOptions memberOptions) throws LogicException;
 
-	public Meeting joinMeeting(String accountSid, String meetingSid, MeetingMemberOptions meetingMemberOptions) throws LogicException;
+	public Meeting joinMeeting(String accountSid, String meetingSid, String password, MeetingMemberOptions meetingMemberOptions) throws LogicException;
 
 	/**
 	 * 离开会议

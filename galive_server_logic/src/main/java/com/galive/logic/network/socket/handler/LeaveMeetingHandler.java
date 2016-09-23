@@ -24,7 +24,7 @@ public class LeaveMeetingHandler extends SocketBaseHandler {
 		Meeting meeting = meetingService.leaveMeeting(account);
 	
 		LeaveMeetingPush push = new LeaveMeetingPush();
-		push.account = account;
+		push.accountSid = account;
 		String pushContent = push.socketResp();
 		List<MeetingMember> members = meeting.getMembers();
 		for (MeetingMember m : members) {

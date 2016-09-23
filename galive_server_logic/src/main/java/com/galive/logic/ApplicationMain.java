@@ -154,8 +154,8 @@ public class ApplicationMain implements Daemon {
 		// TODO Test
 		RoomService service = new RoomServiceImpl();
 		List<String> rooms = new ArrayList<>();
-		for (int i = 0; i < 30; i++) {
-			rooms.add(UUID.randomUUID().toString());
+		for (int i = 1; i <= 5; i++) {
+			rooms.add(i + "");
 		}
 		service.saveRooms("", 0, rooms);
 		
