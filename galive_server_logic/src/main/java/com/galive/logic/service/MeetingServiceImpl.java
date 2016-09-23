@@ -11,6 +11,9 @@ import com.galive.logic.model.MeetingMember;
 import com.galive.logic.model.MeetingMemberOptions;
 import com.galive.logic.model.MeetingOptions;
 import com.galive.logic.model.account.Account;
+import com.galive.logic.model.account.PlatformAccount;
+import com.galive.logic.model.account.PlatformAccountGuest;
+import com.galive.logic.model.account.PlatformAccountWeChat;
 
 public class MeetingServiceImpl extends BaseService implements MeetingService {
 
@@ -38,7 +41,7 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 		if (!StringUtils.isEmpty(meetingSid)) {
 			meeting = meetingDao.find(meetingSid);
 		} else {
-			if (!StringUtils.isEmpty(meetingSid)) {
+			if (!StringUtils.isEmpty(accountSid)) {
 				meeting = meetingDao.findByAccount(accountSid);
 			}
 		}
@@ -58,21 +61,26 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 		logBuffer.append("会议主持人:" + accountSid);
 
 		if (options == null) {
-			logBuffer.append("options为空，使用用户自己的会议设置");
-			Account act = accountService.findAndCheckAccount(accountSid);
-			options = act.getMeetingOptions();
-			if (options == null) {
-				options = new MeetingOptions();
-				options.setName(MeetingOptions.randomName());
-			}
-			memberOptions = act.getMeetingMemberOptions();
-			if (memberOptions == null) {
-				memberOptions = new MeetingMemberOptions();
-			}
-		} else {
-			if (StringUtils.isEmpty(options.getName())) {
-				throw makeLogicException("会议名为空。");
-			}
+			throw makeLogicException("会议设置为空。");
+//			logBuffer.append("options为空，使用用户自己的会议设置");
+//			Account act = accountService.findAndCheckAccount(accountSid);
+//			options = act.getMeetingOptions();
+//			if (options == null) {
+//				options = new MeetingOptions();
+//				options.setName(MeetingOptions.randomName());
+//			}
+//			memberOptions = act.getMeetingMemberOptions();
+//			if (memberOptions == null) {
+//				memberOptions = new MeetingMemberOptions();
+//			}
+		} 
+		
+		if (memberOptions == null) {
+			throw makeLogicException("成员设置为空。");
+		}
+		
+		if (StringUtils.isEmpty(options.getName())) {
+			throw makeLogicException("会议名为空。");
 		}
 		
 		holder.setOptions(memberOptions);
@@ -217,6 +225,28 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 		meeting.setMembers(members);
 		meetingDao.saveOrUpdate(meeting);
 		return meeting;
+	}
+
+	@Override
+	public List<MeetingMember> listMeetingMembersWithDetailInfo(Meeting meeting) throws Exception {
+		List<MeetingMember> members = meeting.getMembers();
+		for (MeetingMember m : members) {
+			Account act = accountService.findAndCheckAccount(m.getAccountSid());
+			PlatformAccount platformAccount = accountService.findPlatformAccount(act.getLatestLoginPlatform());
+			switch (platformAccount.getPlatform()) {
+			case Guest:
+				PlatformAccountGuest guest = (PlatformAccountGuest) platformAccount;
+				m.setNickname(guest.getName());
+				m.setAvatar("");
+				break;
+			case WeChat:
+				PlatformAccountWeChat wechat = (PlatformAccountWeChat) platformAccount;
+				m.setNickname(wechat.getNickname());
+				m.setAvatar(wechat.getHeadimgurl());
+				break;
+			}
+		}
+		return members;
 	}
 
 

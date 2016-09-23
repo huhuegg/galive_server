@@ -1,12 +1,17 @@
 package com.galive.logic.network.socket.handler;
 
+import java.util.List;
+
 import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.model.Meeting;
+import com.galive.logic.model.MeetingMember;
 import com.galive.logic.model.MeetingMemberOptions;
 import com.galive.logic.model.MeetingOptions;
 import com.galive.logic.network.socket.SocketRequestHandler;
+import com.galive.logic.service.AccountService;
+import com.galive.logic.service.AccountServiceImpl;
 import com.galive.logic.service.MeetingService;
 import com.galive.logic.service.MeetingServiceImpl;
 
@@ -14,6 +19,7 @@ import com.galive.logic.service.MeetingServiceImpl;
 public class CreateMeetingHandler extends SocketBaseHandler {
 
 	private MeetingService meetingService = new MeetingServiceImpl();
+	private AccountService accountService = new AccountServiceImpl();
 
 	@Override
 	public CommandOut handle(String account, String reqData) throws Exception {
@@ -28,6 +34,9 @@ public class CreateMeetingHandler extends SocketBaseHandler {
 		appendLog("会议成员设置(meetingMemberOptions):" + meetingMemberOptions);
 	
 		Meeting meeting = meetingService.createMeeting(account, options, meetingMemberOptions);
+		
+		List<MeetingMember> members = meetingService.listMeetingMembersWithDetailInfo(meeting);
+		meeting.setMembers(members);
 		
 		CreateLiveOut out = new CreateLiveOut();
 		out.meeting = meeting;
