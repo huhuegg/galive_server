@@ -92,6 +92,10 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 		
 		meeting.setOptions(options);
 		String room = roomService.getFreeRoom();
+		if (StringUtils.isEmpty(room)) {
+			throw makeLogicException("房间数已达上限，无法创建更多会议。");
+		}
+		
 		meeting.setRoom(room);
 		logBuffer.append("房间:" + room);
 		meetingDao.saveOrUpdate(meeting);
@@ -128,6 +132,7 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 		if (members.isEmpty()) {
 			logBuffer.append("会议成员为0，销毁会议");
 			meetingDao.delete(meeting);
+			roomService.returnRoom(meeting.getRoom());
 			return null;
 		} else {
 			if (meeting.getHolder().equals(accountSid)) {
@@ -147,6 +152,7 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 			throw makeLogicException("非主持人不能解散会议。");
 		}
 		meetingDao.delete(meeting);
+		roomService.returnRoom(meeting.getRoom());
 		return meeting;
 	}
 
