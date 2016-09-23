@@ -5,9 +5,7 @@ import java.io.InputStream;
 import java.util.Random;
 import java.util.UUID;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.LoggerFactory;
-
 import com.galive.logic.ApplicationMain;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
