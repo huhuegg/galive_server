@@ -117,7 +117,7 @@ public class NettyServer {
 		                pipeline.addLast(new ChannelByteHandler());  
 					}
 				}).childOption(ChannelOption.SO_KEEPALIVE, true).childOption(ChannelOption.TCP_NODELAY, true);
-		int port = 44100;
+		int port = 44200;
 		voiceChannelFuture = b.bind(port).sync();
 		voiceChannelFuture.channel().closeFuture();
 		logger.info("绑定端口" + port + (voiceChannelFuture.isSuccess() ? "成功" : "失败"));

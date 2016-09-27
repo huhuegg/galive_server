@@ -4,7 +4,7 @@
 	
 	<Socket>
 		<Host>222.73.196.99</Host>
-		<Port>6888</Port>
+		<Port>5051</Port>
 		<LiveReq>ga</LiveReq>
 		<LiveResp>live</LiveResp>
 		<HeartBeatInterval>20</HeartBeatInterval>
