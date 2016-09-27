@@ -121,6 +121,7 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 		meetingMember.setOptions(meetingMemberOptions);
 		members.add(meetingMember);
 		meeting.setMembers(members);
+		meetingDao.saveOrUpdate(meeting);
 		return meeting;
 	}
 

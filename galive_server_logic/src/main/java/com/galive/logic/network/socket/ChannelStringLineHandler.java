@@ -1,5 +1,13 @@
 package com.galive.logic.network.socket;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -146,4 +154,49 @@ public class ChannelStringLineHandler extends ChannelInboundHandlerAdapter {
     	String ip = ctx.channel().remoteAddress().toString();  
     	logger.debug("client:" + ip + " " + message);
     }
+    
+    
+    public static void main(String args[]) {
+		Socket socket = new Socket();
+		try {
+			//socket.connect(new InetSocketAddress("127.0.0.1", 44100));
+			socket.connect(new InetSocketAddress("127.0.0.1", 52195));
+			// socket.setKeepAlive(true);
+			
+			while (true) {
+				try {
+					OutputStream o = socket.getOutputStream();
+					DataOutputStream out = new DataOutputStream(o);
+					out.writeBytes("ga-@-xmn-@-");
+					out.flush();
+					InputStream in = socket.getInputStream();
+					byte[] buff = new byte[4096];
+					int readed = in.read(buff);
+					if (readed > 0) {
+						String str = new String(buff, "utf-8");
+						logger.info("received:" + str);
+					}
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			// out.close();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				socket.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 }

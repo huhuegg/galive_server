@@ -39,45 +39,46 @@ public class JoinMeetingHandler extends SocketBaseHandler {
 		MeetingMemberOptions meetingMemberOptions = in.meetingMemberOptions;
 		appendLog("会议成员设置(meetingMemberOptions):" + meetingMemberOptions);
 		
-		Meeting meeting = meetingService.joinMeeting(account, meetingSid, password, meetingMemberOptions);
-		
-		Account act = accountService.findAndCheckAccount(account);
-		PlatformAccount platformAccount = accountService.findPlatformAccount(act.getLatestLoginPlatform());
-		
-		JoinMeetingPush push = new JoinMeetingPush();
-		
-		act.setPlatformSid(platformAccount.getSid());
-		switch (platformAccount.getPlatform()) {
-		case Guest:
-			PlatformAccountGuest guest = (PlatformAccountGuest) platformAccount;
-			act.setAvatar("");
-			act.setNickname(guest.getName());
-			break;
-		case WeChat:
-			PlatformAccountWeChat wechat = (PlatformAccountWeChat) platformAccount;
-			act.setAvatar(wechat.getHeadimgurl());
-			act.setNickname(wechat.getNickname());
-			break;
-		}
-		
-		act.setPlatform(platformAccount.getPlatform());
-		
-		push.account = act;
-		String pushContent = push.socketResp();
-		List<MeetingMember> members = meeting.getMembers();
-		for (MeetingMember m : members) {
-			if (!m.getAccountSid().equals(account)) {
-				pushMessage(m.getAccountSid(), pushContent);
-				appendLog("推送房间内成员:" + m.getAccountSid() + " " + pushContent);
+		Meeting meeting;
+		if (in.preJoin) {
+			meeting = meetingService.joinMeeting(account, meetingSid, password, meetingMemberOptions);
+			List<MeetingMember> members = meetingService.listMeetingMembersWithDetailInfo(meeting);
+			meeting.setMembers(members);
+			JoinMeetingOut out = new JoinMeetingOut();
+			out.meeting = meeting;
+			return out;
+		} else {
+			meeting = meetingService.findMeeting(meetingSid, account, true);
+			Account act = accountService.findAndCheckAccount(account);
+			PlatformAccount platformAccount = accountService.findPlatformAccount(act.getLatestLoginPlatform());
+			act.setPlatformSid(platformAccount.getSid());
+			switch (platformAccount.getPlatform()) {
+			case Guest:
+				PlatformAccountGuest guest = (PlatformAccountGuest) platformAccount;
+				act.setAvatar("");
+				act.setNickname(guest.getName());
+				break;
+			case WeChat:
+				PlatformAccountWeChat wechat = (PlatformAccountWeChat) platformAccount;
+				act.setAvatar(wechat.getHeadimgurl());
+				act.setNickname(wechat.getNickname());
+				break;
 			}
+			
+			act.setPlatform(platformAccount.getPlatform());
+			JoinMeetingPush push = new JoinMeetingPush();
+			push.account = act;
+			String pushContent = push.socketResp();
+			List<MeetingMember> members = meeting.getMembers();
+			for (MeetingMember m : members) {
+				if (!m.getAccountSid().equals(account)) {
+					pushMessage(m.getAccountSid(), pushContent);
+					appendLog("推送房间内成员:" + m.getAccountSid() + " " + pushContent);
+				}
+			}
+			CommandOut out = new CommandOut(Command.MEETING_JOIN);
+			return out;
 		}
-		
-		members = meetingService.listMeetingMembersWithDetailInfo(meeting);
-		meeting.setMembers(members);
-	
-		JoinMeetingOut out = new JoinMeetingOut();
-		out.meeting = meeting;
-		return out;
 	}
 	
 	public static class JoinMeetingIn {
@@ -85,6 +86,7 @@ public class JoinMeetingHandler extends SocketBaseHandler {
 		public String meetingSid = "";
 		public String password = "";
 		public MeetingMemberOptions meetingMemberOptions;
+		public boolean preJoin = false;
 		
 	}
 	
