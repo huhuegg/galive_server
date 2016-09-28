@@ -64,17 +64,19 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 		// 获取access_token
 		WXAccessTokenResp tokenResp = WeChatRequest.requestAccessToken(code);
 		if (tokenResp == null || !StringUtils.isBlank(tokenResp.errcode)) {
-			String error = tokenResp.getErrmsg();
-			appendLog("微信获取access_token:" + tokenResp.getErrcode() + " " + error);
-			throw new LogicException("微信登录失败," + error);
+			String error = tokenResp == null ? "access_token获取失败。" : tokenResp.getErrmsg();
+			String errorCode = tokenResp == null ? "" : tokenResp.getErrcode();
+			appendLog("微信获取access_token:" + errorCode + " " + error);
+			throw new LogicException("微信登录失败," + error + "(" + errorCode + ")");
 		}
 		appendLog("获取access_token:" + tokenResp.toString());
 
 		WXUserInfoResp userInfoResp = WeChatRequest.requestUserInfo(tokenResp.getAccess_token(), tokenResp.getOpenid());
 		if (userInfoResp == null || !StringUtils.isBlank(userInfoResp.errcode)) {
-			String error = tokenResp.getErrmsg();
-			appendLog("微信获取用户信息失败:" + tokenResp.getErrcode() + " " + error);
-			throw new LogicException("微信获取用户信息失败:," + error);
+			String error = userInfoResp == null ? "" : userInfoResp.getErrmsg();
+			String errorCode = userInfoResp == null ? "" : userInfoResp.getErrcode();
+			appendLog("微信获取用户信息失败:" + errorCode + " " + error);
+			throw new LogicException("微信获取用户信息失败，" + error + "(" + errorCode + ")");
 		}
 		appendLog("获取微信用户信息:" + userInfoResp.toString());
 		String unionid = userInfoResp.getUnionid();
