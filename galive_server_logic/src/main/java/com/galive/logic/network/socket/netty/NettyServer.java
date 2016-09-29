@@ -113,7 +113,7 @@ public class NettyServer {
 						}
 		                pipeline.addLast("frameDecoder", decoder);  
 		                pipeline.addLast("frameEncoder", prepender); 
-		                pipeline.addLast(new IdleStateHandler(0, 0, 0, TimeUnit.SECONDS));
+		                pipeline.addLast(new IdleStateHandler(0, 0, 600, TimeUnit.SECONDS));
 		                pipeline.addLast(new ChannelByteHandler());  
 					}
 				}).childOption(ChannelOption.SO_KEEPALIVE, true).childOption(ChannelOption.TCP_NODELAY, true);
