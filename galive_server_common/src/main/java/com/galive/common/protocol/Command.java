@@ -21,6 +21,10 @@ public class Command {
 	
 	public static final String TRANSMIT = "TRANSMIT";
 	
+	public static final String SHARE_START = "SHARE_START";
+	
+	public static final String SHARE_STOP = "SHARE_STOP";
+	
 	public static final String DESTROY_MEETING_PUSH = "DESTROY_MEETING_PUSH";
 	
 	public static final String JOIN_MEETING_PUSH = "JOIN_MEETING_PUSH";
@@ -31,7 +35,9 @@ public class Command {
 	
 	public static final String TRANSMIT_PUSH = "TRANSMIT_PUSH";
 	
+	public static final String SHARE_START_PUSH = "SHARE_START_PUSH";
 	
+	public static final String SHARE_STOP_PUSH = "SHARE_STOP_PUSH";
 	
 	
 	

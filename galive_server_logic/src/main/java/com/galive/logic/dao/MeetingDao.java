@@ -17,6 +17,8 @@ public interface MeetingDao {
 	 */
 	public Meeting findByAccount(String accountSid);
 	
+	public void saveShareState(String accountSid, boolean start);
 	
+	public boolean loadShareState(String accountSid);
 }
  

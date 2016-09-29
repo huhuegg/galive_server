@@ -82,14 +82,19 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 				// 获取access_token
 				WXAccessTokenResp tokenResp = WeChatRequest.requestAccessToken(code);
 				if (tokenResp == null || !StringUtils.isBlank(tokenResp.errcode)) {
-					throw makeLogicException(String.format("登录失败:%s(%s)", tokenResp.getErrmsg(), tokenResp.getErrcode()));
+					String error = tokenResp == null ? "access_token获取失败。" : tokenResp.getErrmsg();
+					String errorCode = tokenResp == null ? "" : tokenResp.getErrcode();
+					throw makeLogicException(String.format("登录失败:%s(%s)", error, errorCode));
 				}
 				appendLog("获取access_token:" + tokenResp.toString());
 				//
 				WXUserInfoResp userInfoResp = WeChatRequest.requestUserInfo(tokenResp.getAccess_token(), tokenResp.getOpenid());
 				if (userInfoResp == null || !StringUtils.isBlank(userInfoResp.errcode)) {
-					throw makeLogicException(String.format("登录失败:%s(%s)", userInfoResp.getErrmsg(), userInfoResp.getErrcode()));
+					String error = userInfoResp == null ? "" : userInfoResp.getErrmsg();
+					String errorCode = userInfoResp == null ? "" : userInfoResp.getErrcode();
+					throw makeLogicException(String.format("登录失败:%s(%s)", error, errorCode));
 				}
+
 				appendLog("获取微信用户信息:" + userInfoResp.toString());
 				String unionid = userInfoResp.getUnionid();
 				// //
@@ -101,6 +106,7 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 				appendLog("微信昵称:" + nickname);
 				appendLog("openid:" + openid);
 				appendLog("unionid:" + unionid);
+				
 				
 				PlatformAccountWeChat exist = (PlatformAccountWeChat) accountDao.findPlatformAccount(platform, unionid);
 				if (exist != null) {

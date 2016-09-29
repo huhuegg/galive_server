@@ -263,4 +263,16 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 	}
 
 
+	@Override
+	public void changeShareState(String accountSid, boolean started) throws Exception {
+		meetingDao.saveShareState(accountSid, started);
+	}
+
+	@Override
+	public boolean loadShareState(String accountSid) throws Exception {
+		boolean started = meetingDao.loadShareState(accountSid);
+		return started;
+	}
+
+
 }

@@ -3,15 +3,21 @@ package com.galive.logic.dao;
 import org.apache.commons.lang.StringUtils;
 import org.mongodb.morphia.query.Query;
 
+import com.galive.logic.dao.cache.RedisManager;
 import com.galive.logic.dao.db.MongoDao;
 import com.galive.logic.dao.db.MongoManager;
 import com.galive.logic.model.Meeting;
 import com.galive.logic.model.Sid;
 import com.galive.logic.model.Sid.EntitySeq;
 
+
 public class MeetingDaoImpl extends BaseDao implements MeetingDao {
 
 	private MongoDao<Meeting> dao = new MongoDao<Meeting>(Meeting.class, MongoManager.store);
+	
+	private String shareStartedKey() {
+		return RedisManager.getInstance().keyPrefix() + "meeting:share_started";
+	}
 	
 	@Override
 	public Meeting saveOrUpdate(Meeting meeting) {
@@ -44,5 +50,22 @@ public class MeetingDaoImpl extends BaseDao implements MeetingDao {
 		q.field("members.accountSid").equal(accountSid);
 		Meeting meeting = dao.findOne(q);
 		return meeting;
+	}
+
+	@Override
+	public void saveShareState(String accountSid, boolean start) {
+		String key = shareStartedKey();
+		if (start) {
+			jedis().sadd(key, accountSid);
+		} else {
+			jedis().srem(key, accountSid);
+		}
+	}
+
+	@Override
+	public boolean loadShareState(String accountSid) {
+		String key = shareStartedKey();
+		boolean started = jedis().sismember(key, accountSid);
+		return started;
 	}
 }

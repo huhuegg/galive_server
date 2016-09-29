@@ -64,5 +64,9 @@ public interface MeetingService {
 	public Meeting kickMember(String accountSid, String targetSid) throws Exception;
 	
 	public List<MeetingMember> listMeetingMembersWithDetailInfo(Meeting meeting) throws Exception;
+	
+	public void changeShareState(String accountSid, boolean started) throws Exception; 
+	
+	public boolean loadShareState(String accountSid) throws Exception; 
 
 }
