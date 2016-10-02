@@ -22,18 +22,21 @@ public class ShareStoptHandler extends SocketBaseHandler {
 
 		meetingService.changeShareState(account, false);
 
-		Meeting meeting = meetingService.leaveMeeting(account);
+		Meeting meeting = meetingService.findMeeting(null, account, false);
 		
-		ShareStopPush push = new ShareStopPush();
-		push.accountSid = account;
-		String pushContent = push.socketResp();
-		List<MeetingMember> members = meeting.getMembers();
-		for (MeetingMember m : members) {
-			if (!m.getAccountSid().equals(account)) {
-				pushMessage(m.getAccountSid(), pushContent);
-				appendLog("推送房间内成员:" + m.getAccountSid() + " " + pushContent);
+		if (meeting != null) {
+			ShareStopPush push = new ShareStopPush();
+			push.accountSid = account;
+			String pushContent = push.socketResp();
+			List<MeetingMember> members = meeting.getMembers();
+			for (MeetingMember m : members) {
+				if (!m.getAccountSid().equals(account)) {
+					pushMessage(m.getAccountSid(), pushContent);
+					appendLog("推送房间内成员:" + m.getAccountSid() + " " + pushContent);
+				}
 			}
 		}
+		
 		
 		CommandOut out = new CommandOut(Command.SHARE_STOP);
 		return out;
