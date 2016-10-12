@@ -28,6 +28,7 @@ public class TransmitHandler extends SocketBaseHandler {
 		for (String s : to) {
 			pushMessage(s, pushContent);
 			appendLog("推送对象:" + s + " ");
+			
 		}
 	
 		CommandOut out = new CommandOut(Command.TRANSMIT);
