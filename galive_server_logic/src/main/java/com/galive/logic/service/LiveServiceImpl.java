@@ -1,7 +1,6 @@
 package com.galive.logic.service;
 
 import java.util.List;
-import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.dao.LiveDao;
 import com.galive.logic.dao.LiveDaoImpl;
 import com.galive.logic.exception.LogicException;
@@ -19,8 +18,7 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 
 	@Override
 	public Live createLive(String account) throws LogicException {
-		checkInLive(account);
-		
+//		checkInLive(account);		
 		String liveSid = roomService.getFreeRoom();
 		if (liveSid == null) {
 			appendLog("房间已满，无法再创建更多的房间。");
@@ -39,18 +37,16 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 
 	@Override
 	public Live joinLive(String account, String liveSid) throws LogicException {
-		checkInLive(account);
+		//checkInLive(account);
 		
-		boolean exist = liveDao.liveExsit(liveSid);
-		if (!exist) {
-			appendLog("房间不存在或已结束直播");
-			throw new LogicException("房间不存在或已结束直播");
-		}
+//		boolean exist = liveDao.liveExsit(liveSid);
+//		if (!exist) {
+//			appendLog("房间不存在");
+//			throw new LogicException("房间不存在");
+//		}
 		
 		List<String> members = liveDao.findLiveMembers(liveSid);
-		if (members.size() >= ApplicationConfig.getInstance().getLogicConfig().getMaxLiveMember()) {
-			throw new LogicException("该房间已满员。");
-		}
+		
 		liveDao.saveLiveMember(liveSid, account);
 		liveDao.saveLiveForMember(liveSid, account);
 		
@@ -67,10 +63,10 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 	@Override
 	public Live leaveLive(String account) throws LogicException {
 		String liveSid = liveDao.findLiveByMember(account);
-		if (liveSid == null) {
-			appendLog("不在房间中。");
-			throw new LogicException("不在房间中。");
-		}
+//		if (liveSid == null) {
+//			appendLog("不在房间中。");
+//			throw new LogicException("不在房间中。");
+//		}
 		String owner = liveDao.findLiveCreator(liveSid);
 		
 		List<String> members = liveDao.removeLiveMember(liveSid, account);
@@ -86,10 +82,10 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 	@Override
 	public Live destroyLive(String account) throws LogicException {
 		String liveSid = liveDao.findLiveByCreator(account);
-		if (liveSid == null) {
-			appendLog("不在房间中。");
-			throw new LogicException("不在房间中。");
-		}
+//		if (liveSid == null) {
+//			appendLog("不在房间中。");
+//			throw new LogicException("不在房间中。");
+//		}
 		
 		List<String> members = liveDao.removeLiveMembers(liveSid);
 		liveDao.removeLiveCreator(liveSid);
