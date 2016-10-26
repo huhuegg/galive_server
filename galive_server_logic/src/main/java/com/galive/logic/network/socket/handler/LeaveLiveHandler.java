@@ -2,6 +2,8 @@ package com.galive.logic.network.socket.handler;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.model.Live;
@@ -34,8 +36,11 @@ public class LeaveLiveHandler extends SocketBaseHandler {
 		}
 		
 		String owner = live.getOwnerAccount();
-		pushMessage(owner, pushContent);
-		appendLog("推送房主:" + owner + " " + pushContent);
+		if (!StringUtils.isEmpty(owner)) {
+			pushMessage(owner, pushContent);
+			appendLog("推送房主:" + owner + " " + pushContent);
+		}
+		
 
 		CommandOut out = new CommandOut(Command.LEAVE_LIVE);
 		return out;
