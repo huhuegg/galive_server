@@ -5,7 +5,6 @@ import java.util.concurrent.Executors;
 
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
-import com.galive.logic.network.socket.ChannelManager;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.service.LiveService;
 import com.galive.logic.service.LiveServiceImpl;
