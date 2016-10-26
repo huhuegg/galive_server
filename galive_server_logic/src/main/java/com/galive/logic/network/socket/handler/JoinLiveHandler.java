@@ -2,6 +2,8 @@ package com.galive.logic.network.socket.handler;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
@@ -39,10 +41,12 @@ public class JoinLiveHandler extends SocketBaseHandler {
 				appendLog("推送房间内成员:" + act + " " + pushContent);
 			}
 		}
+		
 		String owner = live.getOwnerAccount();
-		pushMessage(owner, pushContent);
-		appendLog("推送房主:" + owner + " " + pushContent);
-
+		if (!StringUtils.isEmpty(owner)) {
+			pushMessage(owner, pushContent);
+			appendLog("推送房主:" + owner + " " + pushContent);
+		}
 		CommandOut out = new CommandOut(Command.JOIN_LIVE);
 		return out;
 	}
