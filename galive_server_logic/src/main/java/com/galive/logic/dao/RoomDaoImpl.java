@@ -76,6 +76,12 @@ public class RoomDaoImpl implements RoomDao {
 		jedis.srem(usedRoomKey(), room);
 	}
 
+	@Override
+	public Set<String> findunusedRooms() {
+		Set<String> unuserdRooms = jedis.smembers(freeRoomKey());
+		return unuserdRooms;
+	}
+
 	
 
 	

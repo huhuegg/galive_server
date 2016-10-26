@@ -19,4 +19,6 @@ public interface RoomDao {
 	public String popFreeRoom();
 	
 	public Set<String> findUsedRooms();
+	
+	public Set<String> findunusedRooms();
 }

@@ -20,6 +20,8 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 	public Live createLive(String account) throws LogicException {
 //		checkInLive(account);		
 		String liveSid = roomService.getFreeRoom();
+		int unuserRoomCount = roomService.unusedRoomCount();
+		appendLog("可用房间数:" + unuserRoomCount);
 		if (liveSid == null) {
 			appendLog("房间已满，无法再创建更多的房间。");
 			throw new LogicException("房间已满，无法再创建更多的房间");

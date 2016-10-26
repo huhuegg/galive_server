@@ -13,5 +13,7 @@ public interface RoomService {
 	public void  returnRoom(String room);
 	
 	public List<String> listUsedRoom();
+	
+	public int unusedRoomCount();
 }
 	

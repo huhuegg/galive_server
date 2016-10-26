@@ -61,6 +61,12 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 		}
 		return result;
 	}
+
+	@Override
+	public int unusedRoomCount() {
+		Set<String> unusedRooms = roomDao.findUsedRooms();
+		return unusedRooms.size();
+	}
 	
 	
 
