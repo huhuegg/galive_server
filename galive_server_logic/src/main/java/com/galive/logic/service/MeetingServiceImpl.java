@@ -38,8 +38,9 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 	@Override
 	public Meeting findMeeting(String meetingDisplayId, String accountSid, boolean checkNull) throws LogicException {
 		Meeting meeting = null;
-		String meetingSid = findMeetingId(meetingDisplayId);
-		if (!StringUtils.isEmpty(meetingSid)) {
+		
+		if (!StringUtils.isEmpty(meetingDisplayId)) {
+			String meetingSid = findMeetingId(meetingDisplayId);
 			meeting = meetingDao.find(meetingSid);
 		} else {
 			if (!StringUtils.isEmpty(accountSid)) {
