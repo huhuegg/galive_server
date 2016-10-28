@@ -104,6 +104,7 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 		Account act = accountService.findAndCheckAccount(accountSid);
 		String displayId = act.getMeetingDisplayId();
 		meetingDao.bindDisplayId(meeting.getSid(), displayId);
+		meeting.setDisplayId(displayId);
 		return meeting;
 	}
 
@@ -125,6 +126,7 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 		meetingMember.setOptions(meetingMemberOptions);
 		members.add(meetingMember);
 		meeting.setMembers(members);
+		meeting.setDisplayId(meetingDisplayId);
 		meetingDao.saveOrUpdate(meeting);
 		return meeting;
 	}

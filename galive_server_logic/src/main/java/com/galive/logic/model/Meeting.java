@@ -3,10 +3,14 @@ package com.galive.logic.model;
 import java.util.ArrayList;
 import java.util.List;
 import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Transient;
 
 @Entity
 public class Meeting extends BaseModel {
 
+	@Transient
+	private String displayId = "";
+	
 	private String room = "";
 	
 	/**
@@ -48,6 +52,14 @@ public class Meeting extends BaseModel {
 
 	public void setHolder(String holder) {
 		this.holder = holder;
+	}
+
+	public String getDisplayId() {
+		return displayId;
+	}
+
+	public void setDisplayId(String displayId) {
+		this.displayId = displayId;
 	}
 
 	
