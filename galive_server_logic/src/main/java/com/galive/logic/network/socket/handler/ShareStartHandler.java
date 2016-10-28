@@ -37,7 +37,6 @@ public class ShareStartHandler extends SocketBaseHandler {
 			}
 		}
 		
-		
 		CommandOut out = new CommandOut(Command.SHARE_START);
 		return out;
 
