@@ -34,7 +34,7 @@ public class TransmitHandler extends SocketBaseHandler {
 		return out;
 	}
 	
-	public class MeetingTransmitgIn {
+	public static class MeetingTransmitgIn {
 		public List<String> to = new ArrayList<String>();
 		public String content = "";
 	}
