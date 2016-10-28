@@ -19,6 +19,10 @@ public class MeetingDaoImpl extends BaseDao implements MeetingDao {
 		return RedisManager.getInstance().keyPrefix() + "meeting:share_started";
 	}
 	
+	private String displayIdKey() {
+		return RedisManager.getInstance().keyPrefix() + "meeting:display_id:";
+	}
+	
 	@Override
 	public Meeting saveOrUpdate(Meeting meeting) {
 		if (StringUtils.isEmpty(meeting.getSid())) {
@@ -67,5 +71,25 @@ public class MeetingDaoImpl extends BaseDao implements MeetingDao {
 		String key = shareStartedKey();
 		boolean started = jedis().sismember(key, accountSid);
 		return started;
+	}
+
+	@Override
+	public void bindDisplayId(String meetingSid, String mettingDisplayId) {
+		String key = displayIdKey();
+		
+		jedis().hset(key, mettingDisplayId, meetingSid);
+		
+	}
+
+	@Override
+	public String findMeetingId(String mettingDisplayId) {
+		String meetingSid = jedis().hget(displayIdKey(), mettingDisplayId);
+		return meetingSid;
+	}
+
+	@Override
+	public void unbundDisplayId(String mettingDisplayId) {
+		jedis().hdel(displayIdKey(), mettingDisplayId);
+		
 	}
 }

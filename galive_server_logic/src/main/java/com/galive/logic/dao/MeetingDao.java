@@ -20,5 +20,11 @@ public interface MeetingDao {
 	public void saveShareState(String accountSid, boolean start);
 	
 	public boolean loadShareState(String accountSid);
+	
+	public void bindDisplayId(String meetingSid, String mettingDisplayId);
+	
+	public void unbundDisplayId(String mettingDisplayId);
+	
+	public String findMeetingId(String mettingDisplayId);
 }
  

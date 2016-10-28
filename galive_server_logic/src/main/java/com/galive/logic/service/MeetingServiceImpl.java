@@ -36,8 +36,9 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 	}
 	
 	@Override
-	public Meeting findMeeting(String meetingSid, String accountSid, boolean checkNull) throws LogicException {
+	public Meeting findMeeting(String meetingDisplayId, String accountSid, boolean checkNull) throws LogicException {
 		Meeting meeting = null;
+		String meetingSid = findMeetingId(meetingDisplayId);
 		if (!StringUtils.isEmpty(meetingSid)) {
 			meeting = meetingDao.find(meetingSid);
 		} else {
@@ -46,7 +47,7 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 			}
 		}
 		if (checkNull && meeting == null) {
-			throw makeLogicException("会议不存在。");
+			throw makeLogicException("会议未开始。");
 		}
 		return meeting;
 	}
@@ -98,15 +99,18 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 		
 		meeting.setRoom(room);
 		logBuffer.append("房间:" + room);
-		meetingDao.saveOrUpdate(meeting);
+		meeting = meetingDao.saveOrUpdate(meeting);
 		
+		Account act = accountService.findAndCheckAccount(accountSid);
+		String displayId = act.getMeetingDisplayId();
+		meetingDao.bindDisplayId(meeting.getSid(), displayId);
 		return meeting;
 	}
 
 	@Override
-	public Meeting joinMeeting(String accountSid, String meetingSid, String password, MeetingMemberOptions meetingMemberOptions) throws LogicException {
+	public Meeting joinMeeting(String accountSid, String meetingDisplayId, String password, MeetingMemberOptions meetingMemberOptions) throws LogicException {
 		checkAccountInMeeting(accountSid, false);
-		Meeting meeting = findMeeting(meetingSid, null, true);
+		Meeting meeting = findMeeting(meetingDisplayId, null, true);
 		String meetingPass = meeting.getOptions().getPassword();
 		if (!StringUtils.isEmpty(meetingPass) && !StringUtils.isEmpty(password) && !password.equals(meeting.getOptions().getPassword())) {
 			throw makeLogicException("会议密码错误。");
@@ -160,6 +164,9 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 		}
 		meetingDao.delete(meeting);
 		roomService.returnRoom(meeting.getRoom());
+		Account act = accountService.findAndCheckAccount(accountSid);
+		String displayId = act.getMeetingDisplayId();
+		meetingDao.unbundDisplayId(displayId);
 		return meeting;
 	}
 
@@ -272,6 +279,12 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 	public boolean loadShareState(String accountSid) throws Exception {
 		boolean started = meetingDao.loadShareState(accountSid);
 		return started;
+	}
+
+	@Override
+	public String findMeetingId(String meetingDisplayId) throws LogicException {
+		String meetingSid = meetingDao.findMeetingId(meetingDisplayId);
+		return meetingSid;
 	}
 
 

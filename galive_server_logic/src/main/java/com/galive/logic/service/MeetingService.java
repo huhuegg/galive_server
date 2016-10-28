@@ -11,6 +11,14 @@ import com.galive.logic.model.MeetingOptions;
 public interface MeetingService {
 
 	/**
+	 * 根据显示id查找会议id
+	 * @param meetingDisplayId
+	 * @return
+	 * @throws LogicException
+	 */
+	public String findMeetingId(String meetingDisplayId) throws LogicException;
+	
+	/**
 	 * 检查用户是否在会议中
 	 * @param accountSid
 	 * @param isInMeeting 检查在/不在会议中
@@ -21,12 +29,12 @@ public interface MeetingService {
 	
 	/**
 	 * 查找会议
-	 * @param meetingSid 会议id 二选一
+	 * @param meetingDisplayId 会议id 二选一
 	 * @param accountSid 用户所在的会议 可选 二选一
 	 * @return
 	 * @throws LogicException
 	 */
-	public Meeting findMeeting(String meetingSid, String accountSid, boolean checkNull) throws LogicException;
+	public Meeting findMeeting(String meetingDisplayId, String accountSid, boolean checkNull) throws LogicException;
 
 	/**
 	 * 创建会议
@@ -38,7 +46,7 @@ public interface MeetingService {
 	 */
 	public Meeting createMeeting(String accountSid, MeetingOptions options, MeetingMemberOptions memberOptions) throws LogicException;
 
-	public Meeting joinMeeting(String accountSid, String meetingSid, String password, MeetingMemberOptions meetingMemberOptions) throws LogicException;
+	public Meeting joinMeeting(String accountSid, String meetingDisplayId, String password, MeetingMemberOptions meetingMemberOptions) throws LogicException;
 
 	/**
 	 * 离开会议

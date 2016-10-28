@@ -20,6 +20,11 @@ public class Account extends BaseModel {
 	@JSONField(name="meeting_member_opt")
 	private MeetingMemberOptions meetingMemberOptions;
 	
+	/**
+	 * 会议显示id
+	 */
+	private String meetingDisplayId;
+	
 	@Transient
 	private String nickname;
 	
@@ -31,13 +36,6 @@ public class Account extends BaseModel {
 	
 	@Transient
 	private Platform platform;
-	
-	
-	public static Account createNewAccount() {
-		Account act = new Account();
-		
-		return act;
-	}
 
 	public MeetingOptions getMeetingOptions() {
 		return meetingOptions;
@@ -93,5 +91,13 @@ public class Account extends BaseModel {
 
 	public void setPlatformSid(String platformSid) {
 		this.platformSid = platformSid;
+	}
+
+	public String getMeetingDisplayId() {
+		return meetingDisplayId;
+	}
+
+	public void setMeetingDisplayId(String meetingDisplayId) {
+		this.meetingDisplayId = meetingDisplayId;
 	}
 }

@@ -137,7 +137,9 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 	}
 	
 	private PlatformAccount createAccount(PlatformAccount platformAccount) throws LogicException {
-		Account act = Account.createNewAccount();
+		Account act = new Account();
+		long meetingDisplayId = Sid.getNextSequence(EntitySeq.MeetingDisplayId);
+		act.setMeetingDisplayId(meetingDisplayId + "");
 		String accountSid = accountDao.saveOrUpdateAccount(act).getSid();
 		platformAccount.setAccountSid(accountSid);
 		return platformAccount;

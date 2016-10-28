@@ -29,7 +29,8 @@ public class Sid {
 		Account("account", 1),
 		PlatformAccount("platform_account", 1),
 		MeetingName("meeting_name", 1),
-		Meeting("meeting", 1);
+		Meeting("meeting", 1),
+		MeetingDisplayId("meeting_display_id", 10000);
 		
 		public String seqName;
 		public long seqStart;

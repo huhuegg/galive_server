@@ -8,6 +8,7 @@ import org.mongodb.morphia.annotations.Embedded;
 @Embedded
 public class MeetingOptions {
 	
+	
 	/**
 	 * 会议名称
 	 */
