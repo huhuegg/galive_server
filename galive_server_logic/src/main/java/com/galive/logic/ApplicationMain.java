@@ -2,8 +2,6 @@ package com.galive.logic;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
 import org.apache.commons.daemon.DaemonInitException;

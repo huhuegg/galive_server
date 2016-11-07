@@ -18,6 +18,9 @@ public class Meeting extends BaseModel {
 	 */
 	private String holder = "";
 	
+	/**
+	 * 房间内
+	 */
 	private List<MeetingMember> members = new ArrayList<>();
 	
 	private MeetingOptions options = new MeetingOptions();

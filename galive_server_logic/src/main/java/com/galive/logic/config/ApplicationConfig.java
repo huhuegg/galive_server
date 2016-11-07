@@ -8,6 +8,9 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.galive.logic.ApplicationMain;
+import com.galive.logic.ApplicationMain.ApplicationMode;
 import com.galive.logic.helper.LogicHelper;
 
 public class ApplicationConfig {
@@ -34,6 +37,7 @@ public class ApplicationConfig {
 	private static ApplicationConfig loadConfig() {
 		ApplicationConfig sc = new ApplicationConfig();
 		InputStream in = null;
+		
 		try {
 			in = LogicHelper.loadConfig();
 			if (in == null) {
@@ -53,16 +57,26 @@ public class ApplicationConfig {
 			logger.info("--SocketConfig--");
 			SocketConfig socketConfig = new SocketConfig();
 			Element socketNode = node.element("Socket");
-			Element socketUrlNode = socketNode.element("Host");
-			String socketUrl = socketUrlNode.getStringValue();
-			socketConfig.setHost(socketUrl);
-			logger.info("socketUrl:" + socketUrl);
+			
+			if (ApplicationMain.get().getMode() == ApplicationMode.Develop) {
+				Element socketUrlNode = socketNode.element("Host");
+				String socketUrl = socketUrlNode.getStringValue();
+				socketConfig.setHost(socketUrl);
+				logger.info("socketUrl:" + socketUrl);
 
-			Element socketPortNode = socketNode.element("Port");
-			int socketPort = NumberUtils.toInt(socketPortNode.getStringValue(), 52194);
-			socketConfig.setPort(socketPort);
-			logger.info("socketPort:" + socketPort);
-
+				Element socketPortNode = socketNode.element("Port");
+				int socketPort = NumberUtils.toInt(socketPortNode.getStringValue(), 52194);
+				socketConfig.setPort(socketPort);
+				logger.info("socketPort:" + socketPort);
+			} else {
+				String host = System.getenv().get("GALIVE_SOCKET_HOST");
+				int port = Integer.parseInt(System.getenv().get("GALIVE_SOCKET_PORT"));
+				socketConfig.setHost(host);
+				socketConfig.setPort(port);
+				logger.info("socketHost:" + host);
+				logger.info("socketPort:" + port);
+			}
+			
 			Element liveReqNode = socketNode.element("LiveReq");
 			String liveReq = liveReqNode.getStringValue();
 			socketConfig.setLiveReq(liveReq);
