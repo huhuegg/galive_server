@@ -1,6 +1,9 @@
 package com.galive.logic.service;
 
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.galive.logic.dao.LiveDao;
 import com.galive.logic.dao.LiveDaoImpl;
 import com.galive.logic.exception.LogicException;
@@ -88,17 +91,19 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 //			appendLog("不在房间中。");
 //			throw new LogicException("不在房间中。");
 //		}
+		if (StringUtils.isEmpty(liveSid)) {
+			List<String> members = liveDao.removeLiveMembers(liveSid);
+			liveDao.removeLiveCreator(liveSid);
+			liveDao.removeLiveForCreator(account);
+			roomService.returnRoom(liveSid);
+			Live live = new Live();
+			live.setSid(liveSid);
+			live.setOwnerAccount(account);
+			live.setMemberAccounts(members);
+			return live;
+		}
 		
-		List<String> members = liveDao.removeLiveMembers(liveSid);
-		liveDao.removeLiveCreator(liveSid);
-		liveDao.removeLiveForCreator(account);
-		roomService.returnRoom(liveSid);
-		
-		Live live = new Live();
-		live.setSid(liveSid);
-		live.setOwnerAccount(account);
-		live.setMemberAccounts(members);
-		return live;
+		return null;
 	}
 
 	@Override

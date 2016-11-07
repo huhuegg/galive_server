@@ -20,16 +20,17 @@ public class DestroyLiveHandler extends SocketBaseHandler {
 		appendLog("--DestroyLiveHandler(退出直播)--");
 
 		Live live = liveService.destroyLive(account);
+		if (live != null) {
+			DestroyLivePush push = new DestroyLivePush();
+			push.account = account;
+			String pushContent = push.socketResp();
 
-		DestroyLivePush push = new DestroyLivePush();
-		push.account = account;
-		String pushContent = push.socketResp();
-
-		List<String> accounts = live.getMemberAccounts();
-		for (String act : accounts) {
-			pushMessage(act, pushContent);
+			List<String> accounts = live.getMemberAccounts();
+			for (String act : accounts) {
+				pushMessage(act, pushContent);
+			}
 		}
-
+	
 		CommandOut out = new CommandOut(Command.DESTROY_LIVE);
 		return out;
 	}
