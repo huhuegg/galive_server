@@ -15,5 +15,7 @@ public enum Gender {
 	/*
 	 * 女
 	 */
-	F,
+	F;
+	
+	
 }

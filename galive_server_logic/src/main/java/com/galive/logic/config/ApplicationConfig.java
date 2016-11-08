@@ -51,6 +51,16 @@ public class ApplicationConfig {
 
 			logger.info("--LogicConfig--");
 			LogicConfig logicConfig = new LogicConfig();
+			Element logicNode = node.element("Logic");
+			Element meidaServerHostNode = logicNode.element("MeidaServerHost");
+			String meidaServerHost = meidaServerHostNode.getStringValue();
+			logicConfig.setMeidaServerHost(meidaServerHost);
+			logger.info("meidaServerHost:" + meidaServerHost);
+			
+			Element meidaServerPortNode = logicNode.element("MeidaServerPort");
+			String meidaServerPort = meidaServerPortNode.getStringValue();
+			logicConfig.setMeidaServerPort(meidaServerPort);
+			logger.info("meidaServerPort:" + meidaServerPort);
 			
 			sc.setLogicConfig(logicConfig);
 

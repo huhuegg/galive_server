@@ -25,6 +25,7 @@
 	</Platform>
 
 	<Logic>
-		
+		<MeidaServerHost>192.168.96.131</MeidaServerHost>
+		<MeidaServerPort>0</MeidaServerPort>
 	</Logic>
 </Config>

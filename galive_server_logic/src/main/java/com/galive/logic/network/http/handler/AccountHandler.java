@@ -1,5 +1,7 @@
 package com.galive.logic.network.http.handler;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
@@ -20,7 +22,16 @@ public class AccountHandler extends HttpBaseHandler {
 		AccountIn in = JSON.parseObject(reqData, AccountIn.class);
 		String nickname = in.nickname;
 		String avatar = in.avatar;
-		Gender gender = in.gender;
+		String genderStr = in.gender;
+		Gender gender = null;
+		if (!StringUtils.isEmpty(genderStr)) {
+			try {
+				gender = Gender.valueOf(genderStr);
+			} catch (Exception e) {
+				return CommandOut.failureOut(Command.USR_INFO, String.format("参数错误(gender=%s不合法)", genderStr));
+			}
+		}
+		
 		String profile = in.profile;
 		
 		appendLog("昵称(nickname):" + nickname);
@@ -52,7 +63,7 @@ public class AccountHandler extends HttpBaseHandler {
 
 		public String nickname;
 		public String avatar;
-		public Gender gender;
+		public String gender;
 		public String profile;
 
 	}

@@ -6,12 +6,13 @@ import com.galive.logic.network.http.HttpRequestHandler;
 import com.galive.logic.service.AccountService;
 import com.galive.logic.service.AccountServiceImpl;
 import com.galive.logic.service.MeetingService;
+import com.galive.logic.service.MeetingServiceImpl;
 
 @HttpRequestHandler(desc = "用户登出", command = Command.USR_LOGOUT)
 public class LogoutHandler extends HttpBaseHandler {
 	
 	private AccountService accountService = new AccountServiceImpl();
-	private MeetingService meetingService;
+	private MeetingService meetingService = new MeetingServiceImpl();
 	
 	@Override
 	public CommandOut handle(String account, String reqData) throws Exception {
