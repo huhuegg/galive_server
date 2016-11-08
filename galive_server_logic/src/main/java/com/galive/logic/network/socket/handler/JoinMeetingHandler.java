@@ -38,17 +38,18 @@ public class JoinMeetingHandler extends SocketBaseHandler {
 			out.meeting = meeting;
 			return out;
 		} else {
-			meeting = meetingService.findMeeting(searchName, account, true);
+			Meeting jMeeting = meetingService.findMeeting(searchName, null, null);
+			jMeeting = meetingService.joinMeeting(account, jMeeting.getSid(), password);
+			meeting = meetingService.findMeeting(searchName, null, null);
 			Account act = accountService.findAndCheckAccount(account);
-			act.setMeetingOptions(null);
 			JoinMeetingPush push = new JoinMeetingPush();
 			push.account = act;
 			String pushContent = push.socketResp();
-			List<MeetingMember> members = meeting.getMembers();
-			for (MeetingMember m : members) {
-				if (!m.getAccountSid().equals(account)) {
-					pushMessage(m.getAccountSid(), pushContent);
-					appendLog("推送房间内成员:" + m.getAccountSid() + " " + pushContent);
+			List<String> members = meeting.getMemberSids();
+			for (String m : members) {
+				if (!m.equals(account)) {
+					pushMessage(m, pushContent);
+					appendLog("推送房间内成员:" + m + " " + pushContent);
 				}
 			}
 			CommandOut out = new CommandOut(Command.MEETING_JOIN);

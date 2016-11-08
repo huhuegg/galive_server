@@ -5,7 +5,6 @@ import java.util.List;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.model.Meeting;
-import com.galive.logic.model.MeetingMember;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.ShareStartPush;
 import com.galive.logic.service.MeetingService;
@@ -20,19 +19,18 @@ public class ShareStartHandler extends SocketBaseHandler {
 	public CommandOut handle(String account, String reqData) throws Exception {
 		appendLog("--ShareStartHandler(开始分享)--");
 
-		meetingService.changeShareState(account, true);
+		meetingService.updateShareState(account, true);
 
-		Meeting meeting = meetingService.findMeeting(null, account, false);
+		Meeting meeting = meetingService.findMeeting(null, null, account);
 		
 		if (meeting != null) {
 			ShareStartPush push = new ShareStartPush();
-			push.accountSid = account;
 			String pushContent = push.socketResp();
-			List<MeetingMember> members = meeting.getMembers();
-			for (MeetingMember m : members) {
-				if (!m.getAccountSid().equals(account)) {
-					pushMessage(m.getAccountSid(), pushContent);
-					appendLog("推送房间内成员:" + m.getAccountSid() + " " + pushContent);
+			List<String> members = meeting.getMemberSids();
+			for (String m : members) {
+				if (!m.equals(account)) {
+					pushMessage(m, pushContent);
+					appendLog("推送房间内成员:" + m + " " + pushContent);
 				}
 			}
 		}

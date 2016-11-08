@@ -28,7 +28,7 @@ public class Command {
 	
 	public static final String SHARE_STOP = "SHARE_STOP";
 	
-	public static final String DESTROY_MEETING_PUSH = "DESTROY_MEETING_PUSH";
+	public static final String STOP_MEETING_PUSH = "STOP_MEETING_PUSH";
 	
 	public static final String JOIN_MEETING_PUSH = "JOIN_MEETING_PUSH";
 	
@@ -40,22 +40,7 @@ public class Command {
 	
 	public static final String SHARE_STOP_PUSH = "SHARE_STOP_PUSH";
 	
-	
-	
-	// old
-	public static final String WECHAT_USR_INFO = "WECHAT_USR_INFO";
-
-	public static final String CREATE_LIVE = "CREATE_LIVE";
-	public static final String JOIN_LIVE = "JOIN_LIVE";
-	public static final String LEAVE_LIVE = "LEAVE_LIVE";
-	public static final String DESTROY_LIVE = "DESTROY_LIVE";
-	
-	public static final String MODIFY_ACCOUNT_INFO = "MODIFY_ACCOUNT_INFO";
-	
-	public static final String ROOM_LIST = "ROOM_LIST";
-
-	public static final String JOIN_LIVE_PUSH = "JOIN_LIVE_PUSH";
-	public static final String LEAVE_LIVE_PUSH = "LEAVE_LIVE_PUSH";
+	public static final String MEETING_MEMBER_KICK_PUSH = "MEETING_MEMBER_KICK_PUSH";
 	
 
 	// 用户被踢下线

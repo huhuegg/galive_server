@@ -8,7 +8,7 @@ public class KickMeetingMemberPush extends CommandOut {
 	public String targetSid;
 	
 	public KickMeetingMemberPush() {
-		super(Command.KICK_OFF_PUSH);
+		super(Command.MEETING_MEMBER_KICK_PUSH);
 	}
 
 	

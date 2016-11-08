@@ -2,7 +2,6 @@ package com.galive.logic.network.http.handler;
 
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
-import com.galive.logic.model.Meeting;
 import com.galive.logic.network.http.HttpRequestHandler;
 import com.galive.logic.service.AccountService;
 import com.galive.logic.service.AccountServiceImpl;
@@ -17,12 +16,8 @@ public class LogoutHandler extends HttpBaseHandler {
 	@Override
 	public CommandOut handle(String account, String reqData) throws Exception {
 		appendLog("--LogoutHandler(用户登出)--");
-		
-		Meeting meeting = meetingService.findMeeting(null, account);
-		if (meeting != null) {
-			meetingService.stopMeeting(account);
-			meetingService.leaveMeeting(account);
-		}
+		meetingService.leaveMeeting(account);
+		meetingService.stopMeeting(account);
 		accountService.logout(account);
 		CommandOut out = new CommandOut(Command.USR_LOGOUT);
 		return out;

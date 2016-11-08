@@ -1,5 +1,7 @@
 package com.galive.logic.network.socket.handler;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.model.Meeting;
@@ -18,11 +20,16 @@ public class OnlineHandler extends SocketBaseHandler {
 
 		OnlineOut out = new OnlineOut();
 		// 返回会议信息
-		Meeting meeting = meetingService.findMeeting(null, account, false);
-		if (meeting != null) {
+		Meeting meeting = meetingService.findMeeting(null, account, null);
+		if (!StringUtils.isEmpty(meeting.getRoom())) {
 			out.meeting = meeting;
+		} else {
+			meeting = meetingService.findMeeting(null, null, account);
+			if (meeting != null) {
+				out.meeting = meeting;
+			}
 		}
-		
+
 		return out;
 	}
 	

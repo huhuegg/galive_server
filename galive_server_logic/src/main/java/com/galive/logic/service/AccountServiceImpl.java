@@ -17,7 +17,6 @@ import com.galive.logic.network.platform.wx.WeChatRequest;
 public class AccountServiceImpl extends BaseService implements AccountService {
 
 	private AccountDao accountDao = new AccountDaoImpl();
-	private MeetingService meetingService = new MeetingServiceImpl();
 
 	public AccountServiceImpl() {
 		super();
@@ -81,7 +80,7 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 			act = new Account();
 			act.setNickname(nickname);
 			act = accountDao.saveOrUpdate(act);
-			meetingService.createMeeting(act);
+			
 			break;
 		case WeChat:
 			if (StringUtils.isEmpty(platformParams)) {
@@ -124,7 +123,6 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 			act.setGender(userInfoResp.getSex() == 1 ? Gender.M : Gender.F);
 	
 			act = accountDao.saveOrUpdate(act);
-			meetingService.createMeeting(act);
 			
 			platformAccount = new PlatformAccount();
 			platformAccount.setAccountSid(act.getSid());

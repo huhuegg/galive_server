@@ -6,16 +6,21 @@ import com.galive.common.protocol.CommandOut;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.LogicConfig;
 import com.galive.logic.config.SocketConfig;
+import com.galive.logic.model.Meeting;
 import com.galive.logic.model.account.Account;
 import com.galive.logic.model.account.Platform;
 import com.galive.logic.network.http.HttpRequestHandler;
 import com.galive.logic.service.AccountService;
 import com.galive.logic.service.AccountServiceImpl;
+import com.galive.logic.service.MeetingService;
+import com.galive.logic.service.MeetingServiceImpl;
 
 @HttpRequestHandler(desc = "用户登录", command = Command.USR_LOGIN)
 public class LoginHandler extends HttpBaseHandler {
 	
 	private AccountService accountService = new AccountServiceImpl();
+	private MeetingService meetingService = new MeetingServiceImpl();
+	
 	
 	@Override
 	public CommandOut handle(String account, String reqData) throws Exception {
@@ -32,6 +37,10 @@ public class LoginHandler extends HttpBaseHandler {
 		appendLog("platformParams:" + platformParams);
 		
 		Account act = accountService.login(accountSid, platform, platformParams);
+		Meeting meeting = meetingService.findMeeting(null, act.getSid(), null);
+		if (meeting == null) {
+			meetingService.createMeeting(act);
+		}
 		
 		String token = accountService.generateToken(act.getSid());
 		

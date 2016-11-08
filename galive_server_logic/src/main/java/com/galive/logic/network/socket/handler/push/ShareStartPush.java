@@ -5,8 +5,6 @@ import com.galive.common.protocol.CommandOut;
 
 public class ShareStartPush extends CommandOut {
 
-	public String accountSid;
-	
 	public ShareStartPush() {
 		super(Command.SHARE_START_PUSH);
 	}

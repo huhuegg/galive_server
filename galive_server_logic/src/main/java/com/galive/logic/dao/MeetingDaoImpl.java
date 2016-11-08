@@ -66,7 +66,7 @@ public class MeetingDaoImpl extends BaseDao implements MeetingDao {
 	@Override
 	public Meeting findByMember(String accountSid) {
 		Query<Meeting> q = dao.createQuery();
-		q.criteria("members.accountSid").equal(accountSid);
+		q.criteria("memberSids").equal(accountSid);
 		Meeting meeting = dao.findOne(q);
 		return meeting;
 	}
