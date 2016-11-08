@@ -11,7 +11,7 @@ import com.galive.logic.network.socket.handler.push.LeaveMeetingPush;
 import com.galive.logic.service.MeetingService;
 import com.galive.logic.service.MeetingServiceImpl;
 
-@SocketRequestHandler(desc = "加入会议", command = Command.MEETING_LEAVE)
+@SocketRequestHandler(desc = "离开会议", command = Command.MEETING_LEAVE)
 public class LeaveMeetingHandler extends SocketBaseHandler {
 
 	private MeetingService meetingService = new MeetingServiceImpl();

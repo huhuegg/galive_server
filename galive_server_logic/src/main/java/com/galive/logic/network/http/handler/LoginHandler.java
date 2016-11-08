@@ -1,19 +1,13 @@
 package com.galive.logic.network.http.handler;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.LogicConfig;
 import com.galive.logic.config.SocketConfig;
-import com.galive.logic.model.Meeting;
 import com.galive.logic.model.account.Account;
 import com.galive.logic.model.account.Platform;
-import com.galive.logic.model.account.PlatformAccount;
-import com.galive.logic.model.account.PlatformAccountWeChat;
 import com.galive.logic.network.http.HttpRequestHandler;
 import com.galive.logic.service.AccountService;
 import com.galive.logic.service.AccountServiceImpl;
@@ -28,49 +22,20 @@ public class LoginHandler extends HttpBaseHandler {
 		appendLog("--LoginHandler(用户登录)--");
 		LoginIn in = JSON.parseObject(reqData, LoginIn.class);
 		
-		Platform platform = in.platform;
-		appendLog("登录平台(platform):" + platform);
+		
 		String accountSid = in.accountSid;
-		appendLog("绑定用户id(accountSid):" + platform);
+		Platform platform = in.platform;
+		String platformParams = in.platformParams;
 		
-		if (platform == null) {
-			CommandOut out = CommandOut.failureOut(Command.USR_LOGIN, "平台不存在。");
-			return out;
-		}
+		appendLog("用户id(accountSid):" + accountSid);
+		appendLog("用户平台(platform):" + platform);
+		appendLog("platformParams:" + platformParams);
+		
+		Account act = accountService.login(accountSid, platform, platformParams);
+		
+		String token = accountService.generateToken(act.getSid());
+		
 		LoginOut out = new LoginOut();
-		PlatformAccount platformAccount = null;
-		Map<String, Object> params = new HashMap<>();
-		String nickname = "";
-		String avatar = "";
-		String platformSid = in.platformSid;
-		params.put("platformSid", platformSid);
-		appendLog("platformSid(platformSid):" + platformSid);
-		switch (platform) {
-		case Guest:
-			String guestName = in.guestName;
-			appendLog("guestName(游客名):" + guestName);
-			params.put("name", guestName);
-			platformAccount = accountService.login(accountSid, platform, params);
-			nickname = guestName;
-			break;
-		case WeChat:
-			String code = in.wechatCode;
-			appendLog("微信code(wechatCode):" + code);
-			params.put("wechatCode", code);
-			platformAccount = accountService.login(accountSid, platform, params);
-			nickname = ((PlatformAccountWeChat) platformAccount).getNickname();
-			avatar = ((PlatformAccountWeChat) platformAccount).getHeadimgurl();
-			break;
-		}
-		
-		String token = accountService.generateToken(platformAccount.getAccountSid());
-		
-		Account act = accountService.findAndCheckAccount(platformAccount.getAccountSid());
-		act.setAvatar(avatar);
-		act.setNickname(nickname);
-		act.setPlatformSid(platformAccount.getSid());
-		
-		act.setPlatform(platform);
 	
 		out.token =  token;
 		out.account = act;
@@ -81,20 +46,18 @@ public class LoginHandler extends HttpBaseHandler {
 	
 	public static class LoginIn {
 
-		// 账号id 可选 非空且platform不为Guest时做绑定
+		// 账号id 可选 空值时自动注册
 		public String accountSid;
-		
-		// 账号平台[String] Guest WeChat 
+
+		// *accountSid为空时必填* 
+		// 账号平台[String] "Guest" - 游客自动注册; "WeChat" - 微信;
 		public Platform platform;
 		
-		// 微信code platform为WeChat时 与platformSid二选一 获取用户信息用
-		public String wechatCode;
-		
-		// 自动登录 直接获取用户信息用 免去授权过程
-		public String platformSid;
-		
-		// 游客名 platform为Guest时 必填
-		public String guestName;
+		// *三方平台参数* 
+		//	根据platform传不同的值
+		// Guest 空字符""
+		// WeChat 用户授权code
+		public String platformParams;
 	}
 
 	public static class LoginOut extends CommandOut {
@@ -106,7 +69,6 @@ public class LoginHandler extends HttpBaseHandler {
 		public SocketConfig socketConfig;
 		public LogicConfig logicConfig;
 		public Account account;
-		public Meeting meeting;
 		public String token;
 	}
 	

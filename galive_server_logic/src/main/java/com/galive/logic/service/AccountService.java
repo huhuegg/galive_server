@@ -1,16 +1,25 @@
 package com.galive.logic.service;
 
-import java.util.Map;
-
 import com.galive.logic.exception.LogicException;
-import com.galive.logic.model.MeetingMemberOptions;
-import com.galive.logic.model.MeetingOptions;
 import com.galive.logic.model.account.Account;
 import com.galive.logic.model.account.Platform;
-import com.galive.logic.model.account.PlatformAccount;
 
 public interface AccountService {
 
+	/**
+	 * 根据sid查找用户
+	 * @param accountSid
+	 * @return
+	 */
+	public Account findAndCheckAccount(String accountSid) throws LogicException;
+	
+	/**
+	 * 更新用户信息
+	 * @param act
+	 * @throws LogicException
+	 */
+	public void updateAccount(Account act) throws LogicException;
+	
 	/**
 	 * 生成token
 	 * @param accountSid
@@ -34,32 +43,14 @@ public interface AccountService {
 	public boolean verifyAccount(String accountSid);
 	
 	/**
-	 * 根据sid查找用户
-	 * @param accountSid
-	 * @return
-	 */
-	public Account findAndCheckAccount(String accountSid) throws LogicException;
-	
-	public PlatformAccount findPlatformAccount(String platformAccountSid) throws LogicException;
-	
-	public MeetingOptions createMeetingOptions(String accountSid) throws LogicException;
-	
-	public MeetingMemberOptions createMeetingMemberOptions(String accountSid) throws LogicException;
-	
-
-	public MeetingOptions updateMeetingOptions(String accountSid, MeetingOptions options) throws LogicException;
-	
-	public MeetingMemberOptions updateMeetingMemberOptions(String accountSid, MeetingMemberOptions options) throws LogicException;
-	
-	/**
 	 * 登录
-	 * @param accountSid 账号id 如果为空，生成对应Account，否则与现有Account绑定
+	 * @param accountSid 账号id
 	 * @param platform 登录平台
-	 * @param params 登录平台所需参数
+	 * @param platformParams 三方平台所需参数 微信为code
 	 * @return
 	 * @throws LogicException
 	 */
-	public PlatformAccount login(String accountSid, Platform platform, Map<String, Object> params) throws LogicException;
+	public Account login(String accountSid, Platform platform, String platformParams) throws LogicException;
 	
 	/**
 	 * 登出
@@ -68,7 +59,4 @@ public interface AccountService {
 	 */
 	public void logout(String accountSid) throws LogicException;
 	
-	public void saveOrUpdateAccount(Account account) throws LogicException;
-	
-
 }

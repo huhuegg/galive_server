@@ -2,16 +2,19 @@ package com.galive.common.protocol;
 
 public class Command {
 
+	
 	// 用户登录
 	public static final String USR_LOGIN = "USR_LOGIN";
-	// 用处登出
+	// 用户登出
 	public static final String USR_LOGOUT = "USR_LOGOUT";
+	// 用户接口
+	public static final String USR_INFO = "USR_INFO";
 	// 获取Token
 	public static final String REQ_TOKEN = "REQ_TOKEN";
 	
-	public static final String MEETING_CREATE = "MEETING_CREATE";
+	public static final String MEETING_START = "MEETING_START";
 	
-	public static final String MEETING_DESTROY = "MEETING_DESTROY";
+	public static final String MEETING_STOP = "MEETING_STOP";
 	
 	public static final String MEETING_JOIN = "MEETING_JOIN";
 	
@@ -30,8 +33,6 @@ public class Command {
 	public static final String JOIN_MEETING_PUSH = "JOIN_MEETING_PUSH";
 	
 	public static final String LEAVE_MEETING_PUSH = "LEAVE_MEETING_PUSH";
-	
-	public static final String UPDATE_MEETING_OPTIONS = "UPDATE_MEETING_OPTIONS";
 	
 	public static final String TRANSMIT_PUSH = "TRANSMIT_PUSH";
 	

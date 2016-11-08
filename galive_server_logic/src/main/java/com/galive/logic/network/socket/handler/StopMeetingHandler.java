@@ -11,8 +11,8 @@ import com.galive.logic.network.socket.handler.push.DestroyMeetingPush;
 import com.galive.logic.service.MeetingService;
 import com.galive.logic.service.MeetingServiceImpl;
 
-@SocketRequestHandler(desc = "结束会议", command = Command.MEETING_DESTROY)
-public class DestroyMeetingHandler extends SocketBaseHandler {
+@SocketRequestHandler(desc = "结束会议", command = Command.MEETING_STOP)
+public class StopMeetingHandler extends SocketBaseHandler {
 
 	private MeetingService meetingService = new MeetingServiceImpl();
 

@@ -7,14 +7,13 @@ import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.model.Meeting;
 import com.galive.logic.model.MeetingMember;
-import com.galive.logic.model.MeetingMemberOptions;
 import com.galive.logic.model.MeetingOptions;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.service.MeetingService;
 import com.galive.logic.service.MeetingServiceImpl;
 
-@SocketRequestHandler(desc = "创建会议", command = Command.MEETING_CREATE)
-public class CreateMeetingHandler extends SocketBaseHandler {
+@SocketRequestHandler(desc = "开始会议", command = Command.MEETING_START)
+public class StartMeetingHandler extends SocketBaseHandler {
 
 	private MeetingService meetingService = new MeetingServiceImpl();
 
@@ -25,12 +24,10 @@ public class CreateMeetingHandler extends SocketBaseHandler {
 		CreateMeetingIn in = JSON.parseObject(reqData, CreateMeetingIn.class);
 		
 		MeetingOptions options = in.options;
-		MeetingMemberOptions meetingMemberOptions = in.meetingMemberOptions;
 		
 		appendLog("会议设置(options):" + options);
-		appendLog("会议成员设置(meetingMemberOptions):" + meetingMemberOptions);
 	
-		Meeting meeting = meetingService.createMeeting(account, options, meetingMemberOptions);
+		Meeting meeting = meetingService.createMeeting(account, options);
 		
 		List<MeetingMember> members = meetingService.listMeetingMembersWithDetailInfo(meeting);
 		meeting.setMembers(members);
@@ -40,16 +37,14 @@ public class CreateMeetingHandler extends SocketBaseHandler {
 		return out;
 	}
 	
-	public static class CreateMeetingIn {
-
-		public MeetingOptions options;
-		public MeetingMemberOptions meetingMemberOptions;
+	public static class StartMeetingIn {
+			
 	}
 
-	public static class CreateLiveOut extends CommandOut {
+	public static class StartMeetingOut extends CommandOut {
 
 		public CreateLiveOut() {
-			super(Command.MEETING_CREATE);
+			super(Command.MEETING_START);
 		}
 
 		public Meeting meeting;

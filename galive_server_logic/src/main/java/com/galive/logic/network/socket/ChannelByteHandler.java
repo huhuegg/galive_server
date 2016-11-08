@@ -229,11 +229,11 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 			OutputStream o = socket.getOutputStream();
 			DataOutputStream out = new DataOutputStream(o);
 			while (true) {
-				byte[] userId = "wangxin".getBytes();
-				int userIdLen = userId.length;
+//				byte[] userId = "wangxin".getBytes();
+//				int userIdLen = userId.length;
 				
-				byte[] userKey = "ab啊吧".getBytes();
-				int userKeyLen = userKey.length;
+//				byte[] userKey = "ab啊吧".getBytes();
+//				int userKeyLen = userKey.length;
 				// ByteBuffer headLen = ByteBuffer.allocate(2);
 				// headLen.putShort( (short) (20 + len));
 				//

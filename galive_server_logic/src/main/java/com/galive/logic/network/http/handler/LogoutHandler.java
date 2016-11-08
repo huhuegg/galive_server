@@ -20,10 +20,9 @@ public class LogoutHandler extends HttpBaseHandler {
 		
 		Meeting meeting = meetingService.findMeeting(null, account, false);
 		if (meeting != null) {
-			
+			meetingService.destroyMeeting(account);
+			meetingService.leaveMeeting(account);
 		}
-		
-		
 		accountService.logout(account);
 		CommandOut out = new CommandOut(Command.USR_LOGOUT);
 		return out;

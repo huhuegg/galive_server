@@ -5,25 +5,51 @@ import java.util.List;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Transient;
 
+import com.galive.logic.model.account.Account;
+
 @Entity
 public class Meeting extends BaseModel {
-
-	@Transient
-	private String displayId = "";
 	
+	/**
+	 * 语音服务器对应房间号
+	 */
+	@Transient
 	private String room = "";
 	
 	/**
-	 * 主持人accountSid
+	 * 会议对应用户
 	 */
-	private String holder = "";
+	private String accountSid = "";
 	
 	/**
-	 * 房间内
+	 * 针对用户唯一切无法更改,用于直接进入用户房间
 	 */
-	private List<MeetingMember> members = new ArrayList<>();
+	private String searchName = "";
 	
-	private MeetingOptions options = new MeetingOptions();
+	/**
+	 * 会议名称 用于显示
+	 */
+	private String displayName = "";
+	
+	/**
+	 * 会议成员
+	 */
+	private List<Account> members = new ArrayList<>();
+	
+	/**
+	 *  简介
+	 */
+	private String profile = "";
+	
+	/**
+	 * 进入会议需要的密码
+	 */
+	private String password = "";
+	
+	/**
+	 * 标签
+	 */
+	private List<String> tags = new ArrayList<>();
 
 	public String getRoom() {
 		return room;
@@ -33,38 +59,60 @@ public class Meeting extends BaseModel {
 		this.room = room;
 	}
 
-	public List<MeetingMember> getMembers() {
+	public String getAccountSid() {
+		return accountSid;
+	}
+
+	public void setAccountSid(String accountSid) {
+		this.accountSid = accountSid;
+	}
+
+	public String getSearchName() {
+		return searchName;
+	}
+
+	public void setSearchName(String searchName) {
+		this.searchName = searchName;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	public List<Account> getMembers() {
 		return members;
 	}
 
-	public void setMembers(List<MeetingMember> members) {
+	public void setMembers(List<Account> members) {
 		this.members = members;
 	}
 
-	public MeetingOptions getOptions() {
-		return options;
+	public String getProfile() {
+		return profile;
 	}
 
-	public void setOptions(MeetingOptions options) {
-		this.options = options;
+	public void setProfile(String profile) {
+		this.profile = profile;
 	}
 
-	public String getHolder() {
-		return holder;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setHolder(String holder) {
-		this.holder = holder;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
-	public String getDisplayId() {
-		return displayId;
+	public List<String> getTags() {
+		return tags;
 	}
 
-	public void setDisplayId(String displayId) {
-		this.displayId = displayId;
+	public void setTags(List<String> tags) {
+		this.tags = tags;
 	}
-
-	
 
 }

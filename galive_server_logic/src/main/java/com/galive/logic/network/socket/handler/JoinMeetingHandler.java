@@ -7,11 +7,7 @@ import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.model.Meeting;
 import com.galive.logic.model.MeetingMember;
-import com.galive.logic.model.MeetingMemberOptions;
 import com.galive.logic.model.account.Account;
-import com.galive.logic.model.account.PlatformAccount;
-import com.galive.logic.model.account.PlatformAccountGuest;
-import com.galive.logic.model.account.PlatformAccountWeChat;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.JoinMeetingPush;
 import com.galive.logic.service.AccountService;
@@ -30,42 +26,24 @@ public class JoinMeetingHandler extends SocketBaseHandler {
 		appendLog("--JoinMeetingHandler(加入会议)--");
 		
 		JoinMeetingIn in = JSON.parseObject(reqData, JoinMeetingIn.class);
-		String meetingSid = in.meetingSid;
-		appendLog("会议id(meetingSid):" + meetingSid);
+		String searchName = in.searchName;
+		appendLog("会议id(searchName):" + searchName);
 		
 		String password = in.password;
 		appendLog("会议密码(password):" + password);
 		
-		MeetingMemberOptions meetingMemberOptions = in.meetingMemberOptions;
-		appendLog("会议成员设置(meetingMemberOptions):" + meetingMemberOptions);
-		
 		Meeting meeting;
 		if (in.preJoin) {
-			meeting = meetingService.joinMeeting(account, meetingSid, password, meetingMemberOptions);
+			meeting = meetingService.joinMeeting(account, searchName, password);
 			List<MeetingMember> members = meetingService.listMeetingMembersWithDetailInfo(meeting);
 			meeting.setMembers(members);
 			JoinMeetingOut out = new JoinMeetingOut();
 			out.meeting = meeting;
 			return out;
 		} else {
-			meeting = meetingService.findMeeting(meetingSid, account, true);
+			meeting = meetingService.findMeeting(searchName, account, true);
 			Account act = accountService.findAndCheckAccount(account);
-			PlatformAccount platformAccount = accountService.findPlatformAccount(act.getLatestLoginPlatform());
-			act.setPlatformSid(platformAccount.getSid());
-			switch (platformAccount.getPlatform()) {
-			case Guest:
-				PlatformAccountGuest guest = (PlatformAccountGuest) platformAccount;
-				act.setAvatar("");
-				act.setNickname(guest.getName());
-				break;
-			case WeChat:
-				PlatformAccountWeChat wechat = (PlatformAccountWeChat) platformAccount;
-				act.setAvatar(wechat.getHeadimgurl());
-				act.setNickname(wechat.getNickname());
-				break;
-			}
-			
-			act.setPlatform(platformAccount.getPlatform());
+			act.setMeetingOptions(null);
 			JoinMeetingPush push = new JoinMeetingPush();
 			push.account = act;
 			String pushContent = push.socketResp();
@@ -83,9 +61,8 @@ public class JoinMeetingHandler extends SocketBaseHandler {
 	
 	public static class JoinMeetingIn {
 
-		public String meetingSid = "";
+		public String searchName = "";
 		public String password = "";
-		public MeetingMemberOptions meetingMemberOptions;
 		public boolean preJoin = false;
 		
 	}

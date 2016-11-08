@@ -1,65 +1,35 @@
 package com.galive.logic.model.account;
 
 import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Transient;
-
-import com.alibaba.fastjson.annotation.JSONField;
 import com.galive.logic.model.BaseModel;
-import com.galive.logic.model.MeetingMemberOptions;
-import com.galive.logic.model.MeetingOptions;
 
+/**
+ * 用户帐号
+ * @author luguangqing
+ *
+ */
 @Entity
 public class Account extends BaseModel {
-
-	@JSONField(serialize = false)
-	private String latestLoginPlatform;
-	
-	@JSONField(name="meeting_opt")
-	private MeetingOptions meetingOptions;
-	
-	@JSONField(name="meeting_member_opt")
-	private MeetingMemberOptions meetingMemberOptions;
 	
 	/**
-	 * 会议显示id
+	 * 用户昵称
 	 */
-	private String meetingDisplayId;
+	private String nickname = "";
 	
-	@Transient
-	private String nickname;
+	/**
+	 * 用户头像
+	 */
+	private String avatar = "";
 	
-	@Transient
-	private String avatar;
+	/**
+	 * 用户性别
+	 */
+	private Gender gender = Gender.U;
 	
-	@Transient
-	private String platformSid;
-	
-	@Transient
-	private Platform platform;
-
-	public MeetingOptions getMeetingOptions() {
-		return meetingOptions;
-	}
-
-	public void setMeetingOptions(MeetingOptions meetingOptions) {
-		this.meetingOptions = meetingOptions;
-	}
-
-	public MeetingMemberOptions getMeetingMemberOptions() {
-		return meetingMemberOptions;
-	}
-
-	public void setMeetingMemberOptions(MeetingMemberOptions meetingMemberOptions) {
-		this.meetingMemberOptions = meetingMemberOptions;
-	}
-
-	public String getLatestLoginPlatform() {
-		return latestLoginPlatform;
-	}
-
-	public void setLatestLoginPlatform(String latestLoginPlatform) {
-		this.latestLoginPlatform = latestLoginPlatform;
-	}
+	/**
+	 * 个人简介
+	 */
+	private String profile = "";
 
 	public String getNickname() {
 		return nickname;
@@ -77,27 +47,19 @@ public class Account extends BaseModel {
 		this.avatar = avatar;
 	}
 
-	public Platform getPlatform() {
-		return platform;
+	public Gender getGender() {
+		return gender;
 	}
 
-	public void setPlatform(Platform platform) {
-		this.platform = platform;
+	public void setGender(Gender gender) {
+		this.gender = gender;
 	}
 
-	public String getPlatformSid() {
-		return platformSid;
+	public String getProfile() {
+		return profile;
 	}
 
-	public void setPlatformSid(String platformSid) {
-		this.platformSid = platformSid;
-	}
-
-	public String getMeetingDisplayId() {
-		return meetingDisplayId;
-	}
-
-	public void setMeetingDisplayId(String meetingDisplayId) {
-		this.meetingDisplayId = meetingDisplayId;
-	}
+	public void setProfile(String profile) {
+		this.profile = profile;
+	}	
 }

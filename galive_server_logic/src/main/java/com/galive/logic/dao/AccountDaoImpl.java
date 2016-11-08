@@ -1,7 +1,6 @@
 package com.galive.logic.dao;
 
 import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.mongodb.morphia.query.Query;
 import com.galive.logic.config.ApplicationConfig;
@@ -36,39 +35,6 @@ public class AccountDaoImpl extends BaseDao implements AccountDao {
 		return token;
 	}
 
-//	@Override
-//	public PlatformAccount savePlatformAccount(PlatformAccount account) {
-//		if (account.getSid().isEmpty()) {
-//			String sid = Sid.getNextSequence(EntitySeq.PlatformAccount) + "";	
-//			account.setSid(sid);
-//		}
-//		platformAccountDao.save(account);
-//		return account;
-//	}
-
-//	@Override
-//	public PlatformAccount findPlatformAccount(Platform platform, String unionId) {
-//		Query<PlatformAccount> q = platformAccountDao.createQuery();
-//		q.field("platform").equal(platform);
-//		String unionIdField = null;
-//		switch (platform) {
-//		case WeChat:
-//			unionIdField = "unionid";
-//			break;
-//		}
-//		q.field(unionIdField).equal(unionId);
-//		PlatformAccount account = platformAccountDao.findOne(q);
-//		return account;
-//	}
-//
-//	@Override
-//	public PlatformAccount findPlatformAccount(String sid) {
-//		Query<PlatformAccount> q = platformAccountDao.createQuery();
-//		q.field("sid").equal(sid);
-//		PlatformAccount account = platformAccountDao.findOne(q);
-//		return account;
-//	}
-
 	@Override
 	public Account findAccount(String accountSid) {
 		Query<Account> q = dao.createQuery();
@@ -85,30 +51,12 @@ public class AccountDaoImpl extends BaseDao implements AccountDao {
 	}
 
 	@Override
-	public Account saveOrUpdateAccount(Account account) {
+	public Account saveOrUpdate(Account account) {
 		if (StringUtils.isEmpty(account.getSid())) {
 			String sid = String.valueOf(Sid.getNextSequence(EntitySeq.Account));
 			account.setSid(sid);
 		} 
 		dao.save(account);
-		return account;
-	}
-
-	@Override
-	public PlatformAccount findPlatformAccount(Platform platform, String platformUnionId) {
-		Query<PlatformAccount> q = platformDao.createQuery();
-		q.field("platform").equal(platform);
-		q.disableValidation();
-		switch (platform) {
-		case Guest:
-			q.field("sid").equal(platformUnionId);
-			break;
-		case WeChat:
-			q.field("unionid").equal(platformUnionId);
-			break;
-		}
-		PlatformAccount account = platformDao.findOne(q);
-		//Account account = dao.findOne(q);
 		return account;
 	}
 
@@ -121,7 +69,7 @@ public class AccountDaoImpl extends BaseDao implements AccountDao {
 	}
 
 	@Override
-	public PlatformAccount saveOrUpdatePlatformAccount(PlatformAccount account) {
+	public PlatformAccount saveOrUpdate(PlatformAccount account) {
 		if (StringUtils.isEmpty(account.getSid())) {
 			String sid = String.valueOf(Sid.getNextSequence(EntitySeq.PlatformAccount));
 			account.setSid(sid);
@@ -131,13 +79,9 @@ public class AccountDaoImpl extends BaseDao implements AccountDao {
 	}
 
 	@Override
-	public PlatformAccount findPlatformAccount(String platfromAccountSid) {
+	public PlatformAccount findPlatformAccount(Platform platform, String platformUnionid) {
 		Query<PlatformAccount> q = platformDao.createQuery();
-		q.field("sid").equal(platfromAccountSid);
-		PlatformAccount account = platformDao.findOne(q);
-		return account;
-	}
-
-	
-
-}
+		q.field("platform").equal(platform);
+		q.field("platformUnionid").equal(platformUnionid);
+		return platformDao.findOne(q);
+	}}

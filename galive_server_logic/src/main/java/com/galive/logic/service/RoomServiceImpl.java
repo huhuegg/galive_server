@@ -1,11 +1,6 @@
 package com.galive.logic.service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
-
 import com.galive.logic.dao.RoomDao;
 import com.galive.logic.dao.RoomDaoImpl;
 import com.galive.logic.exception.LogicException;
@@ -20,6 +15,30 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 	}
 
 	@Override
+	public void saveRooms(String serverIp, int serverPort, List<String> rooms) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String useFreeRoom() throws LogicException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void returnUsedRoom(String room) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<String> listUsedRoom() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*@Override
 	public void saveRooms(String serverIp, int serverPort, List<String> rooms) {
 		roomDao.removeFreeRooms();
 		roomDao.removeUsedRooms();
@@ -60,7 +79,7 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 			result.add(r);
 		}
 		return result;
-	}
+	}*/
 	
 	
 
