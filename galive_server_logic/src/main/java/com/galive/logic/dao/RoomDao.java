@@ -38,14 +38,15 @@ public interface RoomDao {
 	public boolean roomUsed(String room);
 	
 	/**
-	 * 使用空闲房间
+	 * 取出空闲房间
 	 * @return
 	 */
-	public String useFree();
+	public String popFree();
 	
 	/**
 	 * 查找所有已使用房间
 	 * @return
 	 */
 	public Set<String> findUseds();
+	
 }

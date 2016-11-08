@@ -1,5 +1,7 @@
 package com.galive.logic.dao;
 
+import java.util.List;
+
 import com.galive.logic.model.Meeting;
 
 public interface MeetingDao {
@@ -47,10 +49,17 @@ public interface MeetingDao {
 	public void bindRoom(String meetingSid, String room);
 	
 	/**
-	 * 解绑定语音服务器房间
+	 * 解绑语音服务器房间
 	 * @param meetingSid
 	 */
 	public void unbindRoom(String meetingSid);
+	
+	/**
+	 * 查找语音服务器房间
+	 * @param meetingSid
+	 * @return
+	 */
+	public String findRoom(String meetingSid);
 	
 	/**
 	 * 保存屏幕分享状态
@@ -66,6 +75,28 @@ public interface MeetingDao {
 	 */
 	public boolean findShareState(String accountSid);
 	
+	/**
+	 * 插入会议排序列表 根据开始时间排序
+	 * @param meetingSid
+	 */
+	public void insertToMeetingRank(String meetingSid);
+	
+	/**
+	 * 从会议排序列表中删除
+	 * @param meetingSid
+	 */
+	public void removeFromMeetingRank(String meetingSid);
+	
+	/**
+	 * 会议排序列表
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public List<String> meetingRank(long start, long end);
+	
+	
+	public List<Meeting> meetings(int start, int end);
 	
 }
  

@@ -16,69 +16,34 @@ public class RoomDaoImpl extends BaseDao implements RoomDao {
 
 	@Override
 	public void deleteUseds() {
-		// TODO Auto-generated method stub
-		
+		String key = usedRoomKey();
+		Set<String> rooms = jedis().smembers(key);
+		for (String r : rooms) {
+			jedis().srem(key, r);
+		}
 	}
 
 	@Override
 	public void deleteUsed(String room) {
-		// TODO Auto-generated method stub
-		
+		jedis().srem(usedRoomKey(), room);
 	}
 
 	@Override
 	public void deleteFrees() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void saveFree(String room) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void saveUsed(String room) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean roomUsed(String room) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public String useFree() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<String> findUseds() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*@Override
-	public void removeFreeRooms() {
 		String key = freeRoomKey();
 		Set<String> rooms = jedis().smembers(key);
 		for (String r : rooms) {
 			jedis().srem(key, r);
 		}
-		
 	}
-	
+
 	@Override
-	public void saveFreeRoom(String room) {
+	public void saveFree(String room) {
 		jedis().sadd(freeRoomKey(), room);
 	}
 
 	@Override
-	public void saveUsedRoom(String room) {
+	public void saveUsed(String room) {
 		jedis().sadd(usedRoomKey(), room);
 	}
 
@@ -89,33 +54,15 @@ public class RoomDaoImpl extends BaseDao implements RoomDao {
 	}
 
 	@Override
-	public String popFreeRoom() {
+	public String popFree() {
 		String room = jedis().spop(freeRoomKey());
 		return room;
 	}
 
 	@Override
-	public void removeUsedRooms() {
-		String key = usedRoomKey();
-		Set<String> rooms = jedis().smembers(key);
-		for (String r : rooms) {
-			jedis().srem(key, r);
-		}
-	}
-
-	@Override
-	public Set<String> findUsedRooms() {
+	public Set<String> findUseds() {
 		Set<String> usedsRooms = jedis().smembers(usedRoomKey());
 		return usedsRooms;
 	}
-
-	@Override
-	public void removeUsedRoom(String room) {
-		jedis().srem(usedRoomKey(), room);
-	}
-
-	*/
-
 	
-
 }

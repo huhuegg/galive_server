@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.model.Meeting;
-import com.galive.logic.model.MeetingMember;
 import com.galive.logic.model.account.Account;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.JoinMeetingPush;
@@ -35,8 +34,6 @@ public class JoinMeetingHandler extends SocketBaseHandler {
 		Meeting meeting;
 		if (in.preJoin) {
 			meeting = meetingService.joinMeeting(account, searchName, password);
-			List<MeetingMember> members = meetingService.listMeetingMembersWithDetailInfo(meeting);
-			meeting.setMembers(members);
 			JoinMeetingOut out = new JoinMeetingOut();
 			out.meeting = meeting;
 			return out;

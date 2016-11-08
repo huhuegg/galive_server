@@ -18,9 +18,9 @@ public class LogoutHandler extends HttpBaseHandler {
 	public CommandOut handle(String account, String reqData) throws Exception {
 		appendLog("--LogoutHandler(用户登出)--");
 		
-		Meeting meeting = meetingService.findMeeting(null, account, false);
+		Meeting meeting = meetingService.findMeeting(null, account);
 		if (meeting != null) {
-			meetingService.destroyMeeting(account);
+			meetingService.stopMeeting(account);
 			meetingService.leaveMeeting(account);
 		}
 		accountService.logout(account);

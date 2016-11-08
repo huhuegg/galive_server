@@ -6,8 +6,6 @@ import org.apache.commons.lang.StringUtils;
 import com.galive.logic.dao.AccountDao;
 import com.galive.logic.dao.AccountDaoImpl;
 import com.galive.logic.exception.LogicException;
-import com.galive.logic.model.Sid;
-import com.galive.logic.model.Sid.EntitySeq;
 import com.galive.logic.model.account.Account;
 import com.galive.logic.model.account.Gender;
 import com.galive.logic.model.account.Platform;
@@ -19,6 +17,7 @@ import com.galive.logic.network.platform.wx.WeChatRequest;
 public class AccountServiceImpl extends BaseService implements AccountService {
 
 	private AccountDao accountDao = new AccountDaoImpl();
+	private MeetingService meetingService = new MeetingServiceImpl();
 
 	public AccountServiceImpl() {
 		super();
@@ -81,9 +80,8 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 			String nickname = "GUEST_" + Md5Crypt.md5Crypt(uuid.getBytes());
 			act = new Account();
 			act.setNickname(nickname);
-			options.setDisplayName(nickname + "的房间");
-			act.setMeetingOptions(options);
 			act = accountDao.saveOrUpdate(act);
+			meetingService.createMeeting(act);
 			break;
 		case WeChat:
 			if (StringUtils.isEmpty(platformParams)) {
@@ -124,12 +122,9 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 			act.setAvatar(avatar);
 			act.setNickname(wxnickname);
 			act.setGender(userInfoResp.getSex() == 1 ? Gender.M : Gender.F);
-			
-			options = createDefaultMeetingOptions();
-			options.setDisplayName(wxnickname + "的房间");
-			act.setMeetingOptions(options);
-			
+	
 			act = accountDao.saveOrUpdate(act);
+			meetingService.createMeeting(act);
 			
 			platformAccount = new PlatformAccount();
 			platformAccount.setAccountSid(act.getSid());

@@ -7,6 +7,7 @@ import org.mongodb.morphia.annotations.Transient;
 
 import com.galive.logic.model.account.Account;
 
+
 @Entity
 public class Meeting extends BaseModel {
 	
@@ -34,6 +35,12 @@ public class Meeting extends BaseModel {
 	/**
 	 * 会议成员
 	 */
+	private List<String> memberSids = new ArrayList<>();
+	
+	/**
+	 * 成员对象 用于返回数据
+	 */
+	@Transient
 	private List<Account> members = new ArrayList<>();
 	
 	/**
@@ -83,14 +90,6 @@ public class Meeting extends BaseModel {
 		this.displayName = displayName;
 	}
 
-	public List<Account> getMembers() {
-		return members;
-	}
-
-	public void setMembers(List<Account> members) {
-		this.members = members;
-	}
-
 	public String getProfile() {
 		return profile;
 	}
@@ -113,6 +112,22 @@ public class Meeting extends BaseModel {
 
 	public void setTags(List<String> tags) {
 		this.tags = tags;
+	}
+
+	public List<String> getMemberSids() {
+		return memberSids;
+	}
+
+	public void setMemberSids(List<String> memberSids) {
+		this.memberSids = memberSids;
+	}
+
+	public List<Account> getMembers() {
+		return members;
+	}
+
+	public void setMembers(List<Account> members) {
+		this.members = members;
 	}
 
 }
