@@ -22,6 +22,10 @@ public class Command {
 	
 	public static final String MEETING_MEMBER_KICK = "MEETING_MEMBER_KICK";
 	
+	public static final String MEETING_LIST = "MEETING_LIST";
+	
+	public static final String MEETING_INFO = "MEETING_INFO";
+	
 	public static final String TRANSMIT = "TRANSMIT";
 	
 	public static final String SHARE_START = "SHARE_START";

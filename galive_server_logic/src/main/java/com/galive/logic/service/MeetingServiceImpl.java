@@ -141,7 +141,7 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 		}
 		if (meeting != null) {
 			String room = meetingDao.findRoom(meeting.getSid());
-			meeting.setRoom(room);
+			meeting.setRoom(room == null ? "" : room);
 			List<Account> members = new ArrayList<>();
 			List<String> memberSids = meeting.getMemberSids();
 			memberSids.add(accountSid);
@@ -183,12 +183,30 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 		meeting.setProfile(profile);
 		meeting.setPassword(password);
 		meeting.setProfile(profile);
+		meeting.setTags(tags);
 		meetingDao.saveOrUpdate(meeting);
 		return meeting;
 	}
 	
 	@Override
 	public List<Meeting> listMeetings(int start, int end) throws LogicException {
+		List<Meeting> meetings = meetingDao.meetings(start, end);
+		for (Meeting m : meetings) {
+			String room = meetingDao.findRoom(m.getSid());
+			m.setRoom(room);
+			
+			List<Account> acts = new ArrayList<>();
+			for (String actSid : m.getMemberSids()) {
+				Account a = accountService.findAndCheckAccount(actSid);
+				acts.add(a);
+			}
+			m.setMembers(acts);
+		}
+		return meetings;
+	}
+
+	@Override
+	public List<Meeting> listStartedMeetings(int start, int end) throws LogicException {
 		List<String> sids = meetingDao.meetingRank(start, end);
 		List<Meeting> meetings = new ArrayList<>();
 		for (String sid : sids) {
@@ -205,23 +223,7 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 			meetings.add(m);
 		}
 		return meetings;
-	}
-
-	@Override
-	public List<Meeting> listStartedMeetings(int start, int end) throws LogicException {
-		List<Meeting> meetings = meetingDao.meetings(start, end);
-		for (Meeting m : meetings) {
-			String room = meetingDao.findRoom(m.getSid());
-			m.setRoom(room);
-			
-			List<Account> acts = new ArrayList<>();
-			for (String actSid : m.getMemberSids()) {
-				Account a = accountService.findAndCheckAccount(actSid);
-				acts.add(a);
-			}
-			m.setMembers(acts);
-		}
-		return meetings;
+		
 	}
 	
 	@Override
