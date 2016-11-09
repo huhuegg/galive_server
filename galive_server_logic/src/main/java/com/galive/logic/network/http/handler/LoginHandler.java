@@ -39,7 +39,7 @@ public class LoginHandler extends HttpBaseHandler {
 		Account act = accountService.login(accountSid, platform, platformParams);
 		Meeting meeting = meetingService.findMeeting(null, act.getSid(), null);
 		if (meeting == null) {
-			meetingService.createMeeting(act);
+			meeting = meetingService.createMeeting(act);
 		}
 		
 		String token = accountService.generateToken(act.getSid());
@@ -48,6 +48,7 @@ public class LoginHandler extends HttpBaseHandler {
 	
 		out.token =  token;
 		out.account = act;
+		out.metting = meeting;
 		out.socketConfig = ApplicationConfig.getInstance().getSocketConfig();
 		out.logicConfig = ApplicationConfig.getInstance().getLogicConfig();
 		return out;
@@ -78,6 +79,7 @@ public class LoginHandler extends HttpBaseHandler {
 		public SocketConfig socketConfig;
 		public LogicConfig logicConfig;
 		public Account account;
+		public Meeting metting;
 		public String token;
 	}
 	

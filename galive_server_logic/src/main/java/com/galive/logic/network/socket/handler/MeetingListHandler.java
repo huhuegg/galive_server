@@ -36,6 +36,9 @@ public class MeetingListHandler extends SocketBaseHandler {
 		
 		MeetingListOut out = new MeetingListOut();
 		out.meetings = meetings;
+		out.type = type;
+		out.index = index;
+		out.size = size;
 		return out;
 	}
 	
@@ -54,6 +57,10 @@ public class MeetingListHandler extends SocketBaseHandler {
 		}
 		
 		public List<Meeting> meetings;
+		
+		public int type = 0;
+		public int index = 0;
+		public int size = 10;
 		
 	}
 	

@@ -24,8 +24,8 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 	public Meeting createMeeting(Account account) throws LogicException {
 		Meeting meeting = new Meeting();
 		meeting.setAccountSid(account.getSid());
-		meeting.setDisplayName(account.getNickname() + "的房间");
 		String searchName = Sid.getNextSequence(EntitySeq.MeetingSearchName) + "";
+		meeting.setDisplayName(searchName);
 		int len = searchName.length();
 		if (len < 8) {
 			StringBuffer sb = new StringBuffer();
