@@ -25,7 +25,6 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 		Meeting meeting = new Meeting();
 		meeting.setAccountSid(account.getSid());
 		String searchName = Sid.getNextSequence(EntitySeq.MeetingSearchName) + "";
-		meeting.setDisplayName(searchName);
 		int len = searchName.length();
 		if (len < 8) {
 			StringBuffer sb = new StringBuffer();
@@ -37,6 +36,7 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 		} else {
 			meeting.setSearchName(searchName);
 		}
+		meeting.setDisplayName(searchName);
 		meeting = meetingDao.saveOrUpdate(meeting);
 		return meeting;
 	}
@@ -89,16 +89,16 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 	}
 	
 	@Override
-	public Meeting joinMeeting(String accountSid, String meetingSid, String password) throws LogicException {
+	public Meeting joinMeeting(String accountSid, String searchName, String password) throws LogicException {
 		Meeting joined = meetingDao.findByMember(accountSid);
 		if (joined != null) {
 			throw makeLogicException("正在其他会议中.");
 		}
 		Meeting selfMeeting = meetingDao.findByAccount(accountSid);
-		if (selfMeeting.getSid().equals(meetingSid)) {
+		if (selfMeeting.getSearchName().equals(searchName)) {
 			throw makeLogicException("无法加入自己的会议");
 		}
-		Meeting meeting = meetingDao.find(meetingSid);
+		Meeting meeting = meetingDao.findBySearchName(searchName);
 		String pwd = meeting.getPassword();
 		if (!StringUtils.isEmpty(pwd) && !pwd.equals(password)) {
 			throw makeLogicException("密码错误");
@@ -144,15 +144,16 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 			meeting.setRoom(room == null ? "" : room);
 			List<Account> members = new ArrayList<>();
 			List<String> memberSids = meeting.getMemberSids();
-			memberSids.add(accountSid);
-			meeting.setMemberSids(memberSids);
-			
-			for (String actSid : meeting.getMemberSids()) {
-				Account member = accountService.findAndCheckAccount(actSid);
-				members.add(member);
+//			memberSids.add(accountSid);
+//			meeting.setMemberSids(memberSids);
+			if (memberSids != null) {
+				for (String actSid : memberSids) {
+					Account member = accountService.findAndCheckAccount(actSid);
+					members.add(member);
+				}
 			}
+			
 		}
-		
 		return meeting;
 	}
 	
@@ -175,15 +176,21 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 	}
 	
 	@Override
-	public Meeting updateMeeting(String accountSid, String displayName, String profile, String password, List<String> tags) throws LogicException {
+	public Meeting updateMeeting(String accountSid, String displayName, String profile, String password, List<String> tags, String coverImage) throws LogicException {
 		Meeting meeting = meetingDao.findByAccount(accountSid);
 		if (!StringUtils.isEmpty(displayName)) {
 			meeting.setDisplayName(displayName);
 		}
-		meeting.setProfile(profile);
-		meeting.setPassword(password);
-		meeting.setProfile(profile);
-		meeting.setTags(tags);
+		if (profile != null) {
+			meeting.setProfile(profile);
+		}
+		if (password != null) {
+			meeting.setPassword(password);
+		}
+		if (coverImage != null) {
+			meeting.setCoverImage(coverImage);
+		}
+		meeting.setTags(tags);		
 		meetingDao.saveOrUpdate(meeting);
 		return meeting;
 	}

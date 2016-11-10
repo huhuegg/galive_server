@@ -48,7 +48,7 @@ public class LoginHandler extends HttpBaseHandler {
 	
 		out.token =  token;
 		out.account = act;
-		out.metting = meeting;
+		out.meeting = meeting;
 		out.socketConfig = ApplicationConfig.getInstance().getSocketConfig();
 		out.logicConfig = ApplicationConfig.getInstance().getLogicConfig();
 		return out;
@@ -79,7 +79,7 @@ public class LoginHandler extends HttpBaseHandler {
 		public SocketConfig socketConfig;
 		public LogicConfig logicConfig;
 		public Account account;
-		public Meeting metting;
+		public Meeting meeting;
 		public String token;
 	}
 	

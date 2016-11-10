@@ -18,18 +18,20 @@ public class LeaveMeetingHandler extends SocketBaseHandler {
 	@Override
 	public CommandOut handle(String account, String reqData) throws Exception {
 		appendLog("--LeaveMeetingHandler(离开会议)--");
-		
-		
+
 		Meeting meeting = meetingService.findMeeting(null, null, account);
-		meetingService.leaveMeeting(account);
-		LeaveMeetingPush push = new LeaveMeetingPush();
-		push.accountSid = account;
-		String pushContent = push.socketResp();
-		List<String> members = meeting.getMemberSids();
-		for (String m : members) {
-			if (!m.equals(account)) {
-				pushMessage(m, pushContent);
-				appendLog("推送房间内成员:" + m + " " + pushContent);
+		
+		if (meeting != null) {
+			meetingService.leaveMeeting(account);
+			LeaveMeetingPush push = new LeaveMeetingPush();
+			push.accountSid = account;
+			String pushContent = push.socketResp();
+			List<String> members = meeting.getMemberSids();
+			for (String m : members) {
+				if (!m.equals(account)) {
+					pushMessage(m, pushContent);
+					appendLog("推送房间内成员:" + m + " " + pushContent);
+				}
 			}
 		}
 		

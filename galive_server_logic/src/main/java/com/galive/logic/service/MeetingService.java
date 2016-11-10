@@ -33,12 +33,12 @@ public interface MeetingService {
 	/**
 	 * 用户加入会议
 	 * @param accountSid
-	 * @param meetingSid
+	 * @param searchName
 	 * @param password
 	 * @return
 	 * @throws LogicException
 	 */
-	public Meeting joinMeeting(String accountSid, String meetingSid, String password) throws LogicException;
+	public Meeting joinMeeting(String accountSid, String searchName, String password) throws LogicException;
 
 	/**
 	 * 离开会议
@@ -73,10 +73,11 @@ public interface MeetingService {
 	 * @param profile
 	 * @param password
 	 * @param tags
+	 * @param coverImage
 	 * @return
 	 * @throws LogicException
 	 */
-	public Meeting updateMeeting(String accountSid, String displayName, String profile, String password, List<String> tags) throws LogicException;
+	public Meeting updateMeeting(String accountSid, String displayName, String profile, String password, List<String> tags, String coverImage) throws LogicException;
 	
 	/**
 	 * 会议列表

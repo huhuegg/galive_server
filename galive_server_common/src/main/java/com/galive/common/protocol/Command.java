@@ -53,4 +53,11 @@ public class Command {
 	public static final String ONLINE = "USR_ONLINE";
 	// 用户下线
 	public static final String OFFLINE = "USR_OFFLINE";
+	
+	
+	// 用户登录
+	public static final String FILE_USR_AVATAR = "FILE_AVATAR";
+		
+	// 用户登录
+	public static final String FILE_MEETING_COVER = "FILE_MEETING_COVER";
 }

@@ -1,5 +1,6 @@
 package com.galive.logic.service;
 
+import java.util.Random;
 import java.util.UUID;
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.apache.commons.lang.StringUtils;
@@ -75,12 +76,10 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 		switch (platform) {
 		case Guest:
 			appendLog("游客注册");
-			String uuid = UUID.randomUUID().toString();
-			String nickname = "GUEST_" + Md5Crypt.md5Crypt(uuid.getBytes());
+			String nickname = "Guest_" + 10000 + new Random().nextInt(10000);
 			act = new Account();
 			act.setNickname(nickname);
 			act = accountDao.saveOrUpdate(act);
-			
 			break;
 		case WeChat:
 			if (StringUtils.isEmpty(platformParams)) {

@@ -27,19 +27,21 @@ public class MeetingInfoHandler extends SocketBaseHandler {
 		String displayName = in.displayName;
 		String profile = in.profile;
 		String password = in.password;
+		String coverImage = in.coverImage;
 		List<String> tags = in.tags;
 
 		appendLog("会议标识(searchName):" + searchName);
 		appendLog("显示名称(displayName):" + displayName);
 		appendLog("简介(profile):" + profile);
 		appendLog("密码(password):" + password);
+		appendLog("封面图片(coverImage):" + coverImage);
 		appendLog("标签(tags):" + tags);
 		
 		Meeting meeting = null;
 		if (!StringUtils.isEmpty(searchName)) {
 			meeting = meetingService.findMeeting(searchName, null, null);
 		} else {
-			meeting = meetingService.updateMeeting(account, displayName, profile, password, tags);
+			meeting = meetingService.updateMeeting(account, displayName, profile, password, tags, coverImage);
 		}
 		
 
@@ -55,6 +57,7 @@ public class MeetingInfoHandler extends SocketBaseHandler {
 		public String profile;
 		public String password;
 		public List<String> tags;
+		public String coverImage;
 		
 	}
 	

@@ -57,6 +57,11 @@ public class Meeting extends BaseModel {
 	 * 标签
 	 */
 	private List<String> tags = new ArrayList<>();
+	
+	/**
+	 * 封面
+	 */
+	private String coverImage = "";
 
 	public String getRoom() {
 		return room;
@@ -128,6 +133,14 @@ public class Meeting extends BaseModel {
 
 	public void setMembers(List<Account> members) {
 		this.members = members;
+	}
+
+	public String getCoverImage() {
+		return coverImage;
+	}
+
+	public void setCoverImage(String coverImage) {
+		this.coverImage = coverImage;
 	}
 
 }
