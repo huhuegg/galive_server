@@ -42,7 +42,7 @@ public class FileServlet extends HttpServlet {
 	
 	private String uploadPath(HttpServletRequest req) {
 		//String uploadPath = req.getServletPath();
-		return "/usr/galive";
+		return "/tmp/galive";
 	}
 	
 	@Override
@@ -122,7 +122,7 @@ public class FileServlet extends HttpServlet {
 				fileFolder.mkdirs();
 			}
 			
-			String path = folder + File.separator + accountSid;
+			String path = folder + File.separator + accountSid + ".jpg";
 			File file = new File(path);
 			
 			FileOutputStream fos = new FileOutputStream(file);
@@ -132,7 +132,7 @@ public class FileServlet extends HttpServlet {
 			if (fos != null) {
 				fos.close();
 			}
-			String result = String.format("http://127.0.0.1/galive/file?a=%s&t=", accountSid, t);
+			String result = String.format("http://127.0.0.1/galive/file?a=%s&t=%s", accountSid, t);
 			resp.getWriter().write(result); 
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage() + "");

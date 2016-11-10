@@ -56,7 +56,7 @@ public class Command {
 	
 	
 	// 用户登录
-	public static final String FILE_USR_AVATAR = "FILE_AVATAR";
+	public static final String FILE_USR_AVATAR = "FILE_USR_AVATAR";
 		
 	// 用户登录
 	public static final String FILE_MEETING_COVER = "FILE_MEETING_COVER";
