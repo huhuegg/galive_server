@@ -17,14 +17,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
-import com.galive.logic.service.BaseService;
+import com.galive.logic.config.ApplicationConfig;
+import com.galive.logic.config.FileConfig;
 
 
 
@@ -40,43 +41,63 @@ public class FileServlet extends HttpServlet {
 	private static final int MAX_ACCESS = 500;
 	private static Timer clearTimer = new Timer();
 	
-	private String uploadPath(HttpServletRequest req) {
-		//String uploadPath = req.getServletPath();
-		return "/tmp/galive";
-	}
-	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		String account = req.getParameter("a");
-		String type = req.getParameter("t");
-		String uploadPath = uploadPath(req);
-		String folder = null;
-		if (type.equals("0")) {
-			folder = "avatar";
-		} else if (type.equals("1")) {
-			folder = "meeting_cover";
-		} else {
-			resp.getWriter().write("-1");
+		String m = req.getParameter("m");
+		if (StringUtils.isEmpty(m)) {
+			return;
+		}
+		String params[] = m.split(paramsSeparator);
+		if (params.length != 2) {
 			return;
 		}
 		
-		folder = uploadPath + File.separator + folder;
+		String accountSid = params[0];
+		String type = params[1];
+		FileConfig config = ApplicationConfig.getInstance().getFileConfig();
 		
-		String path = folder + File.separator + account;
-		File file = new File(path);
+		String commandFolder = null;
+		if (type.equals(t_usr_avatar + "")) {
+			commandFolder = config.getFolder_usr_avatar();
+		} else if (type.equals(t_meeting_cover + "")) {
+			commandFolder = config.getFolder_meeting_cover();
+		} else {
+			return;
+		}
+		
+		String commandFolderPath = config.getPath() + File.separator + commandFolder;
+		String filePath = commandFolderPath + File.separator + accountSid + ".jpg";
+
+		File file = new File(filePath);
 		if (file.exists()) {
 			FileInputStream fis = new FileInputStream(file);
 			byte[] data = IOUtils.toByteArray(fis);
 			resp.getOutputStream().write(data);
 		}
 	}
+
+	private void errorResp(String error, HttpServletResponse resp) {
+		Map<String, String> result = new HashMap<>();
+		result.put("error", error);
+		String json = JSON.toJSONString(result);
+		logger.error(error);
+		try {
+			resp.getWriter().write(json);
+		} catch (IOException e) {
+			logger.error(e.getLocalizedMessage() + "");
+		}
+	}
 	
+	private static final String paramsSeparator = "_";
+	private static final int t_usr_avatar = 0;
+	private static final int t_meeting_cover = 1;
+ 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
 		try {
 			// 客户端请求，频率拦截
 			if (!accessFrequencyFilter(req.getRemoteAddr())) {
-				resp.getWriter().write("-1");
+				errorResp("请求过于频繁", resp);
 				return;
 			}
 			String command = null;
@@ -90,40 +111,37 @@ public class FileServlet extends HttpServlet {
 				} else if (name.equals("accountSid")) {
 					accountSid = IOUtils.toString(p.getInputStream(), StandardCharsets.UTF_8);
 				} else {
-					//String type = p.getContentType();
-					//long size = p.getSize();
-					//String fileName = p.getSubmittedFileName();
-					//SBMessageFile file = new SBMessageFile();
 					data = IOUtils.toByteArray(p.getInputStream());
 				}
 			}
 			
 			if (StringUtils.isEmpty(command) || StringUtils.isEmpty(accountSid)) {
-				resp.getWriter().write("-1");
+				errorResp(String.format("参数错误 command:%s, accountSid:%s", command, accountSid), resp);
 				return;
 			}
-			String uploadPath = uploadPath(req);
-			String folder = null;
-			String t = "";
-			if (command.equals(Command.FILE_USR_AVATAR)) {
-				folder = "avatar";
-				t = "0";
-			} else if (command.equals(Command.FILE_MEETING_COVER)) {
-				folder = "meeting_cover";
-				t = "1";
-			} else {
-				resp.getWriter().write("-1");
-				return;
-			}
-			folder = uploadPath + File.separator + folder;
+			FileConfig config = ApplicationConfig.getInstance().getFileConfig();
 			
-			File fileFolder = new File(folder);
+			String commandFolder = null;
+			int t;
+			if (command.equals(Command.FILE_USR_AVATAR)) {
+				commandFolder = config.getFolder_usr_avatar();
+				t = t_usr_avatar;
+			} else if (command.equals(Command.FILE_MEETING_COVER)) {
+				commandFolder = config.getFolder_meeting_cover();
+				t = t_meeting_cover;
+			} else {
+				errorResp(String.format("参数错误 command(%s) 不存在", command), resp);
+				return;
+			}
+			String commandFolderPath = config.getPath() + File.separator + commandFolder;
+			
+			File fileFolder = new File(commandFolderPath);
 			if (!fileFolder.exists()) {
 				fileFolder.mkdirs();
 			}
 			
-			String path = folder + File.separator + accountSid + ".jpg";
-			File file = new File(path);
+			String filePath = commandFolderPath + File.separator + accountSid + ".jpg";
+			File file = new File(filePath);
 			
 			FileOutputStream fos = new FileOutputStream(file);
 			
@@ -132,15 +150,14 @@ public class FileServlet extends HttpServlet {
 			if (fos != null) {
 				fos.close();
 			}
-			String result = String.format("http://127.0.0.1/galive/file?a=%s&t=%s", accountSid, t);
-			resp.getWriter().write(result); 
+			String m = accountSid + paramsSeparator + t;
+			String url = String.format("%s?m=%s", config.getHost(), m);
+			Map<String, String> respMap = new HashMap<>();
+			respMap.put("url", url);
+			String json = JSON.toJSONString(respMap);
+			resp.getWriter().write(json); 
 		} catch (Exception e) {
-			logger.error(e.getLocalizedMessage() + "");
-			try {
-				resp.getWriter().write("-1");
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+			errorResp(e.getLocalizedMessage() + "", resp);
 		}
 	}
 	

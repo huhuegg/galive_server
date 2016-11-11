@@ -22,6 +22,7 @@ public class ApplicationConfig {
 	private SocketConfig socketConfig;
 	private LogicConfig logicConfig;
 	private PlatformConfig platformConfig;
+	private FileConfig fileConfig;
 
 	public final static ApplicationConfig getInstance() {
 		if (instance == null) {
@@ -63,6 +64,33 @@ public class ApplicationConfig {
 			logger.info("meidaServerPort:" + meidaServerPort);
 			
 			sc.setLogicConfig(logicConfig);
+			
+			logger.info("--FileConfig--");
+			FileConfig fileConfig = new FileConfig();
+			Element fileNode = node.element("File");
+			Element fileHostNode = fileNode.element("Host");
+			String fileHost = fileHostNode.getStringValue();
+			fileConfig.setHost(fileHost);
+			logger.info("fileHost:" + fileHost);
+			
+			Element filePathNode = fileNode.element("Path");
+			String filePath = filePathNode.getStringValue();
+			fileConfig.setPath(filePath);
+			logger.info("filePath:" + filePath);
+			
+			Element folderUsrAvatarNode = fileNode.element("FolderUsrAvatar");
+			String folderUsrAvatar = folderUsrAvatarNode.getStringValue();
+			fileConfig.setFolder_usr_avatar(folderUsrAvatar);
+			logger.info("folderUsrAvatar:" + folderUsrAvatar);
+			
+			Element folderMeetingCoverNode = fileNode.element("FolderMeetiongCover");
+			String folderMeetingCover = folderMeetingCoverNode.getStringValue();
+			fileConfig.setFolder_meeting_cover(folderMeetingCover);
+			logger.info("folderMeetingCover:" + folderMeetingCover);
+			
+			
+			sc.setFileConfig(fileConfig);
+			
 
 			logger.info("--SocketConfig--");
 			SocketConfig socketConfig = new SocketConfig();
@@ -85,6 +113,8 @@ public class ApplicationConfig {
 				socketConfig.setPort(port);
 				logger.info("socketHost:" + host);
 				logger.info("socketPort:" + port);
+				
+				sc.getFileConfig().setPath(System.getenv().get("GALIVE_FILE_PATH"));
 			}
 			
 			Element liveReqNode = socketNode.element("LiveReq");
@@ -180,5 +210,25 @@ public class ApplicationConfig {
 
 	public void setPlatformConfig(PlatformConfig platformConfig) {
 		this.platformConfig = platformConfig;
+	}
+
+	public static Logger getLogger() {
+		return logger;
+	}
+
+	public static void setLogger(Logger logger) {
+		ApplicationConfig.logger = logger;
+	}
+
+	public FileConfig getFileConfig() {
+		return fileConfig;
+	}
+
+	public void setFileConfig(FileConfig fileConfig) {
+		this.fileConfig = fileConfig;
+	}
+
+	public static void setInstance(ApplicationConfig instance) {
+		ApplicationConfig.instance = instance;
 	}
 }

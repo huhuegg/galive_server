@@ -47,6 +47,14 @@ public class ChannelManager {
 		return clientChannels.size();
 	}
 	
+	public boolean isOnline(String account) {
+		ChannelHandlerContext context = clientChannels.get(account);
+		if (context != null && context.channel().isActive()) {
+			return true;
+		}
+		return false;
+	}
+	
 	public void sendMessage(String account, String message) {
 		if (message != null) {
 			ChannelHandlerContext context = clientChannels.get(account);

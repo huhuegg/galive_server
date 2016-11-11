@@ -28,4 +28,11 @@
 		<MeidaServerHost>192.168.96.131</MeidaServerHost>
 		<MeidaServerPort>0</MeidaServerPort>
 	</Logic>
+	
+	<File>
+		<Host>http://a.doodduck.com:5888/galive/file</Host>
+		<Path>opt/galive</Path>
+		<FolderUsrAvatar>usr_avatar</FolderUsrAvatar>
+		<FolderMeetiongCover>meeting_cover</FolderMeetiongCover>
+	</File>
 </Config>

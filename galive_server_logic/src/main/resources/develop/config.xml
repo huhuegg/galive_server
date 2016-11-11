@@ -2,8 +2,6 @@
 <!DOCTYPE Config>
 <Config>
 
-	
-
 	<Socket>
 		<Host>192.168.242.253</Host>
 		<!-- <Host>10.0.0.6</Host> -->
@@ -31,4 +29,12 @@
 		<MeidaServerHost>192.168.96.131</MeidaServerHost>
 		<MeidaServerPort>0</MeidaServerPort>
 	</Logic>
+	
+	<File>
+		<Host>http://192.168.242.253:4050/galive/file</Host>
+		<Path>tmp/galive</Path>
+		<FolderUsrAvatar>usr_avatar</FolderUsrAvatar>
+		<FolderMeetiongCover>meeting_cover</FolderMeetiongCover>
+	</File>
+	
 </Config>
