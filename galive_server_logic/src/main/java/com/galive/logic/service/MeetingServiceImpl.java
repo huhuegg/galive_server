@@ -106,17 +106,18 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 		
 		String room = meetingDao.findRoom(meeting.getSid());
 		meeting.setRoom(room);
-		List<Account> members = new ArrayList<>();
 		List<String> memberSids = meeting.getMemberSids();
 		memberSids.add(accountSid);
 		meeting.setMemberSids(memberSids);
+		meeting = meetingDao.saveOrUpdate(meeting);
 		
-		for (String actSid : meeting.getMemberSids()) {
+		
+		List<Account> members = new ArrayList<>();
+		for (String actSid : memberSids) {
 			Account member = accountService.findAndCheckAccount(actSid);
 			members.add(member);
 		}
 		meeting.setMembers(members);
-		meetingDao.saveOrUpdate(meeting);
 		return meeting;
 	}
 	

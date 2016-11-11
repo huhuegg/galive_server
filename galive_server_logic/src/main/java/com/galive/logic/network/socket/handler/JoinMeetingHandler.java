@@ -31,37 +31,29 @@ public class JoinMeetingHandler extends SocketBaseHandler {
 		String password = in.password;
 		appendLog("会议密码(password):" + password);
 		
-		Meeting meeting;
-		if (in.preJoin) {
-			meeting = meetingService.joinMeeting(account, searchName, password);
-			JoinMeetingOut out = new JoinMeetingOut();
-			out.meeting = meeting;
-			return out;
-		} else {
-			Meeting jMeeting = meetingService.findMeeting(searchName, null, null);
-			jMeeting = meetingService.joinMeeting(account, jMeeting.getSid(), password);
-			meeting = meetingService.findMeeting(searchName, null, null);
-			Account act = accountService.findAndCheckAccount(account);
-			JoinMeetingPush push = new JoinMeetingPush();
-			push.account = act;
-			String pushContent = push.socketResp();
-			List<String> members = meeting.getMemberSids();
-			for (String m : members) {
-				if (!m.equals(account)) {
-					pushMessage(m, pushContent);
-					appendLog("推送房间内成员:" + m + " " + pushContent);
-				}
+		Meeting meeting = meetingService.joinMeeting(account, searchName, password);
+		Account act = accountService.findAndCheckAccount(account);
+		JoinMeetingPush push = new JoinMeetingPush();
+		push.account = act;
+		String pushContent = push.socketResp();
+		List<String> members = meeting.getMemberSids();
+		appendLog("房间内成员数:" + members.size());
+
+		for (String m : members) {
+			appendLog("成员sid:" + m);
+			if (!m.equals(account)) {
+				pushMessage(m, pushContent);
+				appendLog("推送房间内成员:" + m + " " + pushContent);
 			}
-			CommandOut out = new CommandOut(Command.MEETING_JOIN);
-			return out;
 		}
+		CommandOut out = new CommandOut(Command.MEETING_JOIN);
+		return out;
 	}
 	
 	public static class JoinMeetingIn {
 
 		public String searchName = "";
 		public String password = "";
-		public boolean preJoin = false;
 		
 	}
 	
