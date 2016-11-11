@@ -40,6 +40,10 @@ public class MeetingInfoHandler extends SocketBaseHandler {
 		Meeting meeting = null;
 		if (!StringUtils.isEmpty(searchName)) {
 			meeting = meetingService.findMeeting(searchName, null, null);
+			if (meeting == null) {
+				appendLog(searchName + " 不存在");
+				return CommandOut.failureOut(Command.MEETING_INFO, "无法加入" + searchName);
+			}
 		} else {
 			meeting = meetingService.updateMeeting(account, displayName, profile, password, tags, coverImage);
 		}
