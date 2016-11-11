@@ -19,7 +19,7 @@ public class MeetingInfoHandler extends SocketBaseHandler {
 
 	@Override
 	public CommandOut handle(String account, String reqData) throws Exception {
-		appendLog("--JoinMeetingHandler(加入会议)--");
+		appendLog("--MeetingInfoHandler(会议信息)--");
 		
 		MeetingInfoIn in = JSON.parseObject(reqData, MeetingInfoIn.class);
 		

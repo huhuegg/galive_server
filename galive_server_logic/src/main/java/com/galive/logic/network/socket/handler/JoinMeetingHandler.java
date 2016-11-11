@@ -40,7 +40,7 @@ public class JoinMeetingHandler extends SocketBaseHandler {
 		appendLog("房间内成员数:" + members.size());
 
 		for (String m : members) {
-			appendLog("成员sid:" + m);
+			appendLog("成员id:" + m);
 			if (!m.equals(account)) {
 				pushMessage(m, pushContent);
 				appendLog("推送房间内成员:" + m + " " + pushContent);

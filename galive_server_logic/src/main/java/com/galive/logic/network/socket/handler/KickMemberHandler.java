@@ -18,7 +18,7 @@ public class KickMemberHandler extends SocketBaseHandler {
 
 	@Override
 	public CommandOut handle(String account, String reqData) throws Exception {
-		appendLog("--KickMemberHandler(离开会议)--");
+		appendLog("--KickMemberHandler(踢出会议成员)--");
 		
 		KickMemberIn in = JSON.parseObject(reqData, KickMemberIn.class);
 		String targetSid = in.targetSid;

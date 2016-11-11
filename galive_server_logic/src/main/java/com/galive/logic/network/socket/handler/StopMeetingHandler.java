@@ -17,7 +17,7 @@ public class StopMeetingHandler extends SocketBaseHandler {
 
 	@Override
 	public CommandOut handle(String account, String reqData) throws Exception {
-		appendLog("--DestroyMeetingHandler(结束会议)--");
+		appendLog("--StopMeetingHandler(结束会议)--");
 		
 		Meeting meeting = meetingService.findMeeting(null, account, null);
 		meetingService.stopMeeting(account);

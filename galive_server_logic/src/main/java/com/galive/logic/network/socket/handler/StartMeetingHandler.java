@@ -14,7 +14,7 @@ public class StartMeetingHandler extends SocketBaseHandler {
 
 	@Override
 	public CommandOut handle(String account, String reqData) throws Exception {
-		appendLog("--CreateMeetingHandler(创建会议)--");
+		appendLog("--StartMeetingHandler(开始会议)--");
 		
 		Meeting meeting = meetingService.startMeeting(account);
 	
