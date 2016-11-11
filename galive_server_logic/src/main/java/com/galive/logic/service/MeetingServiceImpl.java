@@ -104,7 +104,6 @@ public class MeetingServiceImpl extends BaseService implements MeetingService {
 			throw makeLogicException("会议不存在");
 		}
 		
-		
 		String pwd = meeting.getPassword();
 		if (!StringUtils.isEmpty(pwd) && !pwd.equals(password)) {
 			throw makeLogicException("密码错误");
