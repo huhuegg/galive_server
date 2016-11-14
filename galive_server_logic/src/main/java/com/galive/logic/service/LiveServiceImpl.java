@@ -91,7 +91,7 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 //			appendLog("不在房间中。");
 //			throw new LogicException("不在房间中。");
 //		}
-		if (StringUtils.isEmpty(liveSid)) {
+		if (!StringUtils.isEmpty(liveSid)) {
 			List<String> members = liveDao.removeLiveMembers(liveSid);
 			liveDao.removeLiveCreator(liveSid);
 			liveDao.removeLiveForCreator(account);
@@ -136,7 +136,7 @@ public class LiveServiceImpl extends BaseService implements LiveService {
 			liveDao.removeLiveForMember(liveSid, account);
 		}
 		liveSid = liveDao.findLiveByCreator(account);
-		if (liveSid != null) {
+		if (!StringUtils.isEmpty(liveSid)) {
 			appendLog(account + "用户为房主，退出房间" + liveSid);
 			liveDao.removeLiveMembers(liveSid);
 			liveDao.removeLiveCreator(liveSid);
