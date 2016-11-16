@@ -20,55 +20,81 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
+/**
+ * 媒体服务器通信接口
+ * @author luguangqing
+ *
+ */
 public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 
-	private static final short REGISTER_ROOM_INFO = 10001;
-	private static final short REQ_USER_INFO = 10002;
-	private static final short RET_USER_INFO = 10003;
-	private static final short RET_USER_VOICE_PERMISSION = 10004;
-
+	/**
+	 * 包头
+	 * ==============================================================================================
+	 * |  总包长 (short)  |  内容长度 (short)  |  加密预留 (short) |  请求command (short)  |  时戳 (int)  |
+	 * ==============================================================================================
+	 */
+	
+	// 注册语音房间 由媒体服务器向本机发起 
+	// ========================================================================
+	// |  serverId (uint)  |  房间数 (byte)  |  房间id (uint)...  |
+	// ========================================================================
+	private static final short CMD_REGISTER_ROOM_INFO = 10001;
+	
+	// 验证用户 根据用户id验证token是否有效
+	// ========================================================================
+	// |  conID (long int)  |  用户id (char[32])  |  用户token (char[64])  |
+	// ========================================================================
+	private static final short CMD_REQ_USER_INFO = 10002;
+	
+	// 验证用户回包
+	// ========================================================================
+	// |  包头  |  conID (long int)  |  用户id (char[32]) |  验证是否有效 (BOOL)  |
+	// ========================================================================
+	private static final short CMD_RET_USER_INFO = 10003;
+	
+	// 控制用户语音权限  (X)暂未使用
+	private static final short CMD_RET_USER_VOICE_PERMISSION = 10004;
+	
 	private static Logger logger = LoggerFactory.getLogger(ChannelByteHandler.class);
+	
 	private static final int MAX_NAME_SIZE = 32;
 	private static final int USER_KEY_SIZE = 64;
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-		printLog("channelRead", ctx);
-		// super.channelRead(ctx, msg);
-
 		ByteBuf buf = (ByteBuf) msg;
-
 		byte[] bytes = new byte[buf.readableBytes()];
 		buf.getBytes(0, bytes);
 
-		// byte[] bytes = new byte[buf.readableBytes()];
-		// buf.readBytes(bytes);
 		logger.debug("===========================================");
-		printByte(bytes);
-		// short messageId = buf.readUnsignedShort()
+		// 总包长 2字节
 		short pkglen = buf.readShort();
 		logger.debug("pkglen:" + pkglen);
 
+		// 内容长度 2字节
 		short contentlen = buf.readShort();
 		logger.debug("contentlen:" + contentlen);
 
+		// 加密预留 2字节
 		short encrypt = buf.readShort();
 		logger.debug("encrypt:" + encrypt);
 
+		// 消息id 2字节
 		short messageId = buf.readShort();
 		logger.debug("messageId:" + messageId);
 
+		// 时戳 4字节
 		int timestamp = buf.readInt();
 		logger.debug("timestamp:" + timestamp);
 
 		switch (messageId) {
-		case REGISTER_ROOM_INFO:
+		case CMD_REGISTER_ROOM_INFO:
 			InetSocketAddress address = ((InetSocketAddress) (ctx.channel().remoteAddress()));
 			String ip = address.getHostString();
 			int port = address.getPort();
 			decodeRegisterRoomInfo(buf, ip, port);
 			break;
-		case REQ_USER_INFO:
+		case CMD_REQ_USER_INFO:
 			decodeReqUserInfo(timestamp, buf, ctx);
 			break;
 		}
@@ -77,12 +103,18 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 
 	}
 
+	/**
+	 * 解析 REGISTER_ROOM_INFO 请求
+	 * @param buf
+	 * @param ip
+	 * @param port
+	 */
 	private void decodeRegisterRoomInfo(ByteBuf buf, String ip, int port) {
 		long serverId = buf.readUnsignedInt();
 		logger.debug("serverId:" + serverId);
-
 		byte size = buf.readByte();
 		logger.debug("size:" + size);
+		
 		List<String> rooms = new ArrayList<>();
 		for (int i = 0; i < size; i++) {
 			long roomId = buf.readUnsignedInt();
@@ -125,7 +157,7 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 //		buf.writeShort((short) pkgLen);
 		buf.writeShort((short) 0);
 		buf.writeShort((short) 0);
-		buf.writeShort(RET_USER_INFO);
+		buf.writeShort(CMD_RET_USER_INFO);
 		buf.writeInt(timestamp);
 		buf.writeLong(conID);
 
@@ -147,7 +179,7 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 		ByteBuf buf = ctx.alloc().buffer(4096); 
 		buf.writeShort((short) (0));
 		buf.writeShort((short) 0);
-		buf.writeShort(RET_USER_VOICE_PERMISSION);
+		buf.writeShort(CMD_RET_USER_VOICE_PERMISSION);
 		buf.writeInt(timestamp);
 		
 		int count = 1;
@@ -220,6 +252,7 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 		logger.info("client:" + ip + " " + message);
 	}
 
+	// 测试
 	public static void main(String args[]) {
 		Socket socket = new Socket();
 		try {
@@ -245,7 +278,7 @@ public class ChannelByteHandler extends ChannelInboundHandlerAdapter {
 				out.writeShort(35);
 				out.writeShort(0);
 				out.writeShort(0);
-				out.writeShort(REGISTER_ROOM_INFO);
+				out.writeShort(CMD_REGISTER_ROOM_INFO);
 				out.writeInt(0);
 				out.writeInt(100);
 				int roomcount = 5;
