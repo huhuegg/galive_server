@@ -1,6 +1,6 @@
 package com.galive.logic.dao;
 
-import com.galive.logic.dao.cache.RedisManager;
+import com.galive.logic.db.RedisManager;
 
 import redis.clients.jedis.Jedis;
 

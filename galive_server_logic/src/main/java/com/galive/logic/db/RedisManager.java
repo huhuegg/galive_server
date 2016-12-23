@@ -1,4 +1,4 @@
-package com.galive.logic.dao.cache;
+package com.galive.logic.db;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;

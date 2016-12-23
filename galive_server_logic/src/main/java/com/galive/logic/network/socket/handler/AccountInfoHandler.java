@@ -1,24 +1,26 @@
-package com.galive.logic.network.http.handler;
+package com.galive.logic.network.socket.handler;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
-import com.galive.logic.model.Meeting;
+import com.galive.logic.model.Room;
 import com.galive.logic.model.account.Account;
 import com.galive.logic.model.account.Gender;
 import com.galive.logic.network.http.HttpRequestHandler;
+import com.galive.logic.network.http.handler.HttpBaseHandler;
 import com.galive.logic.service.AccountService;
 import com.galive.logic.service.AccountServiceImpl;
-import com.galive.logic.service.MeetingService;
-import com.galive.logic.service.MeetingServiceImpl;
+import com.galive.logic.service.RoomService;
+import com.galive.logic.service.RoomService.FindRoomBy;
+import com.galive.logic.service.RoomServiceImpl;
 
 @HttpRequestHandler(desc = "用户信息", command = Command.USR_INFO)
 public class AccountInfoHandler extends HttpBaseHandler {
 
 	private AccountService accountService = new AccountServiceImpl();
-	private MeetingService meetingService = new MeetingServiceImpl();
+	private RoomService roomService = new RoomServiceImpl();
 
 	@Override
 	public CommandOut handle(String account, String reqData) throws Exception {
@@ -32,9 +34,12 @@ public class AccountInfoHandler extends HttpBaseHandler {
 		if (!StringUtils.isEmpty(accountSid)) {
 			// 获取用户信息
 			Account act = accountService.findAndCheckAccount(accountSid);
-			Meeting meeting = meetingService.findMeeting(null, accountSid, null);
+			Room room = roomService.findRoom(FindRoomBy.Owner, account);
+			if (room == null) {
+				room = roomService.findRoom(FindRoomBy.Member, account);
+			}
 			out.account = act;
-			out.meeting = meeting;
+			out.room = room;
 			return out;
 		} else {
 			// 修改个人信息
@@ -97,7 +102,7 @@ public class AccountInfoHandler extends HttpBaseHandler {
 		}
 
 		public Account account;
-		public Meeting meeting;
+		public Room room;
 	}
 
 }

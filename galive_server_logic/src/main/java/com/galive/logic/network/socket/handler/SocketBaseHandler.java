@@ -39,8 +39,9 @@ public abstract class SocketBaseHandler {
 		appendLog("params:" + params);
 		
 		try {
-			// 客户端打开连接
-			if (command.equals(Command.ONLINE)) {
+			if (command.equals(Command.USR_LOGIN)) {
+				out = handle(account, in.getParams());
+			} else if (command.equals(Command.ONLINE)) {
 				AccountService accountService = new AccountServiceImpl();
 				if (!accountService.verifyToken(account, token)) {
 					out = respFail("token已过期", command);

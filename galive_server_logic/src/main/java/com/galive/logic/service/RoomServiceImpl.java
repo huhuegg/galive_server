@@ -1,70 +1,52 @@
 package com.galive.logic.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.galive.logic.dao.RoomDao;
-import com.galive.logic.dao.RoomDaoImpl;
 import com.galive.logic.exception.LogicException;
+import com.galive.logic.model.Room;
 
 public class RoomServiceImpl extends BaseService implements RoomService {
 
-	private RoomDao roomDao = new RoomDaoImpl();
-	
-	public RoomServiceImpl() {
-		super();
-		appendLog("RoomServiceImpl");
+	@Override
+	public Room findRoom(FindRoomBy by, String byId) throws LogicException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public void saveRooms(String serverIp, int serverPort, List<String> rooms) {
-		roomDao.deleteFrees();
-		roomDao.deleteUseds();
-		Set<String> usedRooms = roomDao.findUseds();
-		for (String room : rooms) {
-			if (!usedRooms.contains(room)) {
-				String roomName = roomName(serverIp, serverPort, room);
-				roomDao.saveFree(roomName);
-			}
-		}
+	public Room createRoom(String accountSid) throws LogicException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public String useFreeRoom() throws LogicException {
-		String room = roomDao.popFree();
-		if (StringUtils.isEmpty(room)) {
-			throw makeLogicException("暂无可用的媒体服务器");
-		}
-		roomDao.saveUsed(room);
-		return room;
+	public Room joinRoom(String roomSid, String accountSid) throws LogicException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public void returnUsedRoom(String room) {
-		roomDao.deleteUsed(room);
-		roomDao.saveFree(room);
+	public Room leaveRoom(String accountSid) throws LogicException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public List<String> listUsedRoom() {
-		List<String> result = new ArrayList<String>();
-		Set<String> rooms = roomDao.findUseds();
-		for (String r : rooms) {
-			result.add(r);
-		}
-		return result;
-	}
-	
-	private String roomName(String serverIp, int serverPort, String room) {
-		//String roomName = serverIp + ":" + serverPort + ":" + room;
-		return room;
+	public Room destroyRoom(String accountSid) throws LogicException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	
-	
-	
+	@Override
+	public void updateScreenShareState(String accountSid, boolean started) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
 
+	@Override
+	public boolean findScreenShareState(String accountSid) throws Exception {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	//private MeetingDao meetingDao = new MeetingDaoImpl();
+	
 }

@@ -1,36 +1,40 @@
 package com.galive.logic.service;
 
-import java.util.List;
-
 import com.galive.logic.exception.LogicException;
+import com.galive.logic.model.Room;
+
+
 
 public interface RoomService {
+
+	public enum FindRoomBy {
+		Owner,
+		Member;
+	}
+
+	public Room findRoom(FindRoomBy by, String byId) throws LogicException;
+	
+	public Room createRoom(String accountSid) throws LogicException;
+	
+	public Room joinRoom(String roomSid, String accountSid) throws LogicException;
+	
+	public Room leaveRoom(String accountSid) throws LogicException;
+	
+	public Room destroyRoom(String accountSid) throws LogicException;
 	
 	/**
-	 * 保存媒体服务器房间
-	 * @param serverIp
-	 * @param serverPort
-	 * @param rooms
+	 * 更新屏幕分享状态
+	 * @param accountSid
+	 * @param started
+	 * @throws Exception
 	 */
-	public void saveRooms(String serverIp, int serverPort, List<String> rooms);
+	public void updateScreenShareState(String accountSid, boolean started) throws Exception; 
 	
 	/**
-	 * 
-	 * @return 使用空闲房间
-	 * @throws LogicException
-	 */
-	public String useFreeRoom() throws LogicException;
-	
-	/**
-	 * 将房间置为空闲
-	 * @param room
-	 */
-	public void  returnUsedRoom(String room);
-	
-	/**
-	 * 已使用的媒体服务器房间
+	 * 查找屏幕分享状态
+	 * @param accountSid
 	 * @return
+	 * @throws Exception
 	 */
-	public List<String> listUsedRoom();
+	public boolean findScreenShareState(String accountSid) throws Exception; 
 }
-	

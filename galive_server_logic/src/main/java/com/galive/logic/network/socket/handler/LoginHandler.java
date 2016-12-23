@@ -1,4 +1,4 @@
-package com.galive.logic.network.http.handler;
+package com.galive.logic.network.socket.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
@@ -6,20 +6,21 @@ import com.galive.common.protocol.CommandOut;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.LogicConfig;
 import com.galive.logic.config.SocketConfig;
-import com.galive.logic.model.Meeting;
+import com.galive.logic.model.Room;
 import com.galive.logic.model.account.Account;
 import com.galive.logic.model.account.Platform;
-import com.galive.logic.network.http.HttpRequestHandler;
+import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.service.AccountService;
 import com.galive.logic.service.AccountServiceImpl;
-import com.galive.logic.service.MeetingService;
-import com.galive.logic.service.MeetingServiceImpl;
+import com.galive.logic.service.RoomService;
+import com.galive.logic.service.RoomService.FindRoomBy;
+import com.galive.logic.service.RoomServiceImpl;
 
-@HttpRequestHandler(desc = "用户登录", command = Command.USR_LOGIN)
-public class LoginHandler extends HttpBaseHandler {
+@SocketRequestHandler(desc = "用户登录", command = Command.USR_LOGIN)
+public class LoginHandler extends SocketBaseHandler {
 	
 	private AccountService accountService = new AccountServiceImpl();
-	private MeetingService meetingService = new MeetingServiceImpl();
+	private RoomService roomService = new RoomServiceImpl();
 	
 	
 	@Override
@@ -37,9 +38,9 @@ public class LoginHandler extends HttpBaseHandler {
 		appendLog("platformParams:" + platformParams);
 		
 		Account act = accountService.login(accountSid, platform, platformParams);
-		Meeting meeting = meetingService.findMeeting(null, act.getSid(), null);
-		if (meeting == null) {
-			meeting = meetingService.createMeeting(act);
+		Room room = roomService.findRoom(FindRoomBy.Owner, act.getSid());
+		if (room == null) {
+			room = roomService.findRoom(FindRoomBy.Member, act.getSid());
 		}
 		
 		String token = accountService.generateToken(act.getSid());
@@ -48,7 +49,10 @@ public class LoginHandler extends HttpBaseHandler {
 	
 		out.token =  token;
 		out.account = act;
-		out.meeting = meeting;
+		if (room != null) {
+			out.room = room;
+		}
+
 		out.socketConfig = ApplicationConfig.getInstance().getSocketConfig();
 		out.logicConfig = ApplicationConfig.getInstance().getLogicConfig();
 		return out;
@@ -79,7 +83,7 @@ public class LoginHandler extends HttpBaseHandler {
 		public SocketConfig socketConfig;
 		public LogicConfig logicConfig;
 		public Account account;
-		public Meeting meeting;
+		public Room room;
 		public String token;
 	}
 	

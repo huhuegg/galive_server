@@ -1,30 +1,30 @@
 package com.galive.logic.network.socket.handler;
 
 import java.util.List;
+
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.model.Room;
 import com.galive.logic.network.socket.SocketRequestHandler;
-import com.galive.logic.network.socket.handler.push.ScreenShareStopPush;
+import com.galive.logic.network.socket.handler.push.LeaveRoomPush;
 import com.galive.logic.service.RoomService;
 import com.galive.logic.service.RoomService.FindRoomBy;
 import com.galive.logic.service.RoomServiceImpl;
 
-@SocketRequestHandler(desc = "结束分享", command = Command.SCREEN_SHARE_STOP)
-public class ShareStoptHandler extends SocketBaseHandler {
+@SocketRequestHandler(desc = "离开房间", command = Command.ROOM_LEAVE)
+public class LeaveRoomHandler extends SocketBaseHandler {
 
 	private RoomService roomService = new RoomServiceImpl();
 
 	@Override
 	public CommandOut handle(String account, String reqData) throws Exception {
-		appendLog("--ShareStoptHandler(结束分享)--");
+		appendLog("--LeaveRoomHandler(离开房间)--");
 
-		roomService.updateScreenShareState(account, false);
-
-		Room room = roomService.findRoom(FindRoomBy.Owner, account);
+		Room room = roomService.findRoom(FindRoomBy.Member, account);
 		
 		if (room != null) {
-			ScreenShareStopPush push = new ScreenShareStopPush();
+			roomService.leaveRoom(account);
+			LeaveRoomPush push = new LeaveRoomPush();
 			push.accountSid = account;
 			String pushContent = push.socketResp();
 			List<String> members = room.getMembers();
@@ -36,9 +36,9 @@ public class ShareStoptHandler extends SocketBaseHandler {
 			}
 		}
 		
-		
-		CommandOut out = new CommandOut(Command.SCREEN_SHARE_STOP);
+		CommandOut out = new CommandOut(Command.ROOM_LEAVE_PUSH);
 		return out;
-
 	}
+	
+	
 }

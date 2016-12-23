@@ -3,12 +3,10 @@ package com.galive.logic.network.socket.handler.push;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 
-public class LeaveMeetingPush extends CommandOut {
+public class ScreenShareStartPush extends CommandOut {
 
-	public String accountSid;
-	
-	public LeaveMeetingPush() {
-		super(Command.LEAVE_MEETING_PUSH);
+	public ScreenShareStartPush() {
+		super(Command.SCREEN_SHARE_START_PUSH);
 	}
 
 	

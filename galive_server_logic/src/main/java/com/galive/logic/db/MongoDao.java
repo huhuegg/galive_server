@@ -1,4 +1,4 @@
-package com.galive.logic.dao.db;
+package com.galive.logic.db;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;

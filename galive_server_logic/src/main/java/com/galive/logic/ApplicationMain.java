@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.galive.logic.annotation.AnnotationManager;
 import com.galive.logic.config.ApplicationConfig;
-import com.galive.logic.dao.cache.RedisManager;
+import com.galive.logic.db.RedisManager;
 import com.galive.logic.helper.LogicHelper;
 import com.galive.logic.model.Sid;
 import com.galive.logic.model.Sid.EntitySeq;

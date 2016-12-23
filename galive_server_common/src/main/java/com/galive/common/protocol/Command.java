@@ -1,7 +1,6 @@
 package com.galive.common.protocol;
 
 public class Command {
-
 	
 	// 用户登录
 	public static final String USR_LOGIN = "USR_LOGIN";
@@ -12,7 +11,42 @@ public class Command {
 	// 获取Token
 	public static final String REQ_TOKEN = "REQ_TOKEN";
 	
-	public static final String MEETING_START = "MEETING_START";
+	public static final String ROOM_INFO = "ROOM_INFO";
+	
+	public static final String ROOM_CREATE = "ROOM_CREATE";
+	
+	public static final String ROOM_JOIN = "ROOM_JOIN";
+	
+	public static final String ROOM_LEAVE = "ROOM_LEAVE";
+	
+	public static final String ROOM_DESTROY = "ROOM_DESTROY";
+	
+	public static final String SCREEN_SHARE_START = "SHARE_START";
+	
+	public static final String SCREEN_SHARE_STOP = "SHARE_STOP";
+	
+	public static final String ROOM_JOIN_PUSH = "ROOM_JOIN_PUSH";
+	
+	public static final String ROOM_LEAVE_PUSH = "ROOM_LEAVE_PUSH";
+	
+	public static final String ROOM_DESTROY_PUSH = "ROOM_DESTROY_PUSH";
+	
+	public static final String SCREEN_SHARE_START_PUSH = "SCREEN_SHARE_START_PUSH";
+	
+	public static final String SCREEN_SHARE_STOP_PUSH = "SCREEN_SHARE_STOP_PUSH";
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	public static final String MEETING_STOP = "MEETING_STOP";
 	
@@ -28,9 +62,7 @@ public class Command {
 	
 	public static final String TRANSMIT = "TRANSMIT";
 	
-	public static final String SHARE_START = "SHARE_START";
 	
-	public static final String SHARE_STOP = "SHARE_STOP";
 	
 	public static final String STOP_MEETING_PUSH = "STOP_MEETING_PUSH";
 	
@@ -40,9 +72,7 @@ public class Command {
 	
 	public static final String TRANSMIT_PUSH = "TRANSMIT_PUSH";
 	
-	public static final String SHARE_START_PUSH = "SHARE_START_PUSH";
 	
-	public static final String SHARE_STOP_PUSH = "SHARE_STOP_PUSH";
 	
 	public static final String MEETING_MEMBER_KICK_PUSH = "MEETING_MEMBER_KICK_PUSH";
 	

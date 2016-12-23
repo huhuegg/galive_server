@@ -5,8 +5,8 @@ import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
 
-import com.galive.logic.dao.db.MongoDao;
-import com.galive.logic.dao.db.MongoManager;
+import com.galive.logic.db.MongoDao;
+import com.galive.logic.db.MongoManager;
 
 
 

@@ -1,4 +1,4 @@
-package com.galive.logic.dao.db;
+package com.galive.logic.db;
 
 import java.io.IOException;
 import java.io.InputStream;
