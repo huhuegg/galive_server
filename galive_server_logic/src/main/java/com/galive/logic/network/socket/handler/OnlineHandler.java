@@ -29,7 +29,6 @@ public class OnlineHandler extends SocketBaseHandler {
 				out.meeting = meeting;
 			}
 		}
-
 		return out;
 	}
 	

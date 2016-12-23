@@ -3,17 +3,13 @@ package com.galive.logic.network.socket.netty;
 import java.io.IOException;
 import java.nio.ByteOrder;
 import java.util.concurrent.TimeUnit;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.galive.logic.ApplicationMain;
 import com.galive.logic.ApplicationMain.ApplicationMode;
 import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.config.SocketConfig;
-import com.galive.logic.network.socket.ChannelByteHandler;
 import com.galive.logic.network.socket.ChannelStringLineHandler;
-
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -114,7 +110,6 @@ public class NettyServer {
 		                pipeline.addLast("frameDecoder", decoder);  
 		                pipeline.addLast("frameEncoder", prepender); 
 		                pipeline.addLast(new IdleStateHandler(0, 0, 2, TimeUnit.HOURS));
-		                pipeline.addLast(new ChannelByteHandler());  
 					}
 				}).childOption(ChannelOption.SO_KEEPALIVE, true).childOption(ChannelOption.TCP_NODELAY, true);
 		int port = 44100;
