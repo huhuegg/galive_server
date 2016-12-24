@@ -1,6 +1,6 @@
 package com.galive.logic.network.socket.handler;
 
-import java.util.List;
+import java.util.Set;
 
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
@@ -8,7 +8,6 @@ import com.galive.logic.model.Room;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.LeaveRoomPush;
 import com.galive.logic.service.RoomService;
-import com.galive.logic.service.RoomService.FindRoomBy;
 import com.galive.logic.service.RoomServiceImpl;
 
 @SocketRequestHandler(desc = "离开房间", command = Command.ROOM_LEAVE)
@@ -20,14 +19,13 @@ public class LeaveRoomHandler extends SocketBaseHandler {
 	public CommandOut handle(String account, String reqData) throws Exception {
 		appendLog("--LeaveRoomHandler(离开房间)--");
 
-		Room room = roomService.findRoom(FindRoomBy.Member, account);
+		Room room = roomService.leaveRoom(account);
 		
 		if (room != null) {
-			roomService.leaveRoom(account);
 			LeaveRoomPush push = new LeaveRoomPush();
 			push.accountSid = account;
 			String pushContent = push.socketResp();
-			List<String> members = room.getMembers();
+			Set<String> members = room.getMembers();
 			for (String m : members) {
 				if (!m.equals(account)) {
 					pushMessage(m, pushContent);

@@ -1,7 +1,7 @@
 package com.galive.logic.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 房间
@@ -18,7 +18,9 @@ public class Room extends BaseModel {
 	/**
 	 * 房间内成员
 	 */
-	private List<String> members = new ArrayList<>();
+	private Set<String> members = new HashSet<>();
+	
+	private boolean screenShared = false;
 
 	public String getOwnerSid() {
 		return ownerSid;
@@ -28,11 +30,19 @@ public class Room extends BaseModel {
 		this.ownerSid = ownerSid;
 	}
 
-	public List<String> getMembers() {
+	public boolean isScreenShared() {
+		return screenShared;
+	}
+
+	public void setScreenShared(boolean screenShared) {
+		this.screenShared = screenShared;
+	}
+
+	public Set<String> getMembers() {
 		return members;
 	}
 
-	public void setMembers(List<String> members) {
+	public void setMembers(Set<String> members) {
 		this.members = members;
 	}
 }

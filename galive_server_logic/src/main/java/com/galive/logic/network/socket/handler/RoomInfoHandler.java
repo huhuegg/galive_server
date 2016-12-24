@@ -5,6 +5,7 @@ import com.galive.common.protocol.CommandOut;
 import com.galive.logic.model.Room;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.service.RoomService;
+import com.galive.logic.service.RoomService.FindRoomBy;
 import com.galive.logic.service.RoomServiceImpl;
 
 @SocketRequestHandler(desc = "房间信息", command = Command.ROOM_INFO)
@@ -16,13 +17,17 @@ public class RoomInfoHandler extends SocketBaseHandler {
 	public CommandOut handle(String account, String reqData) throws Exception {
 		appendLog("--CreateRoomHandler(创建房间)--");
 		
-		Room room = roomService.createRoom(account);
-		boolean screenShared = roomService.findScreenShareState(account);
+		Room room = roomService.findRoom(FindRoomBy.Owner, account);
+		if (room != null) {
+			RoomInfoOut out = new RoomInfoOut();
+			out.room = room;
+			return out;
+		} else {
+			CommandOut out = CommandOut.failureOut(Command.ROOM_INFO, "房间不存在");
+			return out;
+		}
+
 		
-		RoomInfoOut out = new RoomInfoOut();
-		out.room = room;
-		out.screenShared = screenShared;
-		return out;
 	}
 	
 	public static class RoomInfoOut extends CommandOut {
@@ -32,7 +37,6 @@ public class RoomInfoHandler extends SocketBaseHandler {
 		}
 
 		public Room room;
-		public boolean screenShared = false;
 	}
 
 }

@@ -8,6 +8,7 @@ import com.galive.logic.model.Room;
 public interface RoomService {
 
 	public enum FindRoomBy {
+		id,
 		Owner,
 		Member;
 	}
@@ -28,13 +29,6 @@ public interface RoomService {
 	 * @param started
 	 * @throws Exception
 	 */
-	public void updateScreenShareState(String accountSid, boolean started) throws Exception; 
-	
-	/**
-	 * 查找屏幕分享状态
-	 * @param accountSid
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean findScreenShareState(String accountSid) throws Exception; 
+	public Room updateScreenShareState(String accountSid, boolean started) throws Exception; 
+
 }

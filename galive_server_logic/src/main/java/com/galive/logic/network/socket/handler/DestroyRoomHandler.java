@@ -1,6 +1,6 @@
 package com.galive.logic.network.socket.handler;
 
-import java.util.List;
+import java.util.Set;
 
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
@@ -8,7 +8,6 @@ import com.galive.logic.model.Room;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.DestroyRoomPush;
 import com.galive.logic.service.RoomService;
-import com.galive.logic.service.RoomService.FindRoomBy;
 import com.galive.logic.service.RoomServiceImpl;
 
 @SocketRequestHandler(desc = "销毁房间", command = Command.ROOM_DESTROY)
@@ -20,9 +19,9 @@ public class DestroyRoomHandler extends SocketBaseHandler {
 	public CommandOut handle(String account, String reqData) throws Exception {
 		appendLog("--DestroyRoomHandler(销毁房间)--");
 		
-		Room room = roomService.findRoom(FindRoomBy.Owner, account);
+		Room room = roomService.destroyRoom(account);
 		if (room != null) {
-			List<String> members = room.getMembers();
+			Set<String> members = room.getMembers();
 			DestroyRoomPush push = new DestroyRoomPush();
 			String pushContent = push.socketResp();
 			for (String member : members) {
@@ -32,7 +31,7 @@ public class DestroyRoomHandler extends SocketBaseHandler {
 					appendLog("推送房间内成员:" + member + " " + pushContent);
 				}
 			}
-			roomService.destroyRoom(account);
+			
 		}
 		
 		

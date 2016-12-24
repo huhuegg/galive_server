@@ -1,6 +1,7 @@
 package com.galive.logic.network.socket.handler;
 
-import java.util.List;
+import java.util.Set;
+
 import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
@@ -24,11 +25,11 @@ public class JoinRoomHandler extends SocketBaseHandler {
 		appendLog("房间id(roomSid):" + roomSid);
 		
 		Room room = roomService.joinRoom(roomSid, account);
-		
+
 		JoinRoomPush push = new JoinRoomPush();
 		push.accountSid = account;
 		String pushContent = push.socketResp();
-		List<String> members = room.getMembers();
+		Set<String> members = room.getMembers();
 		appendLog("房间内成员数:" + members.size());
 		for (String m : members) {
 			appendLog("成员id:" + m);
