@@ -9,6 +9,10 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 
 	private RoomDao roomDao = new RoomDaoImpl();
 	
+	static {
+		// TODO 扫表
+	}
+	
 	@Override
 	public Room findRoom(FindRoomBy by, String byId) throws LogicException {
 		Room room = null;
