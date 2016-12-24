@@ -1,10 +1,12 @@
 package com.galive.logic.dao;
 
+import java.util.Set;
+
 import com.galive.logic.model.Room;
 
 public interface RoomDao {
 	
-	
+	public Set<String> findAllRooms();
 	
 	public Room findBySid(String sid);
 

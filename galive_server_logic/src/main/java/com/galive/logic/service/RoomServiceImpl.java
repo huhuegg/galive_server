@@ -1,16 +1,56 @@
 package com.galive.logic.service;
 
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import com.galive.logic.dao.RoomDao;
 import com.galive.logic.dao.RoomDaoImpl;
 import com.galive.logic.exception.LogicException;
 import com.galive.logic.model.Room;
+import com.galive.logic.network.socket.ChannelManager;
 
 public class RoomServiceImpl extends BaseService implements RoomService {
 
 	private RoomDao roomDao = new RoomDaoImpl();
 	
 	static {
-		// TODO 扫表
+		ExecutorService thread = Executors.newSingleThreadExecutor();
+		thread.execute(new Runnable() {
+			
+			@Override
+			public void run() {
+				while (true) {
+					RoomDao roomDao = new RoomDaoImpl();
+					Set<String> rooms = roomDao.findAllRooms();
+					if (rooms != null) {
+						for (String id : rooms) {
+							Room room = roomDao.findBySid(id);
+							if (room != null) {
+								boolean allOffline = true;
+								for (String member : room.getMembers()) {
+									if (ChannelManager.getInstance().isOnline(member)) {
+										allOffline = false;
+										break;
+									}
+								}
+								
+								if (allOffline) {
+									roomDao.delete(room);
+								}
+							} 
+						}
+					}
+					
+					try {
+						Thread.sleep(1000 * 10);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				
+			}
+		});
 	}
 	
 	@Override
@@ -60,6 +100,9 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 			room.getMembers().remove(accountSid);
 			roomDao.save(room);
 			roomDao.removeMember(accountSid);
+			if (room.getMembers().isEmpty()) {
+				roomDao.delete(room);
+			}
 		}
 		return room;
 	}

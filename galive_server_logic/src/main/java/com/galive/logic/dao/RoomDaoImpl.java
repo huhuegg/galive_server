@@ -1,5 +1,7 @@
 package com.galive.logic.dao;
 
+import java.util.Set;
+
 import com.alibaba.fastjson.JSON;
 import com.galive.logic.db.RedisManager;
 import com.galive.logic.model.Room;
@@ -7,6 +9,10 @@ import com.galive.logic.model.Room;
 
 public class RoomDaoImpl extends BaseDao implements RoomDao {
 
+	private String roomsKey() {
+		return RedisManager.getInstance().keyPrefix() + "room:all";
+	}
+	
 	private String roomKey(String roomSid) {
 		return RedisManager.getInstance().keyPrefix() + "room:" + roomSid;
 	}
@@ -35,7 +41,8 @@ public class RoomDaoImpl extends BaseDao implements RoomDao {
 			jedis().del(key);
 			return generateRoomSid();
 		}
-		return String.valueOf(id);
+		String str = String.format("%06d", id);
+		return str;
 	}
 	
 	@Override
@@ -81,6 +88,7 @@ public class RoomDaoImpl extends BaseDao implements RoomDao {
 		for (String member : room.getMembers()) {
 			jedis().set(roomMemberKey(member), room.getSid());
 		}
+		jedis().sadd(roomsKey(), room.getSid());
 		return room;
 	}
 
@@ -96,6 +104,13 @@ public class RoomDaoImpl extends BaseDao implements RoomDao {
 		}
 		jedis().del(roomOwnerKey(room.getOwnerSid()));
 		jedis().del(roomKey(room.getSid()));
+		jedis().srem(roomsKey(), room.getSid());
+	}
+
+	@Override
+	public Set<String> findAllRooms() {
+		Set<String> rooms = jedis().smembers(roomsKey());
+		return rooms;
 	}
 
 	
