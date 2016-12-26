@@ -8,16 +8,15 @@ import com.galive.common.protocol.CommandOut;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.account.Account;
 import com.galive.logic.model.account.Gender;
-import com.galive.logic.network.http.HttpRequestHandler;
-import com.galive.logic.network.http.handler.HttpBaseHandler;
+import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.service.AccountService;
 import com.galive.logic.service.AccountServiceImpl;
 import com.galive.logic.service.RoomService;
 import com.galive.logic.service.RoomService.FindRoomBy;
 import com.galive.logic.service.RoomServiceImpl;
 
-@HttpRequestHandler(desc = "用户信息", command = Command.USR_INFO)
-public class AccountInfoHandler extends HttpBaseHandler {
+@SocketRequestHandler(desc = "用户信息", command = Command.USR_INFO)
+public class AccountInfoHandler extends SocketBaseHandler {
 
 	private AccountService accountService = new AccountServiceImpl();
 	private RoomService roomService = new RoomServiceImpl();

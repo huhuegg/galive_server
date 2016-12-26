@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandIn;
 import com.galive.common.protocol.CommandOut;
+import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.exception.LogicException;
 import com.galive.logic.network.socket.ChannelManager;
 import com.galive.logic.network.socket.handler.push.KickOffPush;
@@ -41,6 +42,16 @@ public abstract class SocketBaseHandler {
 		try {
 			if (command.equals(Command.USR_LOGIN)) {
 				out = handle(account, in.getParams());
+				out.setTag(tag);
+				String resp = out.socketResp();
+				resp += ApplicationConfig.getInstance().getSocketConfig().getMessageDelimiter();
+				appendLog("响应:");
+				appendLog(resp);
+				appendLog("处理时间:" + (System.currentTimeMillis() - start) + " ms");
+				appendSplit();
+				logger.info(loggerString());
+				channel.writeAndFlush(resp);
+				return;
 			} else if (command.equals(Command.ONLINE)) {
 				AccountService accountService = new AccountServiceImpl();
 				if (!accountService.verifyToken(account, token)) {

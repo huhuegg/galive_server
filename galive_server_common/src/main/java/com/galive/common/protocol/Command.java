@@ -15,9 +15,9 @@ public class Command {
 	
 	public static final String ROOM_CREATE = "ROOM_CREATE";
 	
-	public static final String ROOM_JOIN = "ROOM_JOIN";
+	public static final String ROOM_ENTER = "ROOM_ENTER";
 	
-	public static final String ROOM_LEAVE = "ROOM_LEAVE";
+	public static final String ROOM_EXIT = "ROOM_EXIT";
 	
 	public static final String ROOM_DESTROY = "ROOM_DESTROY";
 	
@@ -25,9 +25,9 @@ public class Command {
 	
 	public static final String SCREEN_SHARE_STOP = "SHARE_STOP";
 	
-	public static final String ROOM_JOIN_PUSH = "ROOM_JOIN_PUSH";
+	public static final String ROOM_ENTER_PUSH = "ROOM_ENTER_PUSH";
 	
-	public static final String ROOM_LEAVE_PUSH = "ROOM_LEAVE_PUSH";
+	public static final String ROOM_EXIT_PUSH = "ROOM_EXIT_PUSH";
 	
 	public static final String ROOM_DESTROY_PUSH = "ROOM_DESTROY_PUSH";
 	

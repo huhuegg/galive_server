@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.config.ApplicationConfig;
-import com.galive.logic.config.LogicConfig;
 import com.galive.logic.config.SocketConfig;
 import com.galive.logic.model.Room;
 import com.galive.logic.model.account.Account;
@@ -54,7 +53,6 @@ public class LoginHandler extends SocketBaseHandler {
 		}
 
 		out.socketConfig = ApplicationConfig.getInstance().getSocketConfig();
-		out.logicConfig = ApplicationConfig.getInstance().getLogicConfig();
 		return out;
 	}
 	
@@ -81,7 +79,6 @@ public class LoginHandler extends SocketBaseHandler {
 		}
 
 		public SocketConfig socketConfig;
-		public LogicConfig logicConfig;
 		public Account account;
 		public Room room;
 		public String token;

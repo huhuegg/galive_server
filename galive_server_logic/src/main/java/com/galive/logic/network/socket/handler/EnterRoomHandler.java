@@ -7,12 +7,12 @@ import com.galive.common.protocol.Command;
 import com.galive.common.protocol.CommandOut;
 import com.galive.logic.model.Room;
 import com.galive.logic.network.socket.SocketRequestHandler;
-import com.galive.logic.network.socket.handler.push.JoinRoomPush;
+import com.galive.logic.network.socket.handler.push.EnterRoomPush;
 import com.galive.logic.service.RoomService;
 import com.galive.logic.service.RoomServiceImpl;
 
-@SocketRequestHandler(desc = "进入房间", command = Command.ROOM_JOIN)
-public class JoinRoomHandler extends SocketBaseHandler {
+@SocketRequestHandler(desc = "进入房间", command = Command.ROOM_ENTER)
+public class EnterRoomHandler extends SocketBaseHandler {
 
 	private RoomService roomService = new RoomServiceImpl();
 
@@ -20,13 +20,13 @@ public class JoinRoomHandler extends SocketBaseHandler {
 	public CommandOut handle(String account, String reqData) throws Exception {
 		appendLog("--JoinRoomHandler(进入房间)--");
 		
-		JoinRoomIn in = JSON.parseObject(reqData, JoinRoomIn.class);
-		String roomSid = in.roomSId;
+		EnterRoomIn in = JSON.parseObject(reqData, EnterRoomIn.class);
+		String roomSid = in.roomSid;
 		appendLog("房间id(roomSid):" + roomSid);
 		
 		Room room = roomService.joinRoom(roomSid, account);
 
-		JoinRoomPush push = new JoinRoomPush();
+		EnterRoomPush push = new EnterRoomPush();
 		push.accountSid = account;
 		String pushContent = push.socketResp();
 		Set<String> members = room.getMembers();
@@ -38,21 +38,21 @@ public class JoinRoomHandler extends SocketBaseHandler {
 				appendLog("推送房间内成员:" + m + " " + pushContent);
 			}
 		}
-		JoinRoomOut out = new JoinRoomOut();
+		EnterRoomOut out = new EnterRoomOut();
 		out.room = room;
 		return out;
 	}
 	
-	public static class JoinRoomIn {
+	public static class EnterRoomIn {
 
-		public String roomSId = "";
+		public String roomSid = "";
 		
 	}
 	
-	public static class JoinRoomOut extends CommandOut {
+	public static class EnterRoomOut extends CommandOut {
 
-		public JoinRoomOut() {
-			super(Command.ROOM_JOIN);
+		public EnterRoomOut() {
+			super(Command.ROOM_ENTER);
 		}
 		
 		public Room room;

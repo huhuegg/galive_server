@@ -64,7 +64,7 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 	@Override
 	public Account login(String accountSid, Platform platform, String platformParams) throws LogicException {
 		Account act = null;
-		if (!StringUtils.isEmpty(accountSid)) {
+		if (!StringUtils.isEmpty(accountSid) && !accountSid.equals("0")) {
 			appendLog("登录用户id:" + accountSid);
 			act = findAndCheckAccount(accountSid);
 			return act;
