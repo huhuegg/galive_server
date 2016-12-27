@@ -1,10 +1,7 @@
 package com.galive.logic.network.http.jetty;
 
-import java.util.EnumSet;
-import javax.servlet.DispatcherType;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.servlet.ServletHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.galive.logic.network.http.LogicServlet;
@@ -20,15 +17,17 @@ public class JettyServer {
 		int port = config.getPort();
 		logger.info("绑定端口:" + port);
 		server = new Server(port);
-		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		context.setContextPath("/");
-		String logicAction = config.getAction();
+		ServletHandler handler = new ServletHandler();
+//		context.set.setContextPath("/");
+//		String logicAction = config.getAction();
+//		
+		handler.addServletWithMapping(LogicServlet.class, "/logic");
 		
-		context.addServlet(new ServletHolder(new LogicServlet()), logicAction);
+		//ontext.addServlet(new ServletHolder(new LogicServlet()), logicAction);
 		
-		context.addFilter(JettyEncodingFilter.class, logicAction, EnumSet.of(DispatcherType.REQUEST));
+		//context.addFilter(JettyEncodingFilter.class, logicAction, EnumSet.of(DispatcherType.REQUEST));
 		
-		server.setHandler(context);
+		server.setHandler(handler);
 		server.start();
 //		server.join();
 	}
