@@ -76,6 +76,11 @@ public class ChannelStringLineHandler extends ChannelInboundHandlerAdapter {
     	String reqData = (String) msg;
     	// 心跳
     	logger.debug(reqData);
+    	if (reqData.equals("test")) {
+    		
+    	}
+    	
+    	
     	if (keepAlive(reqData, ctx)) {
     		super.channelRead(ctx, msg);
     		return;
@@ -160,14 +165,14 @@ public class ChannelStringLineHandler extends ChannelInboundHandlerAdapter {
 		Socket socket = new Socket();
 		try {
 			//socket.connect(new InetSocketAddress("127.0.0.1", 44100));
-			socket.connect(new InetSocketAddress("127.0.0.1", 32195));
+			socket.connect(new InetSocketAddress("127.0.0.1", 52195));
 			// socket.setKeepAlive(true);
 			
 			while (true) {
 				try {
 					OutputStream o = socket.getOutputStream();
 					DataOutputStream out = new DataOutputStream(o);
-					out.writeBytes("ga-@-xmn-@-");
+					out.writeBytes("test-@-xmn-@-");
 					out.flush();
 					InputStream in = socket.getInputStream();
 					byte[] buff = new byte[4096];
