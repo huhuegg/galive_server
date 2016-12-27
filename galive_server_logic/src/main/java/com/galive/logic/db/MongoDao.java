@@ -132,7 +132,7 @@ public class MongoDao<T> extends BasicDAO<T, ObjectId> {
 	}
 
 	public UpdateResults update(Query<T> q, UpdateOperations<T> ops, boolean createIfMissing) {
-		return getDs().update(q, ops, createIfMissing);
+		return getDatastore().update(q, ops, createIfMissing);
 	}
 
 	@Override
@@ -141,22 +141,22 @@ public class MongoDao<T> extends BasicDAO<T, ObjectId> {
 	}
 
 	public UpdateResults updateFirst(Query<T> q, UpdateOperations<T> ops, boolean createIfMissing) {
-		return getDs().update(q, ops, createIfMissing);
+		return getDatastore().update(q, ops, createIfMissing);
 	}
 
 	public T findAndDelete(Query<T> q) {
-		return getDs().findAndDelete(q);
+		return getDatastore().findAndDelete(q);
 	}
 
 	public T findAndModify(Query<T> q, UpdateOperations<T> ops) {
-		return getDs().findAndModify(q, ops);
+		return getDatastore().findAndModify(q, ops);
 	}
 
 	public T findAndModify(Query<T> q, UpdateOperations<T> ops, boolean oldVersion) {
-		return getDs().findAndModify(q, ops, oldVersion);
+		return getDatastore().findAndModify(q, ops);
 	}
 
 	public T findAndModify(Query<T> q, UpdateOperations<T> ops, boolean oldVersion, boolean createIfMissing) {
-		return getDs().findAndModify(q, ops, oldVersion, createIfMissing);
+		return getDatastore().findAndModify(q, ops);
 	}
 }

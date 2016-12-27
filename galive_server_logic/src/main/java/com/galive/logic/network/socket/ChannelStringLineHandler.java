@@ -45,7 +45,7 @@ public class ChannelStringLineHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {    
     	printLog("channelUnregistered", ctx);
-    	String account = ctx.attr(ChannelManager.ACCOUNT_KEY).get(); 
+    	String account = ctx.channel().attr(ChannelManager.ACCOUNT_KEY).get(); 
 		if (account != null) {
 			CommandIn in = new CommandIn();
 			in.setAccount(account);
@@ -142,7 +142,7 @@ public class ChannelStringLineHandler extends ChannelInboundHandlerAdapter {
     }
     
     private void closeAndRemoveChannel(ChannelHandlerContext ctx) {
-    	String account = ctx.attr(ChannelManager.ACCOUNT_KEY).get();  
+    	String account = ctx.channel().attr(ChannelManager.ACCOUNT_KEY).get();  
 		if (account != null) {
 			ChannelManager.getInstance().closeAndRemoveChannel(account);
 		} else {

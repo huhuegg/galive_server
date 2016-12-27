@@ -29,7 +29,7 @@ public class ChannelManager {
 	}
 	
 	public void addChannel(String account, ChannelHandlerContext context) {
-		context.attr(ACCOUNT_KEY).set(account);
+		context.channel().attr(ACCOUNT_KEY).set(account);
 		clientChannels.put(account, context);
 	}
 	
