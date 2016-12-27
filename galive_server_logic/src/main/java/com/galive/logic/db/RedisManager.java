@@ -44,7 +44,9 @@ public class RedisManager {
 
 	public void returnToPool(Jedis j) {
 		if (j != null) {
+			logger.debug("Jedis Poll returnToPool:" + j.toString());
 			j.close();
+			j = null;
 		}
 	}
 
@@ -53,7 +55,7 @@ public class RedisManager {
 	}
 
 	public Jedis getResource() {
-		logger.debug("num of active" + pool.getNumActive());
+		logger.debug("Jedis Poll:" + pool.getNumActive() + " " + pool.getNumIdle() + " " + pool.getNumWaiters());
 		return pool.getResource();
 	}
 
