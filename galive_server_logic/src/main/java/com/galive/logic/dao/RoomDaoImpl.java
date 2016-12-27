@@ -6,6 +6,8 @@ import com.alibaba.fastjson.JSON;
 import com.galive.logic.db.RedisManager;
 import com.galive.logic.model.Room;
 
+import redis.clients.jedis.Jedis;
+
 
 public class RoomDaoImpl extends BaseDao implements RoomDao {
 
@@ -30,86 +32,102 @@ public class RoomDaoImpl extends BaseDao implements RoomDao {
 	}
 	
 	public String generateRoomSid() {
+		Jedis j = redis.getResource();
 		String key = roomSidKey();
-		Long id = jedis().incr(key);
-		if (jedis().get(id + "") != null) {
+		Long id = j.incr(key);
+		String idStr = String.format("%06d", id);
+		if (j.get(idStr) != null) {
 			// 房间已存在
 			return generateRoomSid();
 		}
 		if (id > 999999) {
 			// 超过id上限
-			jedis().del(key);
+			j.del(key);
 			return generateRoomSid();
 		}
-		String str = String.format("%06d", id);
-		return str;
+		redis.returnToPool(j);
+		return idStr;
 	}
 	
 	@Override
 	public Room findBySid(String sid) {
-		String s = jedis().get(roomKey(sid));
+		Jedis j = redis.getResource();
+		String s = j.get(roomKey(sid));
 		if (s != null) {
 			Room room = JSON.parseObject(s, Room.class);
 			return room;
 		}
+		redis.returnToPool(j);
 		return null;
 	}
 
 	@Override
 	public Room findByOwner(String sid) {
-		String roomSid = jedis().get(roomOwnerKey(sid));
+		Jedis j = redis.getResource();
+		String roomSid = j.get(roomOwnerKey(sid));
 		if (roomSid != null) {
 			Room room = findBySid(roomSid);
 			return room;
 		}
+		redis.returnToPool(j);
 		return null;
 	}
 
 	@Override
 	public Room findByMember(String sid) {
-		String roomSid = jedis().get(roomMemberKey(sid));
+		Jedis j = redis.getResource();
+		String roomSid = j.get(roomMemberKey(sid));
 		if (roomSid != null) {
 			Room room = findBySid(roomSid);
 			return room;
 		}
+		redis.returnToPool(j);
 		return null;
 	}
 
 	@Override
 	public Room save(Room room) {
+		Jedis j = redis.getResource();
 		if (room.getSid() == null) {
 			String sid = generateRoomSid();
 			room.setSid(sid);
 		}
 		String json = JSON.toJSONString(room);
-		jedis().set(roomKey(room.getSid()), json);
+		j.set(roomKey(room.getSid()), json);
 		
-		jedis().set(roomOwnerKey(room.getOwnerSid()), room.getSid());
+		j.set(roomOwnerKey(room.getOwnerSid()), room.getSid());
 		for (String member : room.getMembers()) {
-			jedis().set(roomMemberKey(member), room.getSid());
+			j.set(roomMemberKey(member), room.getSid());
 		}
-		jedis().sadd(roomsKey(), room.getSid());
+		j.sadd(roomsKey(), room.getSid());
+		redis.returnToPool(j);
 		return room;
 	}
 
 	@Override
 	public void removeMember(String memberSid) {
-		jedis().del(roomMemberKey(memberSid));
+		Jedis j = redis.getResource();
+		j.del(roomMemberKey(memberSid));
+		redis.returnToPool(j);
 	}
 
 	@Override
 	public void delete(Room room) {
+		Jedis j = redis.getResource();
 		for (String member : room.getMembers()) {
-			jedis().del(roomMemberKey(member));
+			j.del(roomMemberKey(member));
 		}
-		jedis().del(roomOwnerKey(room.getOwnerSid()));
-		jedis().del(roomKey(room.getSid()));
-		jedis().srem(roomsKey(), room.getSid());
+		j.del(roomOwnerKey(room.getOwnerSid()));
+		j.del(roomKey(room.getSid()));
+		j.srem(roomsKey(), room.getSid());
+		redis.returnToPool(j);
 	}
 
 	@Override
 	public Set<String> findAllRooms() {
-		Set<String> rooms = jedis().smembers(roomsKey());
+		Jedis j = redis.getResource();
+		Set<String> rooms = j.smembers(roomsKey());
+		redis.returnToPool(j);
 		return rooms;
 	}
 

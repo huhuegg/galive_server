@@ -13,6 +13,8 @@ import com.galive.logic.model.account.Account;
 import com.galive.logic.model.account.Platform;
 import com.galive.logic.model.account.PlatformAccount;
 
+import redis.clients.jedis.Jedis;
+
 public class AccountDaoImpl extends BaseDao implements AccountDao {
 
 	private MongoDao<Account> dao = new MongoDao<Account>(Account.class, MongoManager.store);
@@ -25,13 +27,17 @@ public class AccountDaoImpl extends BaseDao implements AccountDao {
 	@Override
 	public void saveToken(String accountSid, String token) {
 		String key = tokenKey(accountSid);
-		jedis().set(key, token);
-		jedis().expire(key, ApplicationConfig.getInstance().getSocketConfig().getTokenExpire());
+		Jedis j = redis.getResource();
+		j.set(key, token);
+		j.expire(key, ApplicationConfig.getInstance().getSocketConfig().getTokenExpire());
+		redis.returnToPool(j);
 	}
 
 	@Override
 	public String findToken(String accountSid) {
-		String token = jedis().get(tokenKey(accountSid));
+		Jedis j = redis.getResource();
+		String token = j.get(tokenKey(accountSid));
+		redis.returnToPool(j);
 		return token;
 	}
 
@@ -46,8 +52,9 @@ public class AccountDaoImpl extends BaseDao implements AccountDao {
 	@Override
 	public void deleteToken(String accountSid) {
 		String key = tokenKey(accountSid);
-		jedis().del(key);
-		
+		Jedis j = redis.getResource();
+		j.del(key);
+		redis.returnToPool(j);
 	}
 
 	@Override

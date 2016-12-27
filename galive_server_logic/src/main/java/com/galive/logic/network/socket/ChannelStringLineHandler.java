@@ -160,7 +160,7 @@ public class ChannelStringLineHandler extends ChannelInboundHandlerAdapter {
 		Socket socket = new Socket();
 		try {
 			//socket.connect(new InetSocketAddress("127.0.0.1", 44100));
-			socket.connect(new InetSocketAddress("127.0.0.1", 52195));
+			socket.connect(new InetSocketAddress("127.0.0.1", 32195));
 			// socket.setKeepAlive(true);
 			
 			while (true) {

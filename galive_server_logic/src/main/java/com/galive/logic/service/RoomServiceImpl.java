@@ -20,8 +20,8 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 			
 			@Override
 			public void run() {
+				RoomDao roomDao = new RoomDaoImpl();
 				while (true) {
-					RoomDao roomDao = new RoomDaoImpl();
 					Set<String> rooms = roomDao.findAllRooms();
 					if (rooms != null) {
 						for (String id : rooms) {
@@ -43,7 +43,7 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 					}
 					
 					try {
-						Thread.sleep(1000 * 10);
+						Thread.sleep(1000 * 60 * 60);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -71,16 +71,17 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 
 	@Override
 	public Room createRoom(String accountSid) throws LogicException {
-		checkInRoom(accountSid);
+		checkInRoom(accountSid, false);
 		Room room = new Room();
 		room.setOwnerSid(accountSid);
+		room.getMembers().add(accountSid);
 		room = roomDao.save(room);
 		return room;
 	}
 
 	@Override
 	public Room joinRoom(String roomSid, String accountSid) throws LogicException {
-		checkInRoom(accountSid);
+		checkInRoom(accountSid, true);
 		Room room = roomDao.findBySid(roomSid);
 		if (room == null) {
 			throw makeLogicException("房间不存在");
@@ -126,12 +127,17 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 		return room;
 	}
 	
-	private void checkInRoom(String accountSid) throws LogicException {
+	private void checkInRoom(String accountSid, boolean join) throws LogicException {
 		Room room = roomDao.findByOwner(accountSid);
 		if (room == null) {
 			room = roomDao.findByMember(accountSid);
 		}
 		if (room != null) {
+			if (join) {
+				if (room.getMembers().contains(accountSid) && !room.getOwnerSid().equals(accountSid)) {
+					return;
+				}
+			}
 			throw makeLogicException("已在房间中");
 		}
 	}
