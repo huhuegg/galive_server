@@ -78,10 +78,10 @@ public class LoginHandler extends SocketBaseHandler {
 			super(Command.USR_LOGIN);
 		}
 
-		SocketConfig socketConfig;
+		public SocketConfig socketConfig;
 		public Account account;
 		public Room room;
-		String token;
+		public String token;
 	}
 	
 }

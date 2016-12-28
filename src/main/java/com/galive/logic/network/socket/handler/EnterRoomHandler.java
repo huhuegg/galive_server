@@ -45,7 +45,7 @@ public class EnterRoomHandler extends SocketBaseHandler {
 	
 	public static class EnterRoomIn {
 
-		String roomSid = "";
+		public String roomSid = "";
 		
 	}
 	

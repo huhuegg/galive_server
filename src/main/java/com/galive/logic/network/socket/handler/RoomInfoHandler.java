@@ -41,8 +41,8 @@ public class RoomInfoHandler extends SocketBaseHandler {
 	
 	public static class RoomInfoIn {
 
-		String roomSid = "";
-		Map<String, Object> extraInfo;
+		public String roomSid = "";
+		public Map<String, Object> extraInfo;
 		
 	}
 	

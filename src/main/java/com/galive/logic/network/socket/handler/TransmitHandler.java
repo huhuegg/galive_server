@@ -15,8 +15,8 @@ public class TransmitHandler extends SocketBaseHandler {
 	@Override
 	public CommandOut handle(String account, String reqData) throws Exception {
 		appendLog("--TransmitHandler(消息转发)--");
-		
-		MeetingTransmitgIn in = JSON.parseObject(reqData, MeetingTransmitgIn.class);
+
+		MeetingTransmitIn in = JSON.parseObject(reqData, MeetingTransmitIn.class);
 		List<String> to = in.to;
 		String content = in.content;
 		
@@ -34,9 +34,9 @@ public class TransmitHandler extends SocketBaseHandler {
 		return new CommandOut(Command.TRANSMIT);
 	}
 	
-	public static class MeetingTransmitgIn {
-		List<String> to = new ArrayList<>();
-		String content = "";
+	public static class MeetingTransmitIn {
+		public List<String> to = new ArrayList<>();
+		public String content = "";
 	}
 	
 }

@@ -88,10 +88,10 @@ public class AccountInfoHandler extends SocketBaseHandler {
 	public static class AccountInfoIn {
 
 		public String accountSid;
-		String nickname;
-		String avatar;
-		String gender;
-		String profile;
+		public String nickname;
+		public String avatar;
+		public String gender;
+		public String profile;
 
 	}
 
