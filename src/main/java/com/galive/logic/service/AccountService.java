@@ -8,24 +8,24 @@ public interface AccountService {
 
 	/**
 	 * 根据sid查找用户
-	 * @param accountSid
-	 * @return
+	 * @param accountSid 账户id
+	 * @return 账户
 	 */
-	public Account findAndCheckAccount(String accountSid) throws LogicException;
+	Account findAndCheckAccount(String accountSid) throws LogicException;
 	
 	/**
 	 * 更新用户信息
 	 * @param act
 	 * @throws LogicException
 	 */
-	public void updateAccount(Account act) throws LogicException;
+	void updateAccount(Account act) throws LogicException;
 	
 	/**
 	 * 生成token
 	 * @param accountSid
 	 * @return
 	 */
-	public String generateToken(String accountSid);
+	String generateToken(String accountSid);
 	
 	/**
 	 * 验证token是否有效
@@ -33,14 +33,14 @@ public interface AccountService {
 	 * @param token
 	 * @return
 	 */
-	public boolean verifyToken(String accountSid, String token);
+	boolean verifyToken(String accountSid, String token);
 	
 	/**
 	 * 验证用户是否有效
 	 * @param accountSid
 	 * @return
 	 */
-	public boolean verifyAccount(String accountSid);
+	boolean verifyAccount(String accountSid);
 	
 	/**
 	 * 登录
@@ -50,13 +50,13 @@ public interface AccountService {
 	 * @return
 	 * @throws LogicException
 	 */
-	public Account login(String accountSid, Platform platform, String platformParams) throws LogicException;
+	Account login(String accountSid, Platform platform, String platformParams) throws LogicException;
 	
 	/**
 	 * 登出
 	 * @param accountSid
 	 * @throws LogicException
 	 */
-	public void logout(String accountSid) throws LogicException;
+	void logout(String accountSid) throws LogicException;
 	
 }

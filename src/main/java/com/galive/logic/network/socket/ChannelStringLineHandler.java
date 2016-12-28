@@ -8,8 +8,8 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import com.galive.logic.protocol.Command;
-import com.galive.logic.protocol.CommandIn;
+import com.galive.logic.network.protocol.Command;
+import com.galive.logic.network.protocol.CommandIn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

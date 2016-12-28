@@ -1,8 +1,8 @@
 package com.galive.logic.network.socket.handler;
 
 
-import com.galive.logic.protocol.Command;
-import com.galive.logic.protocol.CommandOut;
+import com.galive.logic.network.protocol.Command;
+import com.galive.logic.network.protocol.CommandOut;
 import org.apache.commons.lang.StringUtils;
 
 import com.alibaba.fastjson.JSON;
@@ -88,16 +88,16 @@ public class AccountInfoHandler extends SocketBaseHandler {
 	public static class AccountInfoIn {
 
 		public String accountSid;
-		public String nickname;
-		public String avatar;
-		public String gender;
-		public String profile;
+		String nickname;
+		String avatar;
+		String gender;
+		String profile;
 
 	}
 
 	public static class AccountInfoOut extends CommandOut {
 
-		public AccountInfoOut() {
+		AccountInfoOut() {
 			super(Command.USR_INFO);
 		}
 

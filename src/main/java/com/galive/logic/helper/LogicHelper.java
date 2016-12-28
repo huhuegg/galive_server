@@ -17,13 +17,13 @@ public class LogicHelper {
 	private static final String SEPARATOR = "/";
 	
 	public static InputStream loadProperties() throws IOException {
-		String name = SEPARATOR + ApplicationMain.get().getMode().name + SEPARATOR + "jdbc.properties";
+		String name = SEPARATOR + ApplicationMain.sharedInstance().getMode().name + SEPARATOR + "jdbc.properties";
 		InputStream in = LogicHelper.class.getResourceAsStream(name);
 		return in;
 	}
 	
 	public static InputStream loadConfig() throws IOException {
-		String name = SEPARATOR + ApplicationMain.get().getMode().name + SEPARATOR + "config.xml";
+		String name = SEPARATOR + ApplicationMain.sharedInstance().getMode().name + SEPARATOR + "config.xml";
 		InputStream in = LogicHelper.class.getResourceAsStream(name);
 		return in;
 	}
@@ -33,7 +33,7 @@ public class LogicHelper {
 		JoranConfigurator configurator = new JoranConfigurator();
 		configurator.setContext(lc);
 		lc.reset();
-		String name = SEPARATOR + ApplicationMain.get().getMode().name + SEPARATOR + "logback.xml";
+		String name = SEPARATOR + ApplicationMain.sharedInstance().getMode().name + SEPARATOR + "logback.xml";
 		InputStream in = LogicHelper.class.getResourceAsStream(name);
 		try {
 			configurator.doConfigure(in);

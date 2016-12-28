@@ -14,7 +14,9 @@ import com.galive.logic.model.account.PlatformAccount;
 import com.galive.logic.network.platform.wx.WXAccessTokenResp;
 import com.galive.logic.network.platform.wx.WXUserInfoResp;
 import com.galive.logic.network.platform.wx.WeChatRequest;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AccountServiceImpl extends BaseService implements AccountService {
 
 	private AccountDao accountDao = new AccountDaoImpl();

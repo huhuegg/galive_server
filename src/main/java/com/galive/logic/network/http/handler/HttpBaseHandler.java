@@ -1,10 +1,9 @@
 package com.galive.logic.network.http.handler;
 
-import com.galive.logic.protocol.CommandIn;
+import com.galive.logic.network.protocol.CommandIn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.galive.logic.protocol.Command;
-import com.galive.logic.protocol.CommandOut;
+import com.galive.logic.network.protocol.CommandOut;
 import com.galive.logic.exception.LogicException;
 
 public abstract class HttpBaseHandler {

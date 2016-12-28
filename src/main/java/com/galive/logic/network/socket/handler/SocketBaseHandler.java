@@ -1,8 +1,8 @@
 package com.galive.logic.network.socket.handler;
 
-import com.galive.logic.protocol.Command;
-import com.galive.logic.protocol.CommandIn;
-import com.galive.logic.protocol.CommandOut;
+import com.galive.logic.network.protocol.Command;
+import com.galive.logic.network.protocol.CommandIn;
+import com.galive.logic.network.protocol.CommandOut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

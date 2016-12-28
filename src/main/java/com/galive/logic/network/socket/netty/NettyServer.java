@@ -94,7 +94,7 @@ public class NettyServer {
 //						pipeline.addLast(new LoggingHandler(LoggerFactory.class, LogLevel.DEBUG));
 //						LengthFieldBasedFrameDecoder decoder;
 //						LengthFieldPrepender prepender;
-//						if (ApplicationMain.get().getMode() == ApplicationMode.Develop) {
+//						if (ApplicationMain.sharedInstance().getMode() == ApplicationMode.Develop) {
 //							decoder = new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 2, 0, 0, true);
 //							prepender = new LengthFieldPrepender(2);
 //						} else {

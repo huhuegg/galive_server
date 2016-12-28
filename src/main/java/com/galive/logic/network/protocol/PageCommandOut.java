@@ -1,4 +1,4 @@
-package com.galive.logic.protocol;
+package com.galive.logic.network.protocol;
 
 import java.util.ArrayList;
 import java.util.List;

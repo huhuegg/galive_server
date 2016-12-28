@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
-import com.galive.logic.protocol.Command;
-import com.galive.logic.protocol.CommandOut;
+import com.galive.logic.network.protocol.Command;
+import com.galive.logic.network.protocol.CommandOut;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.TransmitPush;
 

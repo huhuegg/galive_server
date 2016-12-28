@@ -1,8 +1,8 @@
 package com.galive.logic.network.socket.handler;
 
 import java.util.Set;
-import com.galive.logic.protocol.Command;
-import com.galive.logic.protocol.CommandOut;
+import com.galive.logic.network.protocol.Command;
+import com.galive.logic.network.protocol.CommandOut;
 import com.galive.logic.model.Room;
 import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.ScreenShareStopPush;

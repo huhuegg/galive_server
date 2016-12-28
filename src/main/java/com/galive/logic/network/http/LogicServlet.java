@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.galive.logic.protocol.CommandIn;
+import com.galive.logic.network.protocol.CommandIn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.galive.logic.annotation.AnnotationManager;
@@ -22,7 +22,7 @@ public class LogicServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-		resp.getWriter().write("get not support");
+		resp.getWriter().write("sharedInstance not support");
 	}
 	
 	@Override

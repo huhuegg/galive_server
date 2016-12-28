@@ -1,4 +1,4 @@
-package com.galive.logic.protocol;
+package com.galive.logic.network.protocol;
 
 import org.apache.commons.lang.StringUtils;
 
