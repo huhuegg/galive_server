@@ -10,6 +10,10 @@ dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.8.5'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.8.5'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.5'
+    // spring
+    compile group: 'org.springframework', name: 'spring-core', version: '4.3.5.RELEASE'
+    compile group: 'org.springframework', name: 'spring-context', version: '4.3.5.RELEASE'
+    compile group: 'org.springframework', name: 'spring-beans', version: '4.3.5.RELEASE'
 }
 
 
