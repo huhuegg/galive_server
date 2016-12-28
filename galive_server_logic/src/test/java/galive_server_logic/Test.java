@@ -1,15 +1,10 @@
 package galive_server_logic;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.galive.logic.db.RedisManager;
 
 import redis.clients.jedis.Jedis;
 
 public class Test {
-
-	private static Logger logger = LoggerFactory.getLogger(Test.class);
 	
 	public static void main(String[] args) throws Exception {
 		while (true) {

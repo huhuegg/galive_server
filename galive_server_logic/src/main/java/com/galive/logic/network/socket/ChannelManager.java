@@ -4,11 +4,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import com.galive.logic.config.ApplicationConfig;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.group.ChannelGroup;
+import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.AttributeKey;
+import io.netty.util.concurrent.GlobalEventExecutor;
 
 public class ChannelManager {
 
 	private Map<String, ChannelHandlerContext> clientChannels = new ConcurrentHashMap<>();
+	
+	final ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 	
 	public static final AttributeKey<String> ACCOUNT_KEY = AttributeKey.valueOf("account"); 
 	
