@@ -13,7 +13,6 @@ import org.apache.commons.daemon.DaemonContext;
 import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import redis.clients.jedis.Jedis;
 
 public class ApplicationMain implements Daemon {
@@ -88,11 +87,6 @@ public class ApplicationMain implements Daemon {
     }
 
     public void start() throws Exception {
-
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-        context.register(BeanConfigure.class);
-        context.refresh();
-
 
         logger.info("【读取配置】");
         try {
