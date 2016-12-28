@@ -1,26 +1,32 @@
 package com.galive.logic.network.socket;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import com.galive.logic.config.ApplicationConfig;
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelId;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import org.apache.commons.lang.StringUtils;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ChannelManager {
 
-	private Map<String, ChannelHandlerContext> clientChannels = new ConcurrentHashMap<>();
+	//private Map<String, ChannelHandlerContext> clientChannels = new ConcurrentHashMap<>();
 	
-	final ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+	private final ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+	private final Map<String, ChannelId> channelIds = new ConcurrentHashMap<>();
 	
-	public static final AttributeKey<String> ACCOUNT_KEY = AttributeKey.valueOf("account"); 
+//	public static final AttributeKey<String> ACCOUNT_KEY = AttributeKey.valueOf("account");
 	
 	private static ChannelManager instance = null;
 	
 	private String delimiter = "";
-	
+
+	static final AttributeKey<String> ACCOUNT_KEY = AttributeKey.valueOf("account");
+
+
 	public static ChannelManager getInstance() {
 		if (instance == null) {
 			instance = new ChannelManager();
@@ -29,51 +35,58 @@ public class ChannelManager {
 		return instance;
 	}
 	
-	public ChannelHandlerContext findChannel(String account) {
-		return clientChannels.get(account);
-	}
-	
-	public void addChannel(String account, ChannelHandlerContext context) {
-		context.channel().attr(ACCOUNT_KEY).set(account);
-		clientChannels.put(account, context);
-	}
-	
-	public void removeChannel(String account) {
-		clientChannels.remove(account);
-	}
-	
-	public void closeAndRemoveChannel(String account) {
-		ChannelHandlerContext context = clientChannels.get(account);
-		closeChannel(context);
-		clientChannels.remove(account);
-	}
-	
-	public long channelCount() {
-		return clientChannels.size();
-	}
-	
-	public boolean isOnline(String account) {
-		ChannelHandlerContext context = clientChannels.get(account);
-		if (context != null && context.channel().isActive()) {
-			return true;
+	public Channel findChannel(String account) {
+		if (!StringUtils.isEmpty(account)) {
+			ChannelId channelId = channelIds.get(account);
+			if (channelId != null) {
+				return channels.find(channelId);
+			}
 		}
-		return false;
+		return null;
+	}
+	
+	public void addChannel(String account, Channel channel) {
+		channel.attr(ACCOUNT_KEY).set(account);
+		channels.add(channel);
+		ChannelId channelId = channel.id();
+		channelIds.put(account, channelId);
+	}
+	
+	private void removeChannel(String account) {
+		Channel channel = findChannel(account);
+		if (channel != null) {
+			channels.remove(channel);
+			channelIds.remove(account);
+		}
+	}
+	
+	void closeAndRemoveChannel(String account) {
+		Channel channel = findChannel(account);
+		if (channel != null) {
+			closeChannel(channel);
+		}
+		removeChannel(account);
+	}
+
+	public boolean isOnline(String account) {
+		Channel channel = findChannel(account);
+		return channel != null && channel.isActive();
 	}
 	
 	public void sendMessage(String account, String message) {
-		if (message != null) {
-			ChannelHandlerContext context = clientChannels.get(account);
-			if (context != null && context.channel().isActive()) {
+		if (!StringUtils.isEmpty(message)) {
+			Channel channel = findChannel(account);
+			if (channel != null && channel.isActive()) {
 				message += delimiter;
-				context.writeAndFlush(message);
+				channel.writeAndFlush(message);
 			}
 		}
 	}
 	
-	public static void closeChannel(ChannelHandlerContext ctx) {
-		if (ctx != null) {
-			ctx.flush();
-			ctx.close();
+	static void closeChannel(Channel channel) {
+		if (channel != null) {
+			channel.flush();
+			channel.close();
 		}
 	}
 

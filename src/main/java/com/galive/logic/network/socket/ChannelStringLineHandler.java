@@ -1,29 +1,25 @@
 package com.galive.logic.network.socket;
 
+import com.galive.logic.annotation.AnnotationManager;
+import com.galive.logic.config.ApplicationConfig;
+import com.galive.logic.config.SocketConfig;
+import com.galive.logic.network.protocol.Command;
+import com.galive.logic.network.protocol.CommandIn;
+import com.galive.logic.network.socket.handler.SocketBaseHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
-
-import com.galive.logic.db.RedisManager;
-import com.galive.logic.network.protocol.Command;
-import com.galive.logic.network.protocol.CommandIn;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.galive.logic.annotation.AnnotationManager;
-import com.galive.logic.config.ApplicationConfig;
-import com.galive.logic.config.SocketConfig;
-import com.galive.logic.network.socket.handler.SocketBaseHandler;
-
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.handler.timeout.IdleState;
-import io.netty.handler.timeout.IdleStateEvent;
-import redis.clients.jedis.Jedis;
 
 public class ChannelStringLineHandler extends ChannelInboundHandlerAdapter {
 
@@ -45,19 +41,19 @@ public class ChannelStringLineHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {    
+    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+		super.channelUnregistered(ctx);
     	printLog("channelUnregistered", ctx);
     	String account = ctx.channel().attr(ChannelManager.ACCOUNT_KEY).get(); 
-		if (account != null) {
+		if (StringUtils.isEmpty(account)) {
 			CommandIn in = new CommandIn();
 			in.setAccount(account);
 			in.setCommand(Command.OFFLINE);
 			SocketBaseHandler handler = AnnotationManager.createSocketHandlerInstance(in.getCommand());
 			if (handler != null) {
-				handler.handle(in, ctx);
+				handler.handle(in, ctx.channel());
 			}
 		}
-		super.channelUnregistered(ctx);
     }
 
     @Override
@@ -86,7 +82,7 @@ public class ChannelStringLineHandler extends ChannelInboundHandlerAdapter {
 		if (in != null) {
 			SocketBaseHandler handler = AnnotationManager.createSocketHandlerInstance(in.getCommand());
 			if (handler != null) {
-				handler.handle(in, ctx);
+				handler.handle(in, ctx.channel());
 			} else {
 				logger.error("channelRead 消息错误:" + reqData);
 				closeAndRemoveChannel(ctx);
@@ -147,7 +143,7 @@ public class ChannelStringLineHandler extends ChannelInboundHandlerAdapter {
 		if (account != null) {
 			ChannelManager.getInstance().closeAndRemoveChannel(account);
 		} else {
-			ChannelManager.closeChannel(ctx);
+			ChannelManager.closeChannel(ctx.channel());
 		}
     }
     
@@ -185,9 +181,6 @@ public class ChannelStringLineHandler extends ChannelInboundHandlerAdapter {
 			}
 
 			// out.close();
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

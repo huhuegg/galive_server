@@ -1,19 +1,17 @@
 package com.galive.logic.network.socket.handler;
 
+import com.galive.logic.config.ApplicationConfig;
+import com.galive.logic.exception.LogicException;
 import com.galive.logic.network.protocol.Command;
 import com.galive.logic.network.protocol.CommandIn;
 import com.galive.logic.network.protocol.CommandOut;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.galive.logic.config.ApplicationConfig;
-import com.galive.logic.exception.LogicException;
 import com.galive.logic.network.socket.ChannelManager;
 import com.galive.logic.network.socket.handler.push.KickOffPush;
 import com.galive.logic.service.AccountService;
 import com.galive.logic.service.AccountServiceImpl;
-
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.Channel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class SocketBaseHandler {
 	
@@ -21,9 +19,9 @@ public abstract class SocketBaseHandler {
 	
 	public abstract CommandOut handle(String account, String reqData) throws Exception;
 
-	protected StringBuffer logBuffer = new StringBuffer();
+	private StringBuffer logBuffer = new StringBuffer();
 	
-	public void handle(CommandIn in, ChannelHandlerContext channel) {
+	public void handle(CommandIn in, Channel channel) {
 		appendSplit();
 		long start = System.currentTimeMillis();
 		CommandOut out = null;
@@ -40,39 +38,42 @@ public abstract class SocketBaseHandler {
 		appendLog("params:" + params);
 		
 		try {
-			if (command.equals(Command.USR_LOGIN)) {
-				out = handle(account, in.getParams());
-				out.setTag(tag);
-				String resp = out.socketResp();
-				resp += ApplicationConfig.getInstance().getSocketConfig().getMessageDelimiter();
-				appendLog("响应:");
-				appendLog(resp);
-				appendLog("处理时间:" + (System.currentTimeMillis() - start) + " ms");
-				appendSplit();
-				logger.info(loggerString());
-				channel.writeAndFlush(resp);
-				return;
-			} else if (command.equals(Command.ONLINE)) {
-				AccountService accountService = new AccountServiceImpl();
-				if (!accountService.verifyToken(account, token)) {
-					out = respFail("token已过期", command);
-				} else {
+			switch (command) {
+				case Command.USR_LOGIN:
 					out = handle(account, in.getParams());
-				}
-				// 是否不同设备连接
-				ChannelHandlerContext old = ChannelManager.getInstance().findChannel(account);
-				if (old != null) {
-					KickOffPush push = new KickOffPush();
-					pushMessage(account, push.socketResp());
-					appendLog("用户重复登录，将帐号踢下线。");
-				}
-				ChannelManager.getInstance().addChannel(account, channel);
-			} else {
-				// 是否不同设备连接
-				ChannelHandlerContext existChannel = ChannelManager.getInstance().findChannel(account);
-				if (existChannel != null) {
-					out = handle(account, in.getParams());
-				}
+					out.setTag(tag);
+					String resp = out.socketResp();
+					resp += ApplicationConfig.getInstance().getSocketConfig().getMessageDelimiter();
+					appendLog("响应:");
+					appendLog(resp);
+					appendLog("处理时间:" + (System.currentTimeMillis() - start) + " ms");
+					appendSplit();
+					logger.info(loggerString());
+					channel.writeAndFlush(resp);
+					return;
+				case Command.ONLINE:
+					AccountService accountService = new AccountServiceImpl();
+					if (!accountService.verifyToken(account, token)) {
+						out = respFail("token已过期", command);
+					} else {
+						out = handle(account, in.getParams());
+					}
+					// 是否不同设备连接
+					Channel old = ChannelManager.getInstance().findChannel(account);
+					if (old != null) {
+						KickOffPush push = new KickOffPush();
+						pushMessage(account, push.socketResp());
+						appendLog("用户重复登录，将帐号踢下线。");
+					}
+					ChannelManager.getInstance().addChannel(account, channel);
+					break;
+				default:
+					// 是否不同设备连接
+					Channel existChannel = ChannelManager.getInstance().findChannel(account);
+					if (existChannel != null) {
+						out = handle(account, in.getParams());
+					}
+					break;
 			}
 			
 		} catch (LogicException logicException) {
@@ -99,29 +100,28 @@ public abstract class SocketBaseHandler {
 		
 	}
 	
-	protected void pushMessage(String account, String message) {
+	void pushMessage(String account, String message) {
 		ChannelManager.getInstance().sendMessage(account, message);
 	}
 	
 	private CommandOut respFail(String message, String command) {
-		CommandOut out = CommandOut.failureOut(command, message);
-		return out;
+		return CommandOut.failureOut(command, message);
 	}
 	
 	protected void appendLog(String log) {
 		if (logBuffer != null) {
-			logBuffer.append("|" + log);
+			logBuffer.append("|").append(log);
 			logBuffer.append("\n");
 		}
 	}
 	
-	protected void appendSplit() {
+	private void appendSplit() {
 		if (logBuffer != null) {
 			logBuffer.append("\n＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n");
 		}
 	}
 	
-	protected String loggerString() {
+	private String loggerString() {
 		return logBuffer == null ? "" : logBuffer.toString();
 	}
 
