@@ -77,7 +77,7 @@ public class ChannelStringLineHandler extends ChannelInboundHandlerAdapter {
     	// 心跳
     	logger.debug(reqData);
     	if (reqData.equals("test")) {
-    		
+
     	}
     	
     	
