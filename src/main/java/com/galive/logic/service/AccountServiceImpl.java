@@ -49,10 +49,7 @@ public class AccountServiceImpl extends BaseService implements AccountService {
 	@Override
 	public boolean verifyToken(String accountSid, String token) {
 		String existToken = accountDao.findToken(accountSid);
-		if (existToken != null) {
-			return existToken.equals(token);
-		}
-		return false;
+		return existToken != null && existToken.equals(token);
 	}
 
 	@Override

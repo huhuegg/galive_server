@@ -24,8 +24,7 @@ public class LogicHelper {
 	
 	public static InputStream loadConfig() throws IOException {
 		String name = SEPARATOR + ApplicationMain.sharedInstance().getMode().name + SEPARATOR + "config.xml";
-		InputStream in = LogicHelper.class.getResourceAsStream(name);
-		return in;
+		return LogicHelper.class.getResourceAsStream(name);
 	}
 	
 	public static void resetLogConfigPath() {
@@ -53,15 +52,14 @@ public class LogicHelper {
 	
 	public static String generateRandomMd5() {
 		String uuid = UUID.randomUUID().toString();
-		String md5 = DigestUtils.md5Hex(uuid);
-		return md5;
+		return DigestUtils.md5Hex(uuid);
 	}
 	
-	public static String makeRandomMeetingName() {
+	private static String makeRandomMeetingName() {
 		Random r = new Random();
 		long randomLong = r.nextInt(10000000);
 		String str = randomLong + "";
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for(int i = 0; i < 8 - str.length(); i++) {
 			sb.append("0");
 		}

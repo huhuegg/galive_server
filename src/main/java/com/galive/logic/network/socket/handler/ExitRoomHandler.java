@@ -33,9 +33,8 @@ public class ExitRoomHandler extends SocketBaseHandler {
 				}
 			}
 		}
-		
-		CommandOut out = new CommandOut(Command.ROOM_EXIT);
-		return out;
+
+		return new CommandOut(Command.ROOM_EXIT);
 	}
 	
 	

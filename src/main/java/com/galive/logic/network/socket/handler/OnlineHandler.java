@@ -31,7 +31,7 @@ public class OnlineHandler extends SocketBaseHandler {
 
 		public Room room;
 		
-		public OnlineOut() {
+		OnlineOut() {
 			super(Command.ONLINE);
 			
 		}	

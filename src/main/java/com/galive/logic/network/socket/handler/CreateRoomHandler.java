@@ -25,7 +25,7 @@ public class CreateRoomHandler extends SocketBaseHandler {
 	
 	public static class CreateRoomOut extends CommandOut {
 
-		public CreateRoomOut() {
+		CreateRoomOut() {
 			super(Command.ROOM_CREATE);
 		}
 

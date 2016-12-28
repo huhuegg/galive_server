@@ -45,13 +45,13 @@ public class EnterRoomHandler extends SocketBaseHandler {
 	
 	public static class EnterRoomIn {
 
-		public String roomSid = "";
+		String roomSid = "";
 		
 	}
 	
 	public static class EnterRoomOut extends CommandOut {
 
-		public EnterRoomOut() {
+		EnterRoomOut() {
 			super(Command.ROOM_ENTER);
 		}
 		

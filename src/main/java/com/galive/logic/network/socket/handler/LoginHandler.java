@@ -69,19 +69,19 @@ public class LoginHandler extends SocketBaseHandler {
 		//	根据platform传不同的值
 		// Guest 空字符""
 		// WeChat 用户授权code
-		public String platformParams;
+		String platformParams;
 	}
 
 	public static class LoginOut extends CommandOut {
 
-		public LoginOut() {
+		LoginOut() {
 			super(Command.USR_LOGIN);
 		}
 
-		public SocketConfig socketConfig;
+		SocketConfig socketConfig;
 		public Account account;
 		public Room room;
-		public String token;
+		String token;
 	}
 	
 }

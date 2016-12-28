@@ -30,14 +30,13 @@ public class TransmitHandler extends SocketBaseHandler {
 			appendLog("推送对象:" + s + " ");
 			
 		}
-	
-		CommandOut out = new CommandOut(Command.TRANSMIT);
-		return out;
+
+		return new CommandOut(Command.TRANSMIT);
 	}
 	
 	public static class MeetingTransmitgIn {
-		public List<String> to = new ArrayList<String>();
-		public String content = "";
+		List<String> to = new ArrayList<>();
+		String content = "";
 	}
 	
 }

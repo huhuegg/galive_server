@@ -33,10 +33,9 @@ public class DestroyRoomHandler extends SocketBaseHandler {
 			}
 			
 		}
-		
-		
-		CommandOut out = new CommandOut(Command.ROOM_DESTROY);
-		return out;
+
+
+		return new CommandOut(Command.ROOM_DESTROY);
 	}
 	
 }

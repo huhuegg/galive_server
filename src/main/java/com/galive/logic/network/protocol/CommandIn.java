@@ -58,14 +58,13 @@ public class CommandIn {
 			if (StringUtils.isBlank(commandStr)) {
 				return null;
 			}
-			String command = commandStr;
 			String account = s[1];
 			String token = s[2];
 			String tag = s[3];
 			String params = URLDecoder.decode(s[4], StandardCharsets.UTF_8.name());
 			
 			CommandIn in = new CommandIn();
-			in.setCommand(command);
+			in.setCommand(commandStr);
 			in.setAccount(account);
 			in.setTag(tag);
 			in.setToken(token);
@@ -118,7 +117,7 @@ public class CommandIn {
 		return token;
 	}
 
-	public void setToken(String token) {
+	private void setToken(String token) {
 		this.token = token;
 	}
 
@@ -134,7 +133,7 @@ public class CommandIn {
 		return params;
 	}
 
-	public void setParams(String params) {
+	private void setParams(String params) {
 		this.params = params;
 	}
 
@@ -150,7 +149,7 @@ public class CommandIn {
 		return tag;
 	}
 
-	public void setTag(String tag) {
+	private void setTag(String tag) {
 		this.tag = tag;
 	}
 
