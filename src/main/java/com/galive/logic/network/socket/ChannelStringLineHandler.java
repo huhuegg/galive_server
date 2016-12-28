@@ -8,6 +8,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import com.galive.logic.db.RedisManager;
 import com.galive.logic.network.protocol.Command;
 import com.galive.logic.network.protocol.CommandIn;
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import redis.clients.jedis.Jedis;
 
 public class ChannelStringLineHandler extends ChannelInboundHandlerAdapter {
 
@@ -76,11 +78,6 @@ public class ChannelStringLineHandler extends ChannelInboundHandlerAdapter {
     	String reqData = (String) msg;
     	// 心跳
     	logger.debug(reqData);
-    	if (reqData.equals("test")) {
-
-    	}
-    	
-    	
     	if (keepAlive(reqData, ctx)) {
     		super.channelRead(ctx, msg);
     		return;
@@ -98,7 +95,6 @@ public class ChannelStringLineHandler extends ChannelInboundHandlerAdapter {
 			logger.error("channelRead 消息错误:" + reqData);
 			closeAndRemoveChannel(ctx);
 		}
-		super.channelRead(ctx, msg);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.galive.logic.service;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,46 +14,41 @@ import com.galive.logic.network.socket.ChannelManager;
 public class RoomServiceImpl extends BaseService implements RoomService {
 
 	private RoomDao roomDao = new RoomDaoImpl();
-	
+
 	static {
 		ExecutorService thread = Executors.newSingleThreadExecutor();
-		thread.execute(new Runnable() {
-			
-			@Override
-			public void run() {
-				RoomDao roomDao = new RoomDaoImpl();
-				while (true) {
-					Set<String> rooms = roomDao.findAllRooms();
-					if (rooms != null) {
-						for (String id : rooms) {
-							Room room = roomDao.findBySid(id);
-							if (room != null) {
-								boolean allOffline = true;
-								for (String member : room.getMembers()) {
-									if (ChannelManager.getInstance().isOnline(member)) {
-										allOffline = false;
-										break;
-									}
-								}
-								
-								if (allOffline) {
-									roomDao.delete(room);
-								}
-							} 
-						}
-					}
-					
-					try {
-						Thread.sleep(1000 * 60 * 60);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-				
-			}
-		});
+		thread.execute(() -> {
+            RoomDao roomDao = new RoomDaoImpl();
+            while (true) {
+                Set<String> rooms = roomDao.findAllRooms();
+                if (rooms != null) {
+                    for (String id : rooms) {
+                        Room room = roomDao.findBySid(id);
+                        if (room != null) {
+                            boolean allOffline = true;
+                            for (String member : room.getMembers()) {
+                                if (ChannelManager.getInstance().isOnline(member)) {
+                                    allOffline = false;
+                                    break;
+                                }
+                            }
+
+                            if (allOffline) {
+                                roomDao.delete(room);
+                            }
+                        }
+                    }
+                }
+
+                try {
+                    Thread.sleep(1000 * 60 * 60);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 	}
-	
+
 	@Override
 	public Room findRoom(FindRoomBy by, String byId) throws LogicException {
 		Room room = null;
@@ -118,15 +114,15 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 	}
 
 	@Override
-	public Room updateScreenShareState(String accountSid, boolean started) throws Exception {
-		Room room = roomDao.findByOwner(accountSid);
-		if (room != null) {
-			room.setScreenShared(started);
+	public Room updateRoomExtraInfo(Room room, Map<String, Object> extraInfo) throws LogicException {
+		if (extraInfo != null) {
+			room.setExtraInfo(extraInfo);
 			room = roomDao.save(room);
 		}
 		return room;
 	}
-	
+
+
 	private void checkInRoom(String accountSid, boolean join) throws LogicException {
 		Room room = roomDao.findByOwner(accountSid);
 		if (room == null) {
@@ -141,6 +137,6 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 			throw makeLogicException("已在房间中");
 		}
 	}
-	
-	
+
+
 }
