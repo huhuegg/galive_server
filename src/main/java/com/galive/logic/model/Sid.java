@@ -38,7 +38,6 @@ public class Sid {
 			this.seqName = seqName;
 			this.seqStart = seqStart;
 		}
-
 	}
 
 	/* ======================= DAO ======================= */
