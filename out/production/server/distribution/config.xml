@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Config>
+<Config>
+	
+	<Socket>
+		<Host>222.73.196.99</Host>
+		<Port>6888</Port>
+		<LiveReq>ga</LiveReq>
+		<LiveResp>live</LiveResp>
+		<HeartBeatInterval>20</HeartBeatInterval>
+		<ParamsDelimiter>&amp;</ParamsDelimiter><!-- & -->
+		<MessageDelimiter>-@-xmn-@-</MessageDelimiter><!-- 消息定界符 -->
+		<TokenExpire>7200</TokenExpire>
+	</Socket>
+	
+	<Platform>
+		<QQ>
+			<AppId>1104695617</AppId>
+			<AppKey>z8sAyBATHrw4BCSU</AppKey>
+		</QQ>
+		<Wechat>
+			<AppId>wx136ef68ffc5d67df</AppId>
+			<AppSecret>e68e8d2644bbfecfe0af411f58532744</AppSecret>
+		</Wechat>
+	</Platform>
+
+	<Logic>
+		<MeidaServerHost>192.168.96.131</MeidaServerHost>
+		<MeidaServerPort>0</MeidaServerPort>
+	</Logic>
+	
+	<File>
+		<Host>http://a.doodduck.com:5888/galive/file</Host>
+		<Path>opt/galive</Path>
+		<FolderUsrAvatar>usr_avatar</FolderUsrAvatar>
+		<FolderMeetiongCover>meeting_cover</FolderMeetiongCover>
+	</File>
+</Config>
