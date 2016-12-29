@@ -96,7 +96,7 @@ public class ApplicationConfig {
 			SocketConfig socketConfig = new SocketConfig();
 			Element socketNode = node.element("Socket");
 			
-			if (ApplicationMain.sharedInstance().getMode() == ApplicationMode.Develop) {
+			if (ApplicationMain.mode == ApplicationMode.Develop) {
 				Element socketUrlNode = socketNode.element("Host");
 				String socketUrl = socketUrlNode.getStringValue();
 				socketConfig.setHost(socketUrl);

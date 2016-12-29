@@ -6,10 +6,10 @@ import com.galive.logic.db.RedisManager;
 import com.galive.logic.helper.LogicHelper;
 import com.galive.logic.model.Sid;
 import com.galive.logic.model.Sid.EntitySeq;
-import com.galive.logic.network.http.jetty.JettyServer;
 import com.galive.logic.network.socket.netty.NettyServer;
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
+import org.apache.commons.daemon.DaemonInitException;
 import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,33 +19,19 @@ public class ApplicationMain implements Daemon {
 
     private static Logger logger = LoggerFactory.getLogger(ApplicationMain.class);
 
-    private static ApplicationMain instance;
-
-    public static ApplicationMain sharedInstance() {
-        if (instance == null) {
-            instance = new ApplicationMain();
-        }
-        return instance;
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public ApplicationMain() {
-        super();
-    }
-
     public enum ApplicationMode {
         Develop("develop"), Distribution("distribution");
 
         public String name;
 
-        ApplicationMode(String name) {
+        private ApplicationMode(String name) {
             this.name = name;
         }
     }
 
-    private JettyServer jettyServer;
+//    private JettyServer jettyServer;
     private NettyServer nettyServer;
-    private ApplicationMode mode = ApplicationMode.Develop;
+    public static ApplicationMode mode = ApplicationMode.Develop;
 
     public static void main(String[] args) {
         if (ArrayUtils.isEmpty(args)) {
@@ -56,7 +42,7 @@ public class ApplicationMain implements Daemon {
             }
         }
 
-        ApplicationMain app = ApplicationMain.sharedInstance();
+        ApplicationMain app = new ApplicationMain();
         app.initParams(args);
         try {
             app.start();
@@ -73,7 +59,8 @@ public class ApplicationMain implements Daemon {
 
     }
 
-    public void init(DaemonContext context) throws Exception {
+    @Override
+    public void init(DaemonContext context) throws DaemonInitException, Exception {
         String args[] = context.getArguments();
         if (ArrayUtils.isEmpty(args)) {
             logger.info("start args is null, start with debug mode.");
@@ -82,12 +69,12 @@ public class ApplicationMain implements Daemon {
                 logger.info("arg:" + arg);
             }
         }
-        ApplicationMain app = ApplicationMain.sharedInstance();
+        ApplicationMain app = new ApplicationMain();
         app.initParams(args);
     }
 
+    @Override
     public void start() throws Exception {
-
         logger.info("【读取配置】");
         try {
             logger.info("加载配置文件");
@@ -119,17 +106,17 @@ public class ApplicationMain implements Daemon {
             throw new Exception("数据库连接失败:" + e.getMessage());
         }
 
-        logger.info("【绑定http服务】");
-        try {
-            logger.info("启动jetty...");
-            jettyServer = new JettyServer();
-            jettyServer.start();
-            logger.info("jetty启动成功。");
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("jetty启动失败:" + e.getMessage());
-            throw new Exception("jetty启动失败:" + e.getMessage());
-        }
+//        logger.info("【绑定http服务】");
+//        try {
+//            logger.info("启动jetty...");
+//            jettyServer = new JettyServer();
+//            jettyServer.start();
+//            logger.info("jetty启动成功。");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            logger.error("jetty启动失败:" + e.getMessage());
+//            throw new Exception("jetty启动失败:" + e.getMessage());
+//        }
 
         logger.info("【绑定socket服务】");
         try {
@@ -150,13 +137,14 @@ public class ApplicationMain implements Daemon {
         logger.info("==   *****                           *****   ==");
         logger.info("==   *************************************   ==");
         logger.info("===============================================");
-
     }
 
+    @Override
     public void stop() throws Exception {
         stopServer();
     }
 
+    @Override
     public void destroy() {
         logger.info("===Daemon destroy===");
         stopServer();
@@ -165,10 +153,10 @@ public class ApplicationMain implements Daemon {
     private void stopServer() {
         logger.info("===Server stop===");
         try {
-            if (jettyServer != null) {
-                jettyServer.stop();
-                logger.info("jetty关闭成功。");
-            }
+//            if (jettyServer != null) {
+//                jettyServer.stop();
+//                logger.info("jetty关闭成功。");
+//            }
             if (nettyServer != null) {
                 nettyServer.stop();
                 logger.info("netty关闭成功。");
@@ -188,14 +176,19 @@ public class ApplicationMain implements Daemon {
             }
         }
         logger.info("ApplicationMain start with mode:" + mode);
-        ApplicationMain.instance.setMode(mode);
+        ApplicationMain.mode = mode;
     }
 
     private void addShutdownHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread(this::stopServer));
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                stopServer();
+            }
+        });
     }
 
-    private void setMode(ApplicationMode mode) {
+    public void setMode(ApplicationMode mode) {
         this.mode = mode;
     }
 
