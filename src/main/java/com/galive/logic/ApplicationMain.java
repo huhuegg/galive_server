@@ -23,9 +23,14 @@ public class ApplicationMain implements Daemon {
 
     public static ApplicationMain sharedInstance() {
         if (instance == null) {
-            instance = new ApplicationMain();
+            return new ApplicationMain();
         }
         return instance;
+    }
+
+    private ApplicationMain() {
+        super();
+        instance = this;
     }
 
     public enum ApplicationMode {
