@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/galive_server.iml" filepath="$PROJECT_DIR$/.idea/modules/galive_server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/galive_server_common/galive_server_common.iml" filepath="$PROJECT_DIR$/.idea/modules/galive_server_common/galive_server_common.iml" group="galive_server_common" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/galive_server_common/galive_server_common_main.iml" filepath="$PROJECT_DIR$/.idea/modules/galive_server_common/galive_server_common_main.iml" group="galive_server_common" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/galive_server_common/galive_server_common_test.iml" filepath="$PROJECT_DIR$/.idea/modules/galive_server_common/galive_server_common_test.iml" group="galive_server_common" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/galive_server_framework/galive_server_framework.iml" filepath="$PROJECT_DIR$/.idea/modules/galive_server_framework/galive_server_framework.iml" group="galive_server_framework" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/galive_server_framework/galive_server_framework_main.iml" filepath="$PROJECT_DIR$/.idea/modules/galive_server_framework/galive_server_framework_main.iml" group="galive_server_framework" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/galive_server_framework/galive_server_framework_test.iml" filepath="$PROJECT_DIR$/.idea/modules/galive_server_framework/galive_server_framework_test.iml" group="galive_server_framework" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/galive_server_logic/galive_server_logic.iml" filepath="$PROJECT_DIR$/.idea/modules/galive_server_logic/galive_server_logic.iml" group="galive_server_logic" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/galive_server_logic/galive_server_logic_main.iml" filepath="$PROJECT_DIR$/.idea/modules/galive_server_logic/galive_server_logic_main.iml" group="galive_server_logic" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/galive_server_logic/galive_server_logic_test.iml" filepath="$PROJECT_DIR$/.idea/modules/galive_server_logic/galive_server_logic_test.iml" group="galive_server_logic" />
+    </modules>
+  </component>
+</project>

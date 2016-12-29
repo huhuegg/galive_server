@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="galive_server_common_main" target="1.8" />
+      <module name="galive_server_common_test" target="1.8" />
+      <module name="galive_server_framework_main" target="1.8" />
+      <module name="galive_server_framework_test" target="1.8" />
+      <module name="galive_server_logic_main" target="1.8" />
+      <module name="galive_server_logic_test" target="1.8" />
+      <module name="server_main" target="1.8" />
+      <module name="server_test" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
