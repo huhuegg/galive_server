@@ -1,5 +1,6 @@
 package com.galive.logic.network.http.jetty;
 
+import com.galive.logic.network.http.EchoServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.slf4j.Logger;
@@ -14,14 +15,17 @@ public class JettyServer {
 	
 	public void start() throws Exception {
 		JettyConfig config = JettyConfig.loadConfig();
-		int port = config.getPort();
+		//int port = config.getPort();
+		int port = 80;
 		logger.info("绑定端口:" + port);
 		server = new Server(port);
 		ServletHandler handler = new ServletHandler();
-//		context.set.setContextPath("/");
-//		String logicAction = config.getAction();
-//		
-		handler.addServletWithMapping(LogicServlet.class, "/logic");
+
+
+		//context.set.setContextPath("/");
+		//String logicAction = config.getAction();
+
+		handler.addServletWithMapping(EchoServlet.class, "/echo");
 		
 		//ontext.addServlet(new ServletHolder(new LogicServlet()), logicAction);
 		

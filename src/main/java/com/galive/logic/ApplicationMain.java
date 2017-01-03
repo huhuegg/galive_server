@@ -6,6 +6,7 @@ import com.galive.logic.db.RedisManager;
 import com.galive.logic.helper.LogicHelper;
 import com.galive.logic.model.Sid;
 import com.galive.logic.model.Sid.EntitySeq;
+import com.galive.logic.network.http.jetty.JettyServer;
 import com.galive.logic.network.socket.netty.NettyServer;
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
@@ -29,7 +30,7 @@ public class ApplicationMain implements Daemon {
         }
     }
 
-//    private JettyServer jettyServer;
+    private JettyServer jettyServer;
     private NettyServer nettyServer;
     public static ApplicationMode mode = ApplicationMode.Develop;
 
@@ -106,17 +107,17 @@ public class ApplicationMain implements Daemon {
             throw new Exception("数据库连接失败:" + e.getMessage());
         }
 
-//        logger.info("【绑定http服务】");
-//        try {
-//            logger.info("启动jetty...");
-//            jettyServer = new JettyServer();
-//            jettyServer.start();
-//            logger.info("jetty启动成功。");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            logger.error("jetty启动失败:" + e.getMessage());
-//            throw new Exception("jetty启动失败:" + e.getMessage());
-//        }
+        logger.info("【绑定http服务】");
+        try {
+            logger.info("启动jetty...");
+            jettyServer = new JettyServer();
+            jettyServer.start();
+            logger.info("jetty启动成功。");
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("jetty启动失败:" + e.getMessage());
+            throw new Exception("jetty启动失败:" + e.getMessage());
+        }
 
         logger.info("【绑定socket服务】");
         try {
@@ -153,10 +154,10 @@ public class ApplicationMain implements Daemon {
     private void stopServer() {
         logger.info("===Server stop===");
         try {
-//            if (jettyServer != null) {
-//                jettyServer.stop();
-//                logger.info("jetty关闭成功。");
-//            }
+            if (jettyServer != null) {
+                jettyServer.stop();
+                logger.info("jetty关闭成功。");
+            }
             if (nettyServer != null) {
                 nettyServer.stop();
                 logger.info("netty关闭成功。");
