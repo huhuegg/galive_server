@@ -16,7 +16,7 @@ public class JettyServer {
 	public void start() throws Exception {
 		JettyConfig config = JettyConfig.loadConfig();
 		//int port = config.getPort();
-		int port = 80;
+		int port = 8010;
 		logger.info("绑定端口:" + port);
 		server = new Server(port);
 		ServletHandler handler = new ServletHandler();
