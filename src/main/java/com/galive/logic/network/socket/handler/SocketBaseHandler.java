@@ -1,6 +1,5 @@
 package com.galive.logic.network.socket.handler;
 
-import com.galive.logic.config.ApplicationConfig;
 import com.galive.logic.exception.LogicException;
 import com.galive.logic.network.protocol.Command;
 import com.galive.logic.network.protocol.CommandIn;
@@ -93,7 +92,6 @@ public abstract class SocketBaseHandler {
 				ChannelManager.getInstance().sendMessage(account, resp);
 			}
 		}
-		
 	}
 	
 	void pushMessage(String account, String message) {
