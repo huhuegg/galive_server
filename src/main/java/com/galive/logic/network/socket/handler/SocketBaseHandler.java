@@ -41,16 +41,7 @@ public abstract class SocketBaseHandler {
 			switch (command) {
 				case Command.USR_LOGIN:
 					out = handle(account, in.getParams());
-					out.setTag(tag);
-					String resp = out.socketResp();
-					resp += ApplicationConfig.getInstance().getSocketConfig().getMessageDelimiter();
-					appendLog("响应:");
-					appendLog(resp);
-					appendLog("处理时间:" + (System.currentTimeMillis() - start) + " ms");
-					appendSplit();
-					logger.info(loggerString());
-					channel.writeAndFlush(resp);
-					return;
+					break;
 				case Command.ONLINE:
 					AccountService accountService = new AccountServiceImpl();
 					if (!accountService.verifyToken(account, token)) {
@@ -95,7 +86,12 @@ public abstract class SocketBaseHandler {
 			appendLog("处理时间:" + (System.currentTimeMillis() - start) + " ms");
 			appendSplit();
 			logger.info(loggerString());
-			ChannelManager.getInstance().sendMessage(account, resp);
+
+			if (command.equals(Command.USR_LOGIN)) {
+				ChannelManager.getInstance().sendMessage(channel, resp);
+			} else {
+				ChannelManager.getInstance().sendMessage(account, resp);
+			}
 		}
 		
 	}

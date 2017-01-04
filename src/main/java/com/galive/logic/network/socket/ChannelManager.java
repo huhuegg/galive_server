@@ -82,6 +82,15 @@ public class ChannelManager {
 			}
 		}
 	}
+
+	public void sendMessage(Channel channel, String message) {
+		if (!StringUtils.isEmpty(message)) {
+			if (channel != null && channel.isActive()) {
+				message += delimiter;
+				channel.writeAndFlush(message);
+			}
+		}
+	}
 	
 	static void closeChannel(Channel channel) {
 		if (channel != null) {
