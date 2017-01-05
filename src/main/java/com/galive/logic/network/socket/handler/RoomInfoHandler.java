@@ -12,7 +12,7 @@ import com.galive.logic.service.RoomServiceImpl;
 import java.util.Map;
 
 @SocketRequestHandler(desc = "房间信息", command = Command.ROOM_INFO)
-public class RoomInfoHandler extends SocketBaseHandler {
+public class RoomInfoHandler extends WebSocketBaseHandler {
 
 	private RoomService roomService = new RoomServiceImpl();
 

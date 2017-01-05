@@ -10,7 +10,7 @@ import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.TransmitPush;
 
 @SocketRequestHandler(desc = "消息转发", command = Command.TRANSMIT)
-public class TransmitHandler extends SocketBaseHandler {
+public class TransmitHandler extends WebSocketBaseHandler {
 
 	@Override
 	public CommandOut handle(String account, String reqData) throws Exception {

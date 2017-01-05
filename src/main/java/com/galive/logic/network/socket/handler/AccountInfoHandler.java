@@ -17,7 +17,7 @@ import com.galive.logic.service.RoomService.FindRoomBy;
 import com.galive.logic.service.RoomServiceImpl;
 
 @SocketRequestHandler(desc = "用户信息", command = Command.USR_INFO)
-public class AccountInfoHandler extends SocketBaseHandler {
+public class AccountInfoHandler extends WebSocketBaseHandler {
 
 	private AccountService accountService = new AccountServiceImpl();
 	private RoomService roomService = new RoomServiceImpl();

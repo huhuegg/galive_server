@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.galive.logic.helper.PackageUtil;
+import com.galive.logic.network.socket.handler.WebSocketBaseHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.galive.logic.network.http.HttpRequestHandler;
 import com.galive.logic.network.http.handler.HttpBaseHandler;
 import com.galive.logic.network.socket.SocketRequestHandler;
-import com.galive.logic.network.socket.handler.SocketBaseHandler;
 
 /**
  * 自定义标签工具类 
@@ -29,7 +29,7 @@ public class AnnotationManager {
 	 * 扫描AppLogicHandler所在包 加载所有@LogicHandler标签类
 	 */
 	public static void initAnnotation() {
-		String packageName = SocketBaseHandler.class.getPackage().getName();
+		String packageName = WebSocketBaseHandler.class.getPackage().getName();
 		logger.info("扫描包：" + packageName);
 		logger.info("加载@LogicHandler");
 		List<Class<?>> classes = PackageUtil.getClasssFromPackage(packageName);
@@ -58,15 +58,15 @@ public class AnnotationManager {
 	
 	/**
 	 * 反射读取标签类
-	 * @param messageID
+	 * @param
 	 * @return
 	 */
-	public static SocketBaseHandler createSocketHandlerInstance(String command) {
-		SocketBaseHandler handler = null;
+	public static WebSocketBaseHandler createSocketHandlerInstance(String command) {
+		WebSocketBaseHandler handler = null;
 		Class<?> clazz = socketHandlers.get(command);
 		if (clazz != null) {
 			try {
-				handler = (SocketBaseHandler) clazz.newInstance();
+				handler = (WebSocketBaseHandler) clazz.newInstance();
 			} catch (InstantiationException e) {
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
@@ -78,7 +78,7 @@ public class AnnotationManager {
 	
 	/**
 	 * 反射读取标签类
-	 * @param messageID
+	 * @param
 	 * @return
 	 */
 	public static HttpBaseHandler createHttpHandlerInstance(String command) {

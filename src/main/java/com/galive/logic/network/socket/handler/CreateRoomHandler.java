@@ -8,7 +8,7 @@ import com.galive.logic.service.RoomService;
 import com.galive.logic.service.RoomServiceImpl;
 
 @SocketRequestHandler(desc = "创建房间", command = Command.ROOM_CREATE)
-public class CreateRoomHandler extends SocketBaseHandler {
+public class CreateRoomHandler extends WebSocketBaseHandler {
 
 	private RoomService roomService = new RoomServiceImpl();
 

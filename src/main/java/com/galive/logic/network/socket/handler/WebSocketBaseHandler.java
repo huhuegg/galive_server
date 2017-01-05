@@ -4,23 +4,23 @@ import com.galive.logic.exception.LogicException;
 import com.galive.logic.network.protocol.Command;
 import com.galive.logic.network.protocol.CommandIn;
 import com.galive.logic.network.protocol.CommandOut;
-import com.galive.logic.network.socket.ChannelManager;
 import com.galive.logic.network.socket.handler.push.KickOffPush;
+import com.galive.logic.network.ws.SessionManager;
 import com.galive.logic.service.AccountService;
 import com.galive.logic.service.AccountServiceImpl;
-import io.netty.channel.Channel;
+import org.eclipse.jetty.websocket.api.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class SocketBaseHandler {
+public abstract class WebSocketBaseHandler {
 	
-	private static Logger logger = LoggerFactory.getLogger(SocketBaseHandler.class);
+	private static Logger logger = LoggerFactory.getLogger(WebSocketBaseHandler.class);
 	
 	public abstract CommandOut handle(String account, String reqData) throws Exception;
 
 	private StringBuffer logBuffer = new StringBuffer();
 	
-	public void handle(CommandIn in, Channel channel) {
+	public void handle(CommandIn in, Session session) {
 		appendSplit();
 		long start = System.currentTimeMillis();
 		CommandOut out = null;
@@ -49,17 +49,17 @@ public abstract class SocketBaseHandler {
 						out = handle(account, in.getParams());
 					}
 					// 是否不同设备连接
-					Channel old = ChannelManager.getInstance().findChannel(account);
+					Session old = SessionManager.getInstance().findSession(account);
 					if (old != null) {
 						KickOffPush push = new KickOffPush();
 						pushMessage(account, push.socketResp());
 						appendLog("用户重复登录，将帐号踢下线。");
 					}
-					ChannelManager.getInstance().addChannel(account, channel);
+					SessionManager.getInstance().addSession(account, session);
 					break;
 				default:
 					// 是否不同设备连接
-					Channel existChannel = ChannelManager.getInstance().findChannel(account);
+					Session existChannel = SessionManager.getInstance().findSession(account);
 					if (existChannel != null) {
 						out = handle(account, in.getParams());
 					}
@@ -87,15 +87,15 @@ public abstract class SocketBaseHandler {
 			logger.info(loggerString());
 
 			if (command.equals(Command.USR_LOGIN)) {
-				ChannelManager.getInstance().sendMessage(channel, resp);
+				SessionManager.getInstance().sendMessage(session, resp);
 			} else {
-				ChannelManager.getInstance().sendMessage(account, resp);
+				SessionManager.getInstance().sendMessage(account, resp);
 			}
 		}
 	}
 	
 	void pushMessage(String account, String message) {
-		ChannelManager.getInstance().sendMessage(account, message);
+		SessionManager.getInstance().sendMessage(account, message);
 	}
 	
 	private CommandOut respFail(String message, String command) {

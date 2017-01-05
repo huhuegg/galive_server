@@ -12,7 +12,7 @@ import com.galive.logic.service.RoomService;
 import com.galive.logic.service.RoomServiceImpl;
 
 @SocketRequestHandler(desc = "进入房间", command = Command.ROOM_ENTER)
-public class EnterRoomHandler extends SocketBaseHandler {
+public class EnterRoomHandler extends WebSocketBaseHandler {
 
 	private RoomService roomService = new RoomServiceImpl();
 

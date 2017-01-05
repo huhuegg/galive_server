@@ -1,14 +1,12 @@
 package com.galive.logic.network.http.jetty;
 
-import com.galive.logic.network.http.EchoServlet;
+import com.galive.logic.network.ws.EchoServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.galive.logic.network.http.LogicServlet;
 
 public class JettyServer {
 	

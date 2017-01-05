@@ -11,7 +11,7 @@ import com.galive.logic.service.RoomService;
 import com.galive.logic.service.RoomServiceImpl;
 
 @SocketRequestHandler(desc = "销毁房间", command = Command.ROOM_DESTROY)
-public class DestroyRoomHandler extends SocketBaseHandler {
+public class DestroyRoomHandler extends WebSocketBaseHandler {
 
 	private RoomService roomService = new RoomServiceImpl();
 

@@ -11,7 +11,7 @@ import com.galive.logic.service.RoomService;
 import com.galive.logic.service.RoomServiceImpl;
 
 @SocketRequestHandler(desc = "离开房间", command = Command.ROOM_EXIT)
-public class ExitRoomHandler extends SocketBaseHandler {
+public class ExitRoomHandler extends WebSocketBaseHandler {
 
 	private RoomService roomService = new RoomServiceImpl();
 

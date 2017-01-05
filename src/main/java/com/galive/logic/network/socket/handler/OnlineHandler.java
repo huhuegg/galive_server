@@ -9,7 +9,7 @@ import com.galive.logic.service.RoomService.FindRoomBy;
 import com.galive.logic.service.RoomServiceImpl;
 
 @SocketRequestHandler(desc = "用户上线", command = Command.ONLINE)
-public class OnlineHandler extends SocketBaseHandler {
+public class OnlineHandler extends WebSocketBaseHandler {
 
 	private RoomService roomService = new RoomServiceImpl();
 
