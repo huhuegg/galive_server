@@ -119,17 +119,17 @@ public class ApplicationMain implements Daemon {
             throw new Exception("jetty启动失败:" + e.getMessage());
         }
 
-        logger.info("【绑定socket服务】");
-        try {
-            logger.info("启动netty...");
-            nettyServer = new NettyServer();
-            nettyServer.start();
-            logger.info("netty启动成功。");
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("netty启动失败:" + e.getMessage());
-            throw new Exception("netty启动失败:" + e.getMessage());
-        }
+//        logger.info("【绑定socket服务】");
+//        try {
+//            logger.info("启动netty...");
+//            nettyServer = new NettyServer();
+//            nettyServer.start();
+//            logger.info("netty启动成功。");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            logger.error("netty启动失败:" + e.getMessage());
+//            throw new Exception("netty启动失败:" + e.getMessage());
+//        }
 
         logger.info("===============================================");
         logger.info("==   *************************************   ==");
