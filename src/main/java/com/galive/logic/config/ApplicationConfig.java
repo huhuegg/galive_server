@@ -8,7 +8,6 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.galive.logic.ApplicationMain;
 import com.galive.logic.ApplicationMain.ApplicationMode;
 import com.galive.logic.helper.LogicHelper;
@@ -34,6 +33,8 @@ public class ApplicationConfig {
 		}
 		return instance;
 	}
+
+
 
 	private static ApplicationConfig loadConfig() {
 		ApplicationConfig sc = new ApplicationConfig();
