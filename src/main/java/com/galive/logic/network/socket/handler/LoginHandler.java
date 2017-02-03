@@ -69,7 +69,7 @@ public class LoginHandler extends WebSocketBaseHandler {
 		//	根据platform传不同的值
 		// Guest 空字符""
 		// WeChat 用户授权code
-		String platformParams;
+		public String platformParams;
 	}
 
 	public static class LoginOut extends CommandOut {
