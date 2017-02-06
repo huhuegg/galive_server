@@ -42,4 +42,7 @@ public class Command {
 	// 用户下线
 	public static final String OFFLINE = "USR_OFFLINE";
 
+
+	public static final String BIND_PC_CLIENT = "BIND_PC_CLIENT";
+
 }

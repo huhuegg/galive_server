@@ -26,5 +26,7 @@ public interface RoomService {
 
 	Room updateRoomExtraInfo(Room room, Map<String, Object> extraInfo) throws LogicException;
 
+	Room bindPCClient(String accountSid, String pcClientId) throws LogicException;
+
 
 }

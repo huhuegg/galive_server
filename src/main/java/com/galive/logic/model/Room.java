@@ -21,6 +21,7 @@ public class Room extends BaseModel {
 
 	private Map<String, Object> extraInfo = new HashMap<>();
 
+	private String pcClientId = "";
 
 	public String getOwnerSid() {
 		return ownerSid;
@@ -44,5 +45,13 @@ public class Room extends BaseModel {
 
 	public void setExtraInfo(Map<String, Object> extraInfo) {
 		this.extraInfo = extraInfo;
+	}
+
+	public String getPcClientId() {
+		return pcClientId;
+	}
+
+	public void setPcClientId(String pcClientId) {
+		this.pcClientId = pcClientId;
 	}
 }

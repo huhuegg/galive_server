@@ -6,11 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class EchoServlet extends WebSocketServlet {
+public class LogicServlet extends WebSocketServlet {
 
 	private static final long serialVersionUID = 1L;
 	
-	private static Logger logger = LoggerFactory.getLogger(EchoServlet.class);
+	private static Logger logger = LoggerFactory.getLogger(LogicServlet.class);
 
 
 	@Override

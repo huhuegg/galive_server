@@ -7,13 +7,17 @@ import com.galive.logic.network.socket.SocketRequestHandler;
 import com.galive.logic.network.socket.handler.push.ExitRoomPush;
 import com.galive.logic.network.protocol.Command;
 import com.galive.logic.network.protocol.CommandOut;
+import com.galive.logic.service.RemoteClientService;
+import com.galive.logic.service.RemoteClientServiceImpl;
 import com.galive.logic.service.RoomService;
 import com.galive.logic.service.RoomServiceImpl;
+import org.apache.commons.lang.StringUtils;
 
 @SocketRequestHandler(desc = "离开房间", command = Command.ROOM_EXIT)
 public class ExitRoomHandler extends WebSocketBaseHandler {
 
 	private RoomService roomService = new RoomServiceImpl();
+	private RemoteClientService remoteClientService = new RemoteClientServiceImpl();
 
 	@Override
 	public CommandOut handle(String account, String reqData) throws Exception {
@@ -31,6 +35,10 @@ public class ExitRoomHandler extends WebSocketBaseHandler {
 					pushMessage(m, pushContent);
 					appendLog("推送房间内成员:" + m + " " + pushContent);
 				}
+			}
+			String clientId = room.getPcClientId();
+			if (!StringUtils.isEmpty(clientId)) {
+				remoteClientService.unbound(clientId);
 			}
 		}
 

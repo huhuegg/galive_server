@@ -122,6 +122,12 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 		return room;
 	}
 
+	@Override
+	public Room bindPCClient(String accountSid, String pcClientId) throws LogicException {
+		// TODO 绑定房间
+		return null;
+	}
+
 
 	private void checkInRoom(String accountSid, boolean join) throws LogicException {
 		Room room = roomDao.findByOwner(accountSid);
