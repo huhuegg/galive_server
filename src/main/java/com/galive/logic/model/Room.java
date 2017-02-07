@@ -23,6 +23,8 @@ public class Room extends BaseModel {
 
 	private String pcClientId = "";
 
+	private String pullUrl = "";
+
 	public String getOwnerSid() {
 		return ownerSid;
 	}
@@ -53,5 +55,13 @@ public class Room extends BaseModel {
 
 	public void setPcClientId(String pcClientId) {
 		this.pcClientId = pcClientId;
+	}
+
+	public String getPullUrl() {
+		return pullUrl;
+	}
+
+	public void setPullUrl(String pullUrl) {
+		this.pullUrl = pullUrl;
 	}
 }

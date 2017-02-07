@@ -29,6 +29,8 @@ public class BindPCClientHandler extends WebSocketBaseHandler {
 		// 通知pc端
 		remoteClientService.bind(clientId, publishUrl);
 
+		// TODO 拉流地址
+
 		return new CommandOut(Command.BIND_PC_CLIENT);
 	}
 
@@ -38,5 +40,13 @@ public class BindPCClientHandler extends WebSocketBaseHandler {
 
 	}
 
+	public static class BindPCClientOut extends CommandOut {
+
+		BindPCClientOut() {
+			super(Command.BIND_PC_CLIENT);
+		}
+
+		public String pullUrl;
+	}
 
 }
