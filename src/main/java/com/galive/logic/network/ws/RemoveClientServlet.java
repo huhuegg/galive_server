@@ -5,7 +5,10 @@ import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.annotation.WebServlet;
 
+
+@WebServlet(name = "RemoveClientServlet", urlPatterns = { "/remote_client" })
 public class RemoveClientServlet extends WebSocketServlet {
 
 	private static final long serialVersionUID = 1L;

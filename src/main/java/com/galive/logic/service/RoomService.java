@@ -11,8 +11,11 @@ public interface RoomService {
 	enum FindRoomBy {
 		id,
 		Owner,
-		Member
+		Member,
+		RemoteClient
 	}
+
+	Room saveOrUpdateRoom(Room room) throws LogicException;
 
 	Room findRoom(FindRoomBy by, String byId) throws LogicException;
 	
@@ -27,6 +30,8 @@ public interface RoomService {
 	Room updateRoomExtraInfo(Room room, Map<String, Object> extraInfo) throws LogicException;
 
 	Room bindPCClient(String accountSid, String pcClientId) throws LogicException;
+
+
 
 
 }

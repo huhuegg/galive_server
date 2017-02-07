@@ -29,6 +29,10 @@ public class RoomDaoImpl extends BaseDao implements RoomDao {
         return RedisManager.getInstance().keyPrefix() + "room:owner:" + ownerSid;
     }
 
+    private String remoteClientKey(String clientId) {
+        return RedisManager.getInstance().keyPrefix() + "room:remote_client:" + clientId;
+    }
+
     private String roomSidKey() {
         return RedisManager.getInstance().keyPrefix() + "room:incr";
     }
@@ -69,6 +73,26 @@ public class RoomDaoImpl extends BaseDao implements RoomDao {
             String s = jedis.get(roomKey(sid));
             if (!StringUtils.isEmpty(s)) {
                 room = JSON.parseObject(s, Room.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (jedis != null) {
+                redis.returnToPool(jedis);
+            }
+        }
+        return room;
+    }
+
+    @Override
+    public Room findByRemoteClient(String sid) {
+        Jedis jedis = null;
+        Room room = null;
+        try {
+            jedis = redis.getResource();
+            String roomSid = jedis.get(remoteClientKey(sid));
+            if (!StringUtils.isEmpty(roomSid)) {
+                room = findBySid(roomSid);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -132,6 +156,11 @@ public class RoomDaoImpl extends BaseDao implements RoomDao {
             String json = JSON.toJSONString(room);
             jedis.set(roomKey(room.getSid()), json);
 
+            String remoteClientId = room.getRemoteClientId();
+            if (!StringUtils.isEmpty(remoteClientId)) {
+                jedis.set(remoteClientKey(remoteClientId), room.getOwnerSid());
+            }
+
             jedis.set(roomOwnerKey(room.getOwnerSid()), room.getSid());
             for (String member : room.getMembers()) {
                 jedis.set(roomMemberKey(member), room.getSid());
@@ -153,6 +182,9 @@ public class RoomDaoImpl extends BaseDao implements RoomDao {
         try {
             jedis = redis.getResource();
             jedis.del(roomMemberKey(memberSid));
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -171,6 +203,10 @@ public class RoomDaoImpl extends BaseDao implements RoomDao {
                 jedis.del(roomMemberKey(member));
             }
             jedis.del(roomOwnerKey(room.getOwnerSid()));
+            String remoteClientId = room.getRemoteClientId();
+            if (!StringUtils.isEmpty(remoteClientId)) {
+                jedis.del(remoteClientId);
+            }
             jedis.del(roomKey(room.getSid()));
             jedis.srem(roomsKey(), room.getSid());
         } catch (Exception e) {

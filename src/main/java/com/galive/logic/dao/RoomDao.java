@@ -5,19 +5,21 @@ import java.util.Set;
 import com.galive.logic.model.Room;
 
 public interface RoomDao {
-	
-	public Set<String> findAllRooms();
-	
-	public Room findBySid(String sid);
 
-	public Room findByOwner(String sid);
-	
-	public Room findByMember(String sid);
-	
-	public Room save(Room room);
-	
-	public void removeMember(String memberSid);
-	
-	public void delete(Room room);
+    Set<String> findAllRooms();
+
+    Room findBySid(String sid);
+
+    Room findByRemoteClient(String sid);
+
+    Room findByOwner(String sid);
+
+    Room findByMember(String sid);
+
+    Room save(Room room);
+
+    void removeMember(String memberSid);
+
+    void delete(Room room);
 }
  

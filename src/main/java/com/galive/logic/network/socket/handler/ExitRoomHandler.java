@@ -36,7 +36,7 @@ public class ExitRoomHandler extends WebSocketBaseHandler {
 					appendLog("推送房间内成员:" + m + " " + pushContent);
 				}
 			}
-			String clientId = room.getPcClientId();
+			String clientId = room.getRemoteClientId();
 			if (!StringUtils.isEmpty(clientId)) {
 				remoteClientService.unbound(clientId);
 			}

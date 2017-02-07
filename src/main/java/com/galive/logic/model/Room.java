@@ -21,9 +21,11 @@ public class Room extends BaseModel {
 
 	private Map<String, Object> extraInfo = new HashMap<>();
 
-	private String pcClientId = "";
+	private String remoteClientId = "";
 
-	private String pullUrl = "";
+	private String remotePublishUrl = "";
+
+	private String remotePullUrl = "";
 
 	public String getOwnerSid() {
 		return ownerSid;
@@ -49,19 +51,28 @@ public class Room extends BaseModel {
 		this.extraInfo = extraInfo;
 	}
 
-	public String getPcClientId() {
-		return pcClientId;
+
+	public String getRemotePublishUrl() {
+		return remotePublishUrl;
 	}
 
-	public void setPcClientId(String pcClientId) {
-		this.pcClientId = pcClientId;
+	public void setRemotePublishUrl(String remotePublishUrl) {
+		this.remotePublishUrl = remotePublishUrl;
 	}
 
-	public String getPullUrl() {
-		return pullUrl;
+	public String getRemotePullUrl() {
+		return remotePullUrl;
 	}
 
-	public void setPullUrl(String pullUrl) {
-		this.pullUrl = pullUrl;
+	public void setRemotePullUrl(String remotePullUrl) {
+		this.remotePullUrl = remotePullUrl;
+	}
+
+	public String getRemoteClientId() {
+		return remoteClientId;
+	}
+
+	public void setRemoteClientId(String remoteClientId) {
+		this.remoteClientId = remoteClientId;
 	}
 }

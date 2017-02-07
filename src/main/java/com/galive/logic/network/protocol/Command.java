@@ -45,4 +45,10 @@ public class Command {
 
 	public static final String BIND_PC_CLIENT = "BIND_PC_CLIENT";
 
+	public static final String STOP_RECORD = "STOP_RECORD";
+
+	public static final String START_RECORD_PUSH = "START_RECORD_PUSH";
+
+	public static final String STOP_RECORD_PUSH = "STOP_RECORD_PUSH";
+
 }

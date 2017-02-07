@@ -2,8 +2,10 @@ package com.galive.logic.network.http.jetty;
 
 import com.galive.logic.network.ws.LogicServlet;
 import com.galive.logic.network.ws.RemoveClientServlet;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.slf4j.Logger;
@@ -12,9 +14,10 @@ import org.slf4j.LoggerFactory;
 public class JettyServer {
 	
 	private static Logger logger = LoggerFactory.getLogger(JettyServer.class);
-	
-	private Server server;
-	
+
+	private Server logicServer;
+	private Server remoteServer;
+
 	public void start() throws Exception {
 		JettyConfig config = JettyConfig.loadConfig();
 		//int port = config.getPort();
@@ -36,29 +39,40 @@ public class JettyServer {
 //		server.setHandler(command);
 
 
-		Server server = new Server();
-		ServerConnector connector = new ServerConnector(server);
-		connector.setPort(8020);
-		server.addConnector(connector);
+		logicServer = new Server();
+		ServerConnector logicConnector = new ServerConnector(logicServer);
+		logicConnector.setPort(8020);
+		logicServer.addConnector(logicConnector);
 
 
-		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		context.setContextPath("/");
-		server.setHandler(context);
+		ServletContextHandler logicContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		ServletHolder logicHolder = new ServletHolder("logic", LogicServlet.class);
+		logicContext.addServlet(logicHolder, "/logic");
+		logicServer.setHandler(logicContext);
 
-		ServletHolder logicHolder = new ServletHolder("ws-events", LogicServlet.class);
-		context.addServlet(logicHolder, "/logic");
+		remoteServer = new Server();
+		ServerConnector remoteConnector = new ServerConnector(remoteServer);
+		remoteConnector.setPort(8021);
+		remoteServer.addConnector(remoteConnector);
 
-		ServletHolder remoteClientHolder = new ServletHolder("ws-events", RemoveClientServlet.class);
-		context.addServlet(remoteClientHolder, "/remote_client");
+		ServletContextHandler remoteContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		ServletHolder remoteHolder = new ServletHolder("remote_client", RemoveClientServlet.class);
+		remoteContext.addServlet(remoteHolder, "/remote_client");
 
-		server.start();
+		remoteServer.setHandler(remoteContext);
+
+
+		logicServer.start();
+		remoteServer.start();
 //		server.join();
 	}
 	
 	public void stop() throws Exception {
-		if (server != null) {
-			server.stop();
+		if (logicServer != null) {
+			logicServer.stop();
+		}
+		if (remoteServer != null) {
+			remoteServer.stop();
 		}
 	}
 	
