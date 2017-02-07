@@ -158,7 +158,7 @@ public class RoomDaoImpl extends BaseDao implements RoomDao {
 
             String remoteClientId = room.getRemoteClientId();
             if (!StringUtils.isEmpty(remoteClientId)) {
-                jedis.set(remoteClientKey(remoteClientId), room.getOwnerSid());
+                jedis.set(remoteClientKey(remoteClientId), room.getSid());
             }
 
             jedis.set(roomOwnerKey(room.getOwnerSid()), room.getSid());

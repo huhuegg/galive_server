@@ -93,6 +93,19 @@ public class WSRemoteClientHandler extends WebSocketAdapter {
             }
         }
 
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Thread.sleep(3000);
+//                    remoteClientService.bind(clientId, "");
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//        }).start();
+
     }
 
     @Override

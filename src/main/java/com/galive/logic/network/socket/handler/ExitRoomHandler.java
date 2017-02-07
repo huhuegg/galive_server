@@ -17,7 +17,7 @@ import org.apache.commons.lang.StringUtils;
 public class ExitRoomHandler extends WebSocketBaseHandler {
 
 	private RoomService roomService = new RoomServiceImpl();
-	private RemoteClientService remoteClientService = new RemoteClientServiceImpl();
+
 
 	@Override
 	public CommandOut handle(String account, String reqData) throws Exception {
@@ -36,10 +36,7 @@ public class ExitRoomHandler extends WebSocketBaseHandler {
 					appendLog("推送房间内成员:" + m + " " + pushContent);
 				}
 			}
-			String clientId = room.getRemoteClientId();
-			if (!StringUtils.isEmpty(clientId)) {
-				remoteClientService.unbound(clientId);
-			}
+
 		}
 
 		return new CommandOut(Command.ROOM_EXIT);
