@@ -140,8 +140,8 @@ public class RoomServiceImpl extends BaseService implements RoomService {
             throw new LogicException("未在房间中");
         }
         room.setRemoteClientId(pcClientId);
-        room.setRemotePublishUrl(RemoteClientService.PUBLISH_URL);
-        room.setRemotePullUrl(RemoteClientService.PULL_URL);
+        room.setRemotePublishUrl(RemoteClientService.PUBLISH_URL + room.getSid());
+        room.setRemotePullUrl(RemoteClientService.PULL_URL + room.getSid());
         roomDao.save(room);
         return room;
     }

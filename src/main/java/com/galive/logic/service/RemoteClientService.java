@@ -9,9 +9,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public interface RemoteClientService {
 
-	public static final String PUBLISH_URL = "rtmp://222.73.196.99/hls";
+	public static final String PUBLISH_URL = "rtmp://zrpush.ztgame.com.cn/live/";
 
-	public static final String PULL_URL = "rtmp://222.73.196.99/hls/live";
+	public static final String PULL_URL = "rtmp://zrpush.ztgame.com.cn/live/";
 
 	public static final Map<String, Session> sessions = new ConcurrentHashMap<>();
 
