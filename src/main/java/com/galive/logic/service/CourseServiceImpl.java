@@ -1,7 +1,5 @@
 package com.galive.logic.service;
 
-import com.galive.logic.dao.CourseDao;
-import com.galive.logic.dao.CourseDaoImpl;
 import com.galive.logic.exception.LogicException;
 import com.galive.logic.model.Course;
 

@@ -37,7 +37,7 @@ public class DestroyRoomHandler extends WebSocketBaseHandler {
 				String pushContent = push.socketResp();
 				for (String member : members) {
 					if (!member.equals(account)) {
-						roomService.leaveRoom(member);
+						1roomService.leaveRoom(member);
 						pushMessage(member, pushContent);
 						appendLog("推送房间内成员:" + member + " " + pushContent);
 					}
